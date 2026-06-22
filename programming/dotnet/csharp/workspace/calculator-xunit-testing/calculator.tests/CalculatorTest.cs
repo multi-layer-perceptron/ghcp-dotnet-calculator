@@ -1,3 +1,5 @@
+using calculator;
+
 namespace calculator.tests;
 
 public class CalculatorTest
@@ -8,7 +10,7 @@ public class CalculatorTest
     [InlineData(2.5, 0.5, 3.0)]
     public void Add_ReturnsExpectedResult(double left, double right, double expected)
     {
-        Assert.Equal(expected, global::CalculatorOperations.Add(left, right));
+        Assert.Equal(expected, CalculatorOperations.Add(left, right));
     }
 
     [Theory]
@@ -17,7 +19,7 @@ public class CalculatorTest
     [InlineData(2.5, 0.5, 2.0)]
     public void Subtract_ReturnsExpectedResult(double left, double right, double expected)
     {
-        Assert.Equal(expected, global::CalculatorOperations.Subtract(left, right));
+        Assert.Equal(expected, CalculatorOperations.Subtract(left, right));
     }
 
     [Theory]
@@ -26,7 +28,7 @@ public class CalculatorTest
     [InlineData(2.5, 0.5, 1.25)]
     public void Multiply_ReturnsExpectedResult(double left, double right, double expected)
     {
-        Assert.Equal(expected, global::CalculatorOperations.Multiply(left, right));
+        Assert.Equal(expected, CalculatorOperations.Multiply(left, right));
     }
 
     [Theory]
@@ -35,13 +37,13 @@ public class CalculatorTest
     [InlineData(2.5, 0.5, 5)]
     public void Divide_ReturnsExpectedResult(double left, double right, double expected)
     {
-        Assert.Equal(expected, global::CalculatorOperations.Divide(left, right));
+        Assert.Equal(expected, CalculatorOperations.Divide(left, right));
     }
 
     [Fact]
     public void Divide_ByZero_Throws()
     {
-        Assert.Throws<DivideByZeroException>(() => global::CalculatorOperations.Divide(5, 0));
+        Assert.Throws<DivideByZeroException>(() => CalculatorOperations.Divide(5, 0));
     }
 
     [Theory]
@@ -50,13 +52,13 @@ public class CalculatorTest
     [InlineData(5.5, 2, 1.5)]
     public void Modulo_ReturnsExpectedResult(double left, double right, double expected)
     {
-        Assert.Equal(expected, global::CalculatorOperations.Modulo(left, right));
+        Assert.Equal(expected, CalculatorOperations.Modulo(left, right));
     }
 
     [Fact]
     public void Modulo_ByZero_Throws()
     {
-        Assert.Throws<DivideByZeroException>(() => global::CalculatorOperations.Modulo(5, 0));
+        Assert.Throws<DivideByZeroException>(() => CalculatorOperations.Modulo(5, 0));
     }
 
     [Theory]
@@ -65,6 +67,6 @@ public class CalculatorTest
     [InlineData(2, -2, 0.25)]
     public void Exponent_ReturnsExpectedResult(double left, double right, double expected)
     {
-        Assert.Equal(expected, global::CalculatorOperations.Exponent(left, right));
+        Assert.Equal(expected, CalculatorOperations.Exponent(left, right));
     }
 }

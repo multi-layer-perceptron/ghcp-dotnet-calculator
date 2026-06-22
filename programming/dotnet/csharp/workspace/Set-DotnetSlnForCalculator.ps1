@@ -15,7 +15,7 @@ if (-not (Test-Path $solutionRoot)) {
 Set-Location $solutionRoot
 
 if (-not (Test-Path './calculator.sln')) {
-    dotnet new sln --name calculator --format sln
+    dotnet new sln --name calculator
 }
 
 if (-not (Test-Path './calculator/calculator.csproj')) {

@@ -1,0 +1,434 @@
+@using Calculator.Core
+@using CalculatorBlazor.Services
+
+<div class="calculator-wrapper">
+    <div class="row">
+        <!-- Main Calculator -->
+        <div class="col-lg-6 mb-4">
+            <div class="calculator-container">
+                <div class="calculator-display-container">
+                    <div class="calculator-display">
+                        <div class="display-expression">@DisplayExpression</div>
+                        <div class="display-value">@CurrentDisplay</div>
+                    </div>
+                </div>
+
+                <div class="calculator-keypad">
+                    <!-- Row 1: Clear and Operations -->
+                    <div class="calculator-row">
+                        <button class="calc-btn calc-btn-function" @onclick="ClearAll">AC</button>
+                        <button class="calc-btn calc-btn-function" @onclick="DeleteLast">DEL</button>
+                        <button class="calc-btn calc-btn-function" @onclick="ToggleSign">±</button>
+                        <button class="calc-btn calc-btn-operation" @onclick='() => SelectOperation("/")'>÷</button>
+                    </div>
+
+                    <!-- Row 2: 7 8 9 -->
+                    <div class="calculator-row">
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("7")'>7</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("8")'>8</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("9")'>9</button>
+                        <button class="calc-btn calc-btn-operation" @onclick='() => SelectOperation("*")'>×</button>
+                    </div>
+
+                    <!-- Row 3: 4 5 6 -->
+                    <div class="calculator-row">
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("4")'>4</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("5")'>5</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("6")'>6</button>
+                        <button class="calc-btn calc-btn-operation" @onclick='() => SelectOperation("-")'>−</button>
+                    </div>
+
+                    <!-- Row 4: 1 2 3 -->
+                    <div class="calculator-row">
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("1")'>1</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("2")'>2</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit("3")'>3</button>
+                        <button class="calc-btn calc-btn-operation" @onclick='() => SelectOperation("+")'>+</button>
+                    </div>
+
+                    <!-- Row 5: 0 . -->
+                    <div class="calculator-row">
+                        <button class="calc-btn calc-btn-number calc-btn-zero" @onclick='() => AppendDigit("0")'>0</button>
+                        <button class="calc-btn calc-btn-number" @onclick='() => AppendDigit(".")'>.</button>
+                        <button class="calc-btn calc-btn-equals" @onclick="CalculateResult">=</button>
+                    </div>
+
+                    <!-- Row 6: Advanced Operations -->
+                    <div class="calculator-row">
+                        <button class="calc-btn calc-btn-operation" @onclick='() => SelectOperation("%")'>MOD</button>
+                        <button class="calc-btn calc-btn-operation" @onclick='() => SelectOperation("^")'>x^y</button>
+                        <button class="calc-btn calc-btn-function" @onclick='() => AppendDigit("(")'>(</button>
+                        <button class="calc-btn calc-btn-function" @onclick='() => AppendDigit(")")'>)</button>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-3 mb-0" role="alert">
+                        <small>@ErrorMessage</small>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Sidebar with History and Test Controls -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Calculation History</h5>
+                </div>
+                <div class="card-body">
+                    @if (CalculationHistory.Count == 0)
+                    {
+                        <p class="text-muted"><small>No calculations yet</small></p>
+                    }
+                    else
+                    {
+                        <div class="history-list">
+                            @foreach (var calc in CalculationHistory.AsEnumerable().Reverse())
+                            {
+                                <div class="history-item">
+                                    <small class="history-expression">@calc.Expression</small>
+                                    <div class="history-result">= @calc.Result</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    <button class="btn btn-sm btn-outline-secondary w-100 mt-3" @onclick="ClearHistory">Clear History</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Results Section -->
+    <div class="mt-4">
+        <button class="btn btn-lg btn-outline-primary" @onclick="ToggleTestResults">
+            @(ShowTestResults ? "▼ Hide Test Results" : "► Show Test Results")
+        </button>
+    </div>
+
+    @if (ShowTestResults)
+    {
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Test Results (@TestCases.Count tests)</h4>
+            </div>
+            <div class="card-body">
+                @if (TestCases.Count == 0)
+                {
+                    <p class="text-muted">No test data available.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>First #</th>
+                                    <th>Second #</th>
+                                    <th>Operation</th>
+                                    <th>Expected</th>
+                                    <th>Actual</th>
+                                    <th>Result</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var test in TestCases)
+                                {
+                                    <tr class="@GetRowClass(test.Result)">
+                                        <td>@test.FirstNumber</td>
+                                        <td>@test.SecondNumber</td>
+                                        <td><strong>@test.Operation</strong></td>
+                                        <td>@test.ExpectedValue</td>
+                                        <td>@(test.Result == "pending" ? "-" : test.ActualValue)</td>
+                                        <td>
+                                            <span class="badge @GetBadgeClass(test.Result)">
+                                                @test.Result
+                                            </span>
+                                        </td>
+                                        <td><small>@test.Description</small></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn btn-primary mt-3" @onclick="RunAllTests">
+                        Run All Tests
+                    </button>
+
+                    @if (TestsHaveRun)
+                    {
+                        <div class="mt-3 alert alert-summary">
+                            <strong>Summary:</strong>
+                            Passed: <span class="text-success">@PassedCount</span> | Failed: <span class="text-danger">@FailedCount</span> | Total: @TestCases.Count
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    // Calculator state
+    private string CurrentDisplay = "0";
+    private string DisplayExpression = "";
+    private double? PendingValue = null;
+    private string? PendingOperation = null;
+    private bool ShouldResetDisplay = false;
+    private string ErrorMessage = "";
+    private List<(string Expression, double Result)> CalculationHistory = new();
+
+    // Test state
+    private bool ShowTestResults;
+    private List<TestCase> TestCases = new();
+    private bool TestsHaveRun;
+
+    [Inject]
+    private TestDataService? TestDataService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (TestDataService != null)
+        {
+            TestCases = TestDataService.LoadTestData();
+        } // end if
+    } // end OnInitialized
+
+    private void AppendDigit(string digit)
+    {
+        ErrorMessage = "";
+
+        if (ShouldResetDisplay)
+        {
+            CurrentDisplay = digit == "." ? "0." : digit;
+            ShouldResetDisplay = false;
+        }
+        else
+        {
+            // Prevent multiple decimal points
+            if (digit == "." && CurrentDisplay.Contains("."))
+            {
+                return;
+            } // end if
+
+            // Replace leading 0 with first digit (except for decimal)
+            if (CurrentDisplay == "0" && digit != ".")
+            {
+                CurrentDisplay = digit;
+            }
+            else
+            {
+                CurrentDisplay += digit;
+            } // end else
+        } // end else
+
+        UpdateDisplay();
+    } // end AppendDigit
+
+    private void SelectOperation(string operation)
+    {
+        ErrorMessage = "";
+
+        if (PendingValue == null)
+        {
+            PendingValue = double.Parse(CurrentDisplay);
+        }
+        else if (!ShouldResetDisplay)
+        {
+            // Calculate intermediate result
+            CalculateResult();
+            PendingValue = double.Parse(CurrentDisplay);
+        } // end else if
+
+        PendingOperation = operation;
+        ShouldResetDisplay = true;
+        UpdateDisplay();
+    } // end SelectOperation
+
+    private void CalculateResult()
+    {
+        ErrorMessage = "";
+
+        if (PendingValue == null || PendingOperation == null)
+        {
+            return;
+        } // end if
+
+        try
+        {
+            double current = double.Parse(CurrentDisplay);
+            double result = 0;
+
+            result = PendingOperation switch
+            {
+                "+" => CalculatorEngine.Add(PendingValue.Value, current),
+                "-" => CalculatorEngine.Subtract(PendingValue.Value, current),
+                "*" => CalculatorEngine.Multiply(PendingValue.Value, current),
+                "/" => CalculatorEngine.Divide(PendingValue.Value, current),
+                "%" => CalculatorEngine.Modulo(PendingValue.Value, current),
+                "^" => CalculatorEngine.Exponent(PendingValue.Value, current),
+                _ => throw new InvalidOperationException("Unknown operation")
+            };
+
+            string expression = $"{PendingValue} {GetOperationSymbol(PendingOperation)} {current}";
+            CalculationHistory.Add((expression, result));
+
+            CurrentDisplay = FormatResult(result);
+            DisplayExpression = "";
+            PendingValue = null;
+            PendingOperation = null;
+            ShouldResetDisplay = true;
+        }
+        catch (DivideByZeroException)
+        {
+            ErrorMessage = "Cannot divide by zero";
+            CurrentDisplay = "Error";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error: {ex.Message}";
+            CurrentDisplay = "Error";
+        } // end catch
+
+        UpdateDisplay();
+    } // end CalculateResult
+
+    private void DeleteLast()
+    {
+        ErrorMessage = "";
+
+        if (CurrentDisplay.Length > 1)
+        {
+            CurrentDisplay = CurrentDisplay[..^1];
+        }
+        else
+        {
+            CurrentDisplay = "0";
+        } // end else
+
+        UpdateDisplay();
+    } // end DeleteLast
+
+    private void ClearAll()
+    {
+        ErrorMessage = "";
+        CurrentDisplay = "0";
+        DisplayExpression = "";
+        PendingValue = null;
+        PendingOperation = null;
+        ShouldResetDisplay = false;
+        UpdateDisplay();
+    } // end ClearAll
+
+    private void ToggleSign()
+    {
+        ErrorMessage = "";
+
+        if (double.TryParse(CurrentDisplay, out double value))
+        {
+            CurrentDisplay = FormatResult(-value);
+            UpdateDisplay();
+        } // end if
+    } // end ToggleSign
+
+    private void UpdateDisplay()
+    {
+        if (PendingOperation != null && !ShouldResetDisplay)
+        {
+            DisplayExpression = $"{PendingValue} {GetOperationSymbol(PendingOperation)}";
+        } // end if
+    } // end UpdateDisplay
+
+    private string FormatResult(double value)
+    {
+        // Remove unnecessary decimal places
+        if (value == Math.Floor(value))
+        {
+            return ((long)value).ToString();
+        } // end if
+
+        return value.ToString("G15").TrimEnd('0').TrimEnd('.');
+    } // end FormatResult
+
+    private string GetOperationSymbol(string operation)
+    {
+        return operation switch
+        {
+            "+" => "+",
+            "-" => "−",
+            "*" => "×",
+            "/" => "÷",
+            "%" => "MOD",
+            "^" => "^",
+            _ => operation
+        };
+    } // end GetOperationSymbol
+
+    private void ClearHistory()
+    {
+        CalculationHistory.Clear();
+    } // end ClearHistory
+
+    private void ToggleTestResults()
+    {
+        ShowTestResults = !ShowTestResults;
+    } // end ToggleTestResults
+
+    private void RunAllTests()
+    {
+        TestsHaveRun = true;
+
+        foreach (var test in TestCases)
+        {
+            try
+            {
+                var actual = test.Operation switch
+                {
+                    "Add" => CalculatorEngine.Add(test.FirstNumber, test.SecondNumber),
+                    "Subtract" => CalculatorEngine.Subtract(test.FirstNumber, test.SecondNumber),
+                    "Multiply" => CalculatorEngine.Multiply(test.FirstNumber, test.SecondNumber),
+                    "Divide" => CalculatorEngine.Divide(test.FirstNumber, test.SecondNumber),
+                    "Modulo" => CalculatorEngine.Modulo(test.FirstNumber, test.SecondNumber),
+                    "Exponent" => CalculatorEngine.Exponent(test.FirstNumber, test.SecondNumber),
+                    _ => throw new InvalidOperationException("Unknown operation")
+                };
+
+                test.ActualValue = actual;
+                test.Result = Math.Abs(actual - test.ExpectedValue) < 0.0001 ? "pass" : "fail";
+            }
+            catch (Exception ex)
+            {
+                test.Result = "fail";
+                test.ActualValue = 0;
+                System.Diagnostics.Debug.WriteLine($"Test failed: {ex.Message}");
+            } // end catch
+        } // end foreach
+    } // end RunAllTests
+
+    private int PassedCount => TestCases.Count(t => t.Result == "pass");
+    private int FailedCount => TestCases.Count(t => t.Result == "fail");
+
+    private string GetRowClass(string result)
+    {
+        return result switch
+        {
+            "pass" => "table-success",
+            "fail" => "table-danger",
+            _ => ""
+        };
+    } // end GetRowClass
+
+    private string GetBadgeClass(string result)
+    {
+        return result switch
+        {
+            "pass" => "bg-success",
+            "fail" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    } // end GetBadgeClass
+}
+

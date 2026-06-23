@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CalculatorBlazor": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:55481;http://localhost:55482"
+    }
+  }
+}

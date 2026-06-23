@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = git rev-parse --show-toplevel
-$workspacePath = Join-Path $repoRoot 'programming/dotnet/csharp/workspace'
+$workspacePath = Join-Path $repoRoot 'src/workspace'
 $solutionRoot = Join-Path $workspacePath 'calculator-xunit-testing'
 
 if (-not (Test-Path $workspacePath)) {

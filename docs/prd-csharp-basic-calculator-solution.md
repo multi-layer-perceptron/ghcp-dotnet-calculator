@@ -3,7 +3,7 @@ title: .NET Calculator With xUnit Testing PRD
 description: Product requirements for the .NET 8 calculator console application and xUnit test solution
 ---
 
-## Document Information
+## 1.1 Document Information
 
 | Field   | Value          |
 |---------|----------------|
@@ -12,11 +12,11 @@ description: Product requirements for the .NET 8 calculator console application 
 | Date    | 2025-11-03     |
 | Status  | Draft          |
 
-## Executive Summary
+## 1.2 Executive Summary
 
 This product requirements document defines a basic .NET 8 console calculator application with xUnit testing. The calculator supports standard arithmetic operations and demonstrates testability, maintainability, null safety, and error handling in a compact C# solution.
 
-## Problem Statement
+## 1.3 Problem Statement
 
 Developers need a practical example of a well-structured .NET application that demonstrates these capabilities:
 
@@ -27,7 +27,7 @@ Developers need a practical example of a well-structured .NET application that d
 
 The solution serves as both a functional calculator and a reference implementation for .NET development practices.
 
-## Goals And Objectives
+## 1.4 Goals And Objectives
 
 * Create a functional calculator application using .NET 8 and C#.
 * Implement core arithmetic operations for addition, subtraction, multiplication, division, modulo, and exponentiation.
@@ -37,9 +37,9 @@ The solution serves as both a functional calculator and a reference implementati
 * Enable a clean, interactive console experience with clear user feedback.
 * Maintain a solution structure with separate application and test projects.
 
-## Scope
+## 1.5 Scope
 
-### In Scope
+### 1.5.1 In Scope
 
 * PowerShell scripts for setting up and removing the calculator solution.
 * A .NET 8 console application using top-level statements.
@@ -50,7 +50,7 @@ The solution serves as both a functional calculator and a reference implementati
 * Error handling and nullable reference safety.
 * Documentation for application behavior, tests, setup, and cleanup.
 
-### Out Of Scope
+### 1.5.2 Out Of Scope
 
 * GUI implementation
 * Advanced mathematical functions such as logarithms or trigonometry
@@ -59,11 +59,13 @@ The solution serves as both a functional calculator and a reference implementati
 * Multi-language support
 * Calculator history
 
-## Epic Requirements
+## 1.6 Requirements
+
+### 1.6.1 Epic Requirements
 
 As a developer, I want to create a .NET 8 console calculator application that performs arithmetic operations so that I can demonstrate .NET development and testing practices.
 
-## User Stories And Use Cases
+### 1.6.2 User Stories And Use Cases
 
 * As a user, I want to perform arithmetic calculations with two operands so that I can compute results quickly.
 * As a user, I want clear prompts and feedback so that I understand how to use the application.
@@ -72,7 +74,7 @@ As a developer, I want to create a .NET 8 console calculator application that pe
 * As a developer, I want well-structured and tested code so that I can understand .NET development practices.
 * As a QA tester, I want xUnit coverage for calculator operations so that I can verify the calculator functions correctly.
 
-## Functional Requirements
+## 1.7 Functional Requirements
 
 | Requirement ID | Description                                                                       |
 |----------------|-----------------------------------------------------------------------------------|
@@ -92,7 +94,7 @@ As a developer, I want to create a .NET 8 console calculator application that pe
 | FR-14          | Each arithmetic operation shall be implemented as a testable method.              |
 | FR-15          | The application shall handle null console input without runtime exceptions.       |
 
-## Non-Functional Requirements
+## 1.8 Non-Functional Requirements
 
 | Category        | Requirement                                                                  |
 |-----------------|------------------------------------------------------------------------------|
@@ -103,7 +105,7 @@ As a developer, I want to create a .NET 8 console calculator application that pe
 | Maintainability | Code shall follow C# practices and use readable names.                       |
 | Compatibility   | The application shall run on platforms that support .NET 8.                  |
 
-## Assumptions And Dependencies
+## 1.9 Assumptions And Dependencies
 
 * Development uses the .NET 8 SDK.
 * xUnit is the unit testing framework.
@@ -111,7 +113,7 @@ As a developer, I want to create a .NET 8 console calculator application that pe
 * The application uses standard C# console I/O.
 * No external runtime libraries are required beyond the .NET SDK.
 
-### Package Versions
+### 1.9.1 Package Versions
 
 The current test project uses these package versions:
 
@@ -122,7 +124,7 @@ The current test project uses these package versions:
 | Microsoft.NET.Test.Sdk    | 17.8.0  |
 | coverlet.collector        | 6.0.0   |
 
-## Success Criteria
+## 1.10 Success Criteria
 
 * All specified calculator operations work correctly.
 * Unit tests cover arithmetic operations and divide-by-zero error cases.
@@ -131,44 +133,44 @@ The current test project uses these package versions:
 * Code uses nullable reference handling where console input can return null.
 * Documentation is clear and consistent with the repository structure.
 
-## Milestones And Timeline
+## 1.11 Milestones And Timeline
 
-### Setup Script
+### 1.11.1 Setup Script
 
 * Create a PowerShell script for initializing the solution structure.
 * Set up the .NET 8 console application and xUnit test project.
 
-### Initial Implementation
+### 1.11.2 Initial Implementation
 
 * Implement calculator operations with top-level console interaction.
 * Build and test the initial version.
 
-### Refactoring
+### 1.11.3 Refactoring
 
 * Move arithmetic operations into testable methods.
 * Add error handling and screen clearing.
 * Make methods public for test access.
 
-### Testing
+### 1.11.4 Testing
 
 * Create xUnit tests for all operations.
 * Use both fact and theory test approaches.
 * Ensure all tests pass.
 
-### Final Improvements
+### 1.11.5 Final Improvements
 
 * Add modulo and exponent operations.
 * Document the code.
 * Fix remaining issues or warnings.
 
-### Documentation
+### 1.11.6 Documentation
 
 * Update documentation.
 * Create setup and cleanup scripts.
 
-## Implementation Guidance
+## 1.12 Implementation Guidance
 
-### Solution Setup
+### 1.12.1 Solution Setup
 
 Create a PowerShell script named `Set-DotnetSlnForCalculator.ps1` in `$(git rev-parse --show-toplevel)\src\workspace` that performs these actions:
 
@@ -188,7 +190,7 @@ Implementation notes:
 * The setup script can pass `--framework net8.0` when creating supported project templates.
 * Keep the solution under `src/workspace/calculator-xunit-testing`.
 
-### Calculator Implementation
+### 1.12.2 Calculator Implementation
 
 The active solution uses this file structure:
 
@@ -212,7 +214,7 @@ Implementation requirements:
 > [!IMPORTANT]
 > Top-level statements and class or namespace declarations cannot be mixed in the same C# source file in invalid order. Keep reusable operation methods in `CalculatorOperations.cs` and the console workflow in `Calculator.cs`.
 
-### Refactoring Steps
+### 1.12.3 Refactoring Steps
 
 * Convert arithmetic operations into methods for testability.
 * Make methods public so the xUnit project can test them.
@@ -220,7 +222,7 @@ Implementation requirements:
 * Implement modulo and exponent operations.
 * Add null handling to prevent input-related exceptions.
 
-### Testing Strategy
+### 1.12.4 Testing Strategy
 
 * Create xUnit tests for each calculator operation.
 * Use `[Fact]` tests for single-scenario assertions.
@@ -228,7 +230,7 @@ Implementation requirements:
 * Include edge cases such as division by zero and modulo by zero.
 * Ensure all tests pass before completion.
 
-### Cleanup Solution
+## 1.13 Cleanup Solution
 
 Create a PowerShell script named `Remove-DotnetSlnForCalculator.ps1` in `$(git rev-parse --show-toplevel)\src\workspace` that performs these actions:
 
@@ -248,7 +250,7 @@ cd {RepoRoot}\src\workspace
 
 The script completely removes the `calculator-xunit-testing` folder, allowing the workspace to be reset.
 
-## Additional Learning Outcomes
+## 1.14 Additional Learning Outcomes
 
 * Understanding .NET solution and project structure
 * Working with C# top-level statements
@@ -258,39 +260,39 @@ The script completely removes the `calculator-xunit-testing` folder, allowing th
 * Creating reusable setup and cleanup scripts
 * Managing package versions for .NET projects
 
-## Troubleshooting Guide
+## 1.15 Troubleshooting Guide
 
-### Build Error CS8803: Top-Level Statements Must Precede Declarations
+### 1.15.1 Build Error CS8803: Top-Level Statements Must Precede Declarations
 
 Cause: Top-level statements and class declarations are in the same file or ordered incorrectly.
 
 Solution: Keep console workflow code in `Calculator.cs` and reusable operation methods in `CalculatorOperations.cs`.
 
-### Unexpected Test Discovery Count
+### 1.15.2 Unexpected Test Discovery Count
 
 Cause: The test project may have incompatible package versions, stale build output, or corrupted test files.
 
 Solution: Verify package versions in `calculator.tests.csproj`, run `dotnet clean`, restore packages, and rerun the tests.
 
-### Target Framework Mismatch
+### 1.15.3 Target Framework Mismatch
 
 Cause: Project files target a framework other than `net8.0`.
 
 Solution: Verify `calculator.csproj` and `calculator.tests.csproj` both contain `<TargetFramework>net8.0</TargetFramework>`.
 
-### Test File Corrupted Or Reverted
+### 1.15.4 Test File Corrupted Or Reverted
 
 Cause: Previous failed operations may have reverted `CalculatorTest.cs` to a stub implementation.
 
 Solution: Reapply the testing strategy and verify tests cover all public arithmetic methods.
 
-### Build Succeeds But Tests Do Not Run
+### 1.15.5 Build Succeeds But Tests Do Not Run
 
 Cause: Build artifacts may be stale after framework or package changes.
 
 Solution: Run `dotnet clean`, `dotnet restore`, and `dotnet build` before running tests again.
 
-### Setup Script Creates Projects Targeting The Wrong Framework
+### 1.15.6 Setup Script Creates Projects Targeting The Wrong Framework
 
 Cause: The `dotnet new` command may use the installed SDK default if no framework is specified.
 

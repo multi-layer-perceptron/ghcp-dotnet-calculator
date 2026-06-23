@@ -89,6 +89,13 @@ src/
 - Keep files under 200 lines when practical
 - Use appropriate access modifiers (private by default)
 
+### Refactoring Guidelines
+
+- Prefer pure functions where possible.
+- Apply SOLID principles.
+- Replace long conditionals with the strategy pattern.
+- Add logging using the internal telemetry wrapper `hwLog()`.
+
 ### Language-Specific Conventions
 
 | Language | Framework | Testing | Naming | Target |

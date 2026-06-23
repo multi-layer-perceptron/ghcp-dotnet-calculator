@@ -1,0 +1,14 @@
+@using calculator.web.Services
+@inject ThemeService ThemeService
+
+<button type="button" class="theme-toggle" aria-label="Toggle theme" @onclick="ToggleTheme">
+    <span aria-hidden="true">@(ThemeService.IsDarkMode ? "☀" : "☾")</span>
+    <span>@(ThemeService.IsDarkMode ? "Light" : "Dark")</span>
+</button>
+
+@code {
+    private void ToggleTheme()
+    {
+        ThemeService.ToggleTheme();
+    }
+}

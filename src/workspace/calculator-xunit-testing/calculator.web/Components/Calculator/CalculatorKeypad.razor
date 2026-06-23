@@ -1,0 +1,44 @@
+<div class="calculator-keypad" role="group" aria-label="Calculator keypad">
+    @foreach (var key in Keys)
+    {
+        <button type="button"
+                class="calculator-key @key.CssClass"
+                aria-label="@key.Label"
+                @onclick="() => OnKeyPressed.InvokeAsync(key.Value)">
+            @key.Text
+        </button>
+    }
+</div>
+
+@code {
+    private static readonly KeyDefinition[] Keys =
+    [
+        new("C", "C", "Clear", "key-clear"),
+        new("^", "^", "Power", "key-operator"),
+        new("%", "%", "Modulo", "key-operator"),
+        new("/", "÷", "Divide", "key-operator"),
+        new("7", "7", "Seven", string.Empty),
+        new("8", "8", "Eight", string.Empty),
+        new("9", "9", "Nine", string.Empty),
+        new("*", "×", "Multiply", "key-operator"),
+        new("4", "4", "Four", string.Empty),
+        new("5", "5", "Five", string.Empty),
+        new("6", "6", "Six", string.Empty),
+        new("-", "−", "Subtract", "key-operator"),
+        new("1", "1", "One", string.Empty),
+        new("2", "2", "Two", string.Empty),
+        new("3", "3", "Three", string.Empty),
+        new("+", "+", "Add", "key-operator"),
+        new("0", "0", "Zero", "key-zero"),
+        new(".", ".", "Decimal point", string.Empty),
+        new("=", "=", "Equals", "key-equals")
+    ];
+
+    /// <summary>
+    /// Gets or sets the callback invoked when a keypad key is pressed.
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnKeyPressed { get; set; }
+
+    private sealed record KeyDefinition(string Value, string Text, string Label, string CssClass);
+}

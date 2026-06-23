@@ -6,7 +6,7 @@ description: Repository-specific GitHub Copilot guidance for the calculator solu
 ## GitHub Copilot Instructions for Calculator Workspace
 
 **Version:** 2.0  
-**Last Updated:** May 2026  
+**Last Updated:** June 2026  
 **Repository:** `ghcp-dotnet-calculator`
 
 ## Overview
@@ -15,8 +15,10 @@ This repository is a focused .NET calculator learning workspace with GitHub Copi
 
 High-signal areas include:
 
-- A .NET 8 calculator solution under `src/workspace/calculator-xunit-testing/`
+- A .NET 10 calculator solution under `src/workspace/calculator-xunit-testing/`
 - A console calculator project under `src/workspace/calculator-xunit-testing/calculator/`
+- A shared calculator library under `src/workspace/calculator-xunit-testing/calculator.library/`
+- A Blazor web app under `src/workspace/calculator-xunit-testing/calculator.web/`
 - An xUnit test project under `src/workspace/calculator-xunit-testing/calculator.tests/`
 - Workspace setup and reset scripts under `src/workspace/`
 - A PostgreSQL seeding skill for manual local workflows and a Testcontainers-first test strategy
@@ -45,14 +47,22 @@ src/
 │   ├── Set-DotnetSlnForCalculator.ps1
 │   ├── Remove-DotnetSlnForCalculator.ps1
 │   └── calculator-xunit-testing/
-│       ├── calculator.sln
+│       ├── calculator.slnx
 │       ├── calculator/
 │       │   ├── calculator.csproj
-│       │   ├── Calculator.cs
+│       │   └── Calculator.cs
+│       ├── calculator.library/
+│       │   ├── calculator.library.csproj
 │       │   └── CalculatorOperations.cs
-│       └── calculator.tests/
-│           ├── calculator.tests.csproj
-│           └── CalculatorTest.cs
+│       ├── calculator.tests/
+│       │   ├── calculator.tests.csproj
+│       │   ├── CalculatorTest.cs
+│       │   └── TestCases.csv
+│       └── calculator.web/
+│           ├── calculator.web.csproj
+│           ├── Components/
+│           ├── Services/
+│           └── wwwroot/
 └── completed/
 ```
 
@@ -97,7 +107,7 @@ src/
 - Include XML documentation (`///`) on all public members
 - Prefer xUnit for tests in `calculator.tests`
 - Use async/await for I/O operations
-- Keep calculator behavior in the `calculator` project and assertions in `calculator.tests`
+- Keep pure calculator behavior in `calculator.library`, application wiring in `calculator` or `calculator.web`, and assertions in `calculator.tests`
 - For CSV-backed calculator tests, keep `TestCases.csv` in the `calculator.tests` project root and copy it to the output directory
 - For iterative local app/UI development, use a persistent local PostgreSQL container seeded from `TestCases.csv`
 - For automated PostgreSQL-backed calculator tests, prefer Testcontainers with per-run randomized credentials and runtime CSV seeding
@@ -135,7 +145,7 @@ src/
 - Include edge cases, error conditions, and happy paths
 - Aim for 80%+ coverage on critical paths
 - Extend existing test projects before introducing new frameworks
-- For calculator validation, run `dotnet test src/workspace/calculator-xunit-testing/calculator.sln`
+- For calculator validation, run `dotnet test src/workspace/calculator-xunit-testing/calculator.slnx`
 - To recreate the exercise solution, run `pwsh src/workspace/Set-DotnetSlnForCalculator.ps1`; to reset it, run `pwsh src/workspace/Remove-DotnetSlnForCalculator.ps1`
 - Keep integration/E2E tests deterministic and isolated; prefer ephemeral resources such as Testcontainers when feasible
 
@@ -178,6 +188,7 @@ src/
 - **Agents** (`.github/agents/`): Keep frontmatter accurate; update existing definitions rather than creating duplicates
 - **Skills** (`.github/skills/`): Self-contained folders with `SKILL.md` and supporting scripts
 - **Accuracy**: Verify names and paths against live directory contents; older docs may lag behind
+- **Upgrade history**: Preserve intentional pre-upgrade `.NET 8` references in stage-specific prompts, PRDs, and reports. Normalize only current active workspace guidance to `.NET 10` after the 3.01 upgrade workflow.
 
 ### GitHub Copilot Agent Skills
 

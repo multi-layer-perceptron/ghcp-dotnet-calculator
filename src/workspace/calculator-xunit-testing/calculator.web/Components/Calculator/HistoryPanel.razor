@@ -1,0 +1,40 @@
+@using calculator.web.Services
+
+<section class="history-panel" aria-label="Calculation history">
+    <header class="panel-header">
+        <h2>History</h2>
+        <span>@Items.Count / 50</span>
+    </header>
+
+    @if (Items.Count == 0)
+    {
+        <p class="history-empty">No calculations yet.</p>
+    }
+    else
+    {
+        <ol class="history-list">
+            @foreach (var item in Items)
+            {
+                <li>
+                    <button type="button" @onclick="() => OnReplay.InvokeAsync(item)">
+                        @item.DisplayText
+                    </button>
+                </li>
+            }
+        </ol>
+    }
+</section>
+
+@code {
+    /// <summary>
+    /// Gets or sets the newest-first history entries.
+    /// </summary>
+    [Parameter]
+    public IReadOnlyList<CalculationRecord> Items { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the callback invoked when a history entry is selected.
+    /// </summary>
+    [Parameter]
+    public EventCallback<CalculationRecord> OnReplay { get; set; }
+}

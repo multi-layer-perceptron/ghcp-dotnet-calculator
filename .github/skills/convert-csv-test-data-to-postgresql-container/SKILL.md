@@ -13,7 +13,18 @@ compatibility:
 
 # Convert CSV Test Data to PostgreSQL Container
 
-Create a PostgreSQL database container and import CSV test data into it. This skill will help you set up a local PostgreSQL instance for testing and development purposes.
+Create a PostgreSQL database container and import CSV test data into it.
+
+## Purpose and positioning
+
+Use this skill for persistent local PostgreSQL workflows during iterative app and UI development.
+
+Use prompt `2.03-switch-test-data-to-pg` for automated test isolation. That flow uses Testcontainers with per-run randomized credentials and avoids fixed host port assumptions.
+
+Why this split exists:
+
+* Persistent container workflow supports stable local connection settings while iterating on Blazor and app features.
+* Testcontainers is preferred for CI and routine automated test runs because it is isolated, reproducible, and avoids plaintext credential examples.
 
 ## Automated Option (Recommended)
 
@@ -27,18 +38,19 @@ Use the script in `.\scripts\Convert-CsvToPostgreSQL.ps1` to automate container 
 
 * PowerShell 7+
 * Docker Desktop running
-* CSV test data file available at `$(git rev-parse --show-toplevel)\src\workspace\calculator-xunit-testing\calculator.tests\TestData\CalculatorTestData.csv`
+* CSV test data file available at `$(git rev-parse --show-toplevel)\src\workspace\calculator-xunit-testing\calculator.tests\TestCases.csv`
 
 ### Example Usage
 
 ```pwsh
 pwsh .\scripts\Convert-CsvToPostgreSQL.ps1
 ```
+
 If `-PostgresPassword` is not provided, the script securely prompts for it.
 
 ### Script Parameters
 
-* `-CsvPath`: Path to the CSV file. Default workflow path: `$(git rev-parse --show-toplevel)\src\workspace\calculator-xunit-testing\calculator.tests\TestData\CalculatorTestData.csv`
+* `-CsvPath`: Path to the CSV file. Default workflow path: `$(git rev-parse --show-toplevel)\src\workspace\calculator-xunit-testing\calculator.tests\TestCases.csv`
 * `-ContainerName`: PostgreSQL container name (default: `test-container`)
 * `-DatabaseName`: Target database name (default: `test_db`)
 * `-TableName`: Target table name for import (default: `test_data`)
@@ -71,6 +83,12 @@ If `-PostgresPassword` is not provided, the script securely prompts for it.
 * Container exists with old settings: rerun with `-ForceRecreate`.
 * Docker not running: start Docker Desktop and run the script again.
 * Invalid CSV headers: ensure headers are present and not empty.
+
+## Security guidance
+
+* Do not hardcode passwords in scripts, prompts, or docs.
+* Prefer interactive secure prompt behavior for local usage.
+* For automation, pass secrets via a secure environment or secret store.
 
 ### Quick Verification Command
 

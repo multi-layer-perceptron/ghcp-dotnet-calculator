@@ -38,15 +38,15 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 #### Linked User Stories
 
-| ID | Title | QA Phase Alignment |
-|:---|:------|:-----|
-| **#81** | Refactor calculator with Angular UI frontend while maintaining console project | Phases 8, 9, 16 |
-| **#83** | Perform multiple calculations in sequence without restarting | Phase 14.1 (User Workflows) |
-| **#84** | Build well-structured and tested code following .NET best practices | Phases 1, 6, 11 |
-| **#85** | Handle invalid inputs gracefully without crashing | Phases 9.1-9.3 (Error Recovery) |
-| **#86** | Verify calculator functions with comprehensive unit and E2E tests | Phases 2, 7, 14 (E2E Testing) |
-| **#87** | Perform basic arithmetic calculations with two operands | Phase 2, 7.3 (Manual Verification) |
-| **#88** | Receive clear prompts and feedback during calculation | Phases 8, 16 (Documentation) |
+| ID      | Title                                                                          | QA Phase Alignment                 |
+| :------ | :----------------------------------------------------------------------------- | :--------------------------------- |
+| **#81** | Refactor calculator with Angular UI frontend while maintaining console project | Phases 8, 9, 16                    |
+| **#83** | Perform multiple calculations in sequence without restarting                   | Phase 14.1 (User Workflows)        |
+| **#84** | Build well-structured and tested code following .NET best practices            | Phases 1, 6, 11                    |
+| **#85** | Handle invalid inputs gracefully without crashing                              | Phases 9.1-9.3 (Error Recovery)    |
+| **#86** | Verify calculator functions with comprehensive unit and E2E tests              | Phases 2, 7, 14 (E2E Testing)      |
+| **#87** | Perform basic arithmetic calculations with two operands                        | Phase 2, 7.3 (Manual Verification) |
+| **#88** | Receive clear prompts and feedback during calculation                          | Phases 8, 16 (Documentation)       |
 
 ### Acceptance Criteria Mapping
 
@@ -56,21 +56,25 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 2: Test Coverage & Validation
-   - All 51+ tests pass including arithmetic operation tests
-   - Test data includes all 6 operations: +, -, *, /, %, ^
+
+- All 51+ tests pass including arithmetic operation tests
+- Test data includes all 6 operations: +, -, \*, /, %, ^
 
 ✅ Phase 7.3: Manual Verification
-   - Calculator correctly computes: 5 + 3 = 8
-   - Calculator correctly computes: 10 - 4 = 6
-   - Calculator correctly computes: 6 * 7 = 42
-   - Calculator correctly computes: 20 / 4 = 5
-   - Calculator correctly computes: 17 % 5 = 2
-   - Calculator correctly computes: 2 ^ 8 = 256
+
+- Calculator correctly computes: 5 + 3 = 8
+- Calculator correctly computes: 10 - 4 = 6
+- Calculator correctly computes: 6 \* 7 = 42
+- Calculator correctly computes: 20 / 4 = 5
+- Calculator correctly computes: 17 % 5 = 2
+- Calculator correctly computes: 2 ^ 8 = 256
 
 ✅ Phase 11: Code Maintainability
-   - Calculator.cs has public static methods for each operation
-   - Calculate() dispatcher method routes operations correctly
+
+- Calculator.cs has public static methods for each operation
+- Calculate() dispatcher method routes operations correctly
 ```
+
 **Success Criteria:**
 
 - ✅ All arithmetic operations produce correct results
@@ -84,16 +88,19 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 14.1: User Workflow Testing
-   - Test continuous calculation workflow
-   - Verify state consistency across multiple operations
-   - Confirm no memory degradation after 100+ calculations
+
+- Test continuous calculation workflow
+- Verify state consistency across multiple operations
+- Confirm no memory degradation after 100+ calculations
 
 ✅ Phase 9.3: State Management & Recovery
-   - Application in known state after each operation
-   - No dangling resources between calculations
-   - Variables reset for next operation
-   - Error in one calculation doesn't affect next
+
+- Application in known state after each operation
+- No dangling resources between calculations
+- Variables reset for next operation
+- Error in one calculation doesn't affect next
 ```
+
 **Success Criteria:**
 
 - ✅ User can perform 100+ consecutive calculations
@@ -108,28 +115,33 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 1: Code Quality Analysis
-   - Static analysis: Zero C# code style violations
-   - Naming conventions: 100% compliance with PascalCase/camelCase
-   - All public methods documented with XML comments
+
+- Static analysis: Zero C# code style violations
+- Naming conventions: 100% compliance with PascalCase/camelCase
+- All public methods documented with XML comments
 
 ✅ Phase 6: Project Standards Compliance
-   - Projects target net8.0 framework
-   - ImplicitUsings enabled
-   - Nullable reference types enabled
-   - Project structure matches PRD specification
+
+- Projects target net8.0 framework
+- ImplicitUsings enabled
+- Nullable reference types enabled
+- Project structure matches PRD specification
 
 ✅ Phase 11: Code Maintainability & Technical Debt
-   - Cyclomatic complexity < 10 per method
-   - Maintainability Index > 80
-   - Code duplication < 3%
-   - No untracked TODO/FIXME comments
+
+- Cyclomatic complexity < 10 per method
+- Maintainability Index > 80
+- Code duplication < 3%
+- No untracked TODO/FIXME comments
 
 ✅ Phase 3: Security & Vulnerability Assessment
-   - Zero NuGet package CVEs
-   - No security anti-patterns detected
-   - All inputs properly validated
-   - Exception handling doesn't leak sensitive data
+
+- Zero NuGet package CVEs
+- No security anti-patterns detected
+- All inputs properly validated
+- Exception handling doesn't leak sensitive data
 ```
+
 **Success Criteria:**
 
 - ✅ Code adheres to Microsoft C# Coding Conventions
@@ -144,25 +156,29 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 9: Error Recovery & Resilience
-   - Division by zero throws ArgumentException with clear message
-   - Invalid operators caught and reported
-   - Null/empty inputs handled without crashes
-   - Whitespace properly trimmed from inputs
-   - Extreme values (MaxValue, MinValue) managed correctly
+
+- Division by zero throws ArgumentException with clear message
+- Invalid operators caught and reported
+- Null/empty inputs handled without crashes
+- Whitespace properly trimmed from inputs
+- Extreme values (MaxValue, MinValue) managed correctly
 
 ✅ Phase 9.2: Input Sanitization & Validation
-   - All inputs validated before processing
-   - No buffer overflow vulnerabilities
-   - Special characters rejected gracefully
-   - Leading zeros handled correctly
-   - Scientific notation recognized or rejected appropriately
+
+- All inputs validated before processing
+- No buffer overflow vulnerabilities
+- Special characters rejected gracefully
+- Leading zeros handled correctly
+- Scientific notation recognized or rejected appropriately
 
 ✅ Phase 9.3: State Management & Recovery
-   - Application returns to stable state after error
-   - User can retry after invalid input
-   - No partial results or corrupted state
-   - Application continues running after error
+
+- Application returns to stable state after error
+- User can retry after invalid input
+- No partial results or corrupted state
+- Application continues running after error
 ```
+
 **Success Criteria:**
 
 - ✅ No unhandled exceptions reach user
@@ -178,25 +194,29 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 2: Test Coverage & Validation
-   - 51+ tests implemented and passing
-   - Code coverage ≥ 80%
-   - All public methods covered by tests
-   - All error paths tested
-   - Edge cases covered (boundary values, null, zero)
+
+- 51+ tests implemented and passing
+- Code coverage ≥ 80%
+- All public methods covered by tests
+- All error paths tested
+- Edge cases covered (boundary values, null, zero)
 
 ✅ Phase 2.5: QA Engineer Capabilities
-   - Automated test case generation for all code paths
-   - Edge case analysis identifies untested scenarios
-   - Test data generation expands coverage
-   - Regression tests prevent issue recurrence
-   - Code coverage gaps eliminated (100% on public methods)
+
+- Automated test case generation for all code paths
+- Edge case analysis identifies untested scenarios
+- Test data generation expands coverage
+- Regression tests prevent issue recurrence
+- Code coverage gaps eliminated (100% on public methods)
 
 ✅ Phase 7: Integration & End-to-End Testing
-   - Solution builds without errors
-   - Full test suite execution succeeds
-   - No flaky or intermittent failures
-   - Manual verification of all operations
+
+- Solution builds without errors
+- Full test suite execution succeeds
+- No flaky or intermittent failures
+- Manual verification of all operations
 ```
+
 **Success Criteria:**
 
 - ✅ All 51+ tests pass (0 failures)
@@ -213,29 +233,33 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 8: User Experience & Accessibility
-   - Console application prompts clear and unambiguous
-   - Operator guidance displayed and helpful
-   - Error messages user-friendly and actionable
-   - Result formatting readable and consistent
-   - Console screen clears properly between operations
+
+- Console application prompts clear and unambiguous
+- Operator guidance displayed and helpful
+- Error messages user-friendly and actionable
+- Result formatting readable and consistent
+- Console screen clears properly between operations
 
 ✅ Phase 8.2: User Input Experience
-   - Valid inputs processed correctly
-   - Invalid number input shows clear error
-   - Empty operator shows error message
-   - Invalid operator rejected gracefully
-   - User can retry after any error
+
+- Valid inputs processed correctly
+- Invalid number input shows clear error
+- Empty operator shows error message
+- Invalid operator rejected gracefully
+- User can retry after any error
 
 ✅ Phase 16: Documentation Completeness
-   - README includes quick start guide
-   - Usage examples provided for each operation
-   - Troubleshooting guide available
-   - Error messages documented
+
+- README includes quick start guide
+- Usage examples provided for each operation
+- Troubleshooting guide available
+- Error messages documented
 ```
+
 **Success Criteria:**
 
 - ✅ All prompts clearly indicate what input is expected
-- ✅ Operator list displayed to user (+, -, *, /, %, ^)
+- ✅ Operator list displayed to user (+, -, \*, /, %, ^)
 - ✅ Calculation result shown immediately after input
 - ✅ Error messages identify the problem specifically
 - ✅ Help/guidance available without errors
@@ -247,22 +271,26 @@ This QA framework directly supports the acceptance criteria for Epic #82 and its
 
 ```markdown
 ✅ Phase 8: User Experience & Accessibility
-   - Angular UI provides same functionality as console
-   - All operations available in both interfaces
-   - Error handling consistent between UI and console
-   - Input validation identical in both implementations
+
+- Angular UI provides same functionality as console
+- All operations available in both interfaces
+- Error handling consistent between UI and console
+- Input validation identical in both implementations
 
 ✅ Phase 7: Integration & End-to-End Testing
-   - Console project continues working independently
-   - API/library layer can be called from both UIs
-   - Shared Calculator logic tested in both contexts
-   - No regression in existing console functionality
+
+- Console project continues working independently
+- API/library layer can be called from both UIs
+- Shared Calculator logic tested in both contexts
+- No regression in existing console functionality
 
 ✅ Phase 16: Documentation Completeness
-   - Documentation covers both UI options
-   - API documentation clear for both consumers
-   - Migration guide from console to web UI provided
+
+- Documentation covers both UI options
+- API documentation clear for both consumers
+- Migration guide from console to web UI provided
 ```
+
 ---
 
 ## Quality Assurance Execution Steps
@@ -302,6 +330,7 @@ dotnet build /p:EnableNETAnalyzers=true /p:EnforceCodeStyleInBuild=true /p:Treat
 # Check for code quality issues
 dotnet format --verify-no-changes --verbosity quiet
 ```
+
 **Validation Criteria:**
 
 - ✅ Zero C# code style violations
@@ -327,6 +356,7 @@ foreach ($project in $projects) {
     # Check code duplication (should be < 3%)
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ All public methods have cyclomatic complexity < 10
@@ -347,6 +377,7 @@ Verify compliance with .NET naming standards:
 // ✅ Local variables: camelCase (result, operand)
 // ✅ Constants: UPPER_SNAKE_CASE or PascalCase
 ```
+
 **Validation Criteria:**
 
 - ✅ 100% compliance with naming conventions
@@ -370,6 +401,7 @@ dotnet test --configuration Release --logger "console;verbosity=detailed" --coll
 # Generate coverage report
 reportgenerator -reports:**/coverage.cobertura.xml -reporttypes:Html -targetdir:./coverage-report
 ```
+
 **Validation Criteria:**
 
 - ✅ All 51+ tests pass (0 failures)
@@ -392,11 +424,12 @@ foreach ($file in $testFiles) {
     # Verify: Clear test descriptions
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ All tests follow `MethodName_Scenario_ExpectedResult` naming
 - ✅ Tests organized in AAA pattern (Arrange-Act-Assert)
-- ✅ No hardcoded test data in test methods (use CSV/InlineData)
+- ✅ No hardcoded test data in test methods (use data providers backed by CSV or Testcontainers PostgreSQL)
 - ✅ All assertions use appropriate Assert methods
 - ✅ No test interdependencies
 
@@ -405,22 +438,22 @@ foreach ($file in $testFiles) {
 Validate CSV test data:
 
 ```powershell
-# Verify CalculatorTestData.csv
-$csvPath = "calculator.tests/TestData/CalculatorTestData.csv"
+# Verify TestCases.csv
+$csvPath = "calculator.tests/TestCases.csv"
 $csvData = Import-Csv $csvPath
 
 # Validation checks:
-# - All required columns present (firstNumber, secondNumber, operator, expectedResult, testDescription)
+# - All required columns present (Operand1, Operand2, Operation, ExpectedResult)
 # - No empty cells in critical columns
-# - Operator values valid (+, -, *, /, %, ^)
-# - expectedResult is numeric where applicable
-# - Test descriptions are meaningful
+# - Operation values valid (Add, Subtract, Multiply, Divide, Modulo, Exponent)
+# - ExpectedResult is numeric where applicable
 # - No duplicate test cases
 ```
+
 **Validation Criteria:**
 
 - ✅ CSV file well-formed with proper headers
-- ✅ All 31 test cases valid
+- ✅ All 18 data-driven test cases valid
 - ✅ No empty or malformed data rows
 - ✅ Test data covers all operations
 - ✅ Edge cases included (zero, negative numbers, decimals)
@@ -453,6 +486,7 @@ $testMethods = @(
 # - Overflow/precision cases tested
 # - Invalid input cases tested
 ```
+
 **Generated Test Categories:**
 
 - ✅ Happy path tests (normal valid inputs)
@@ -478,6 +512,7 @@ Identify untested edge cases:
 // 9. Case sensitivity: "ADD", "add", "Add"
 // 10. Empty/null inputs
 ```
+
 **Validation Criteria:**
 
 - ✅ All boundary values tested
@@ -515,6 +550,7 @@ function Generate-TestData {
     }
 }
 ```
+
 **Generated Datasets:**
 
 - ✅ Basic arithmetic combinations
@@ -561,6 +597,7 @@ function Test-BugRepro {
     # Document findings
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ All reported bugs have reproducible tests
@@ -602,6 +639,7 @@ public static class CalculatorTestFixtures
     };
 }
 ```
+
 **Fixture Categories:**
 
 - ✅ Valid data fixtures
@@ -650,6 +688,7 @@ public class CalculatorRegressionTests
     }
 }
 ```
+
 **Regression Test Coverage:**
 
 - ✅ All fixed bugs have regression tests
@@ -680,6 +719,7 @@ foreach ($line in $uncoveredLines) {
     # Generate test to cover or mark as intentionally uncovered
 }
 ```
+
 **Coverage Improvement Actions:**
 
 - ✅ Identify uncovered code paths
@@ -748,6 +788,7 @@ function Invoke-CalculatorQATests {
 # Usage:
 # Invoke-CalculatorQATests -TestSuite Full -GenerateCoverageReport -CompareWithBaseline
 ```
+
 **Automation Capabilities:**
 
 - ✅ Test suite orchestration
@@ -780,10 +821,11 @@ foreach ($check in $checks) {
     Write-Host "Validating: $check"
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ All prompts clear and unambiguous
-- ✅ Operator guidance displayed (supports +, -, *, /, %, ^)
+- ✅ Operator guidance displayed (supports +, -, \*, /, %, ^)
 - ✅ Error messages are helpful (not cryptic)
 - ✅ Result formatting is readable and consistent
 - ✅ Console screen clears properly between operations
@@ -805,6 +847,7 @@ Test user interaction scenarios:
 // 7. Rapid input: Continuous calculations work correctly
 // 8. Exit scenario: User can exit cleanly
 ```
+
 **Validation Criteria:**
 
 - ✅ User can recover from invalid input
@@ -829,6 +872,7 @@ $accessibilityChecks = @(
     "All input validated and echoed back"
 )
 ```
+
 **Validation Criteria:**
 
 - ✅ Console text is readable and high-contrast
@@ -856,6 +900,7 @@ Test error recovery and resilience:
 // 6. Extreme values: Math.MaxValue, Math.MinValue handled
 // 7. NaN/Infinity: Detected and reported
 ```
+
 **Validation Criteria:**
 
 - ✅ No unhandled exceptions reach user
@@ -882,6 +927,7 @@ $sanitizationTests = @(
     "Decimal precision: '3.14159' → Preserved"
 )
 ```
+
 **Validation Criteria:**
 
 - ✅ All inputs validated before processing
@@ -904,6 +950,7 @@ Ensure consistent application state:
 #   4. Variables reset for next operation
 #   5. Error state doesn't affect future calculations
 ```
+
 **Validation Criteria:**
 
 - ✅ State consistent after each operation
@@ -928,6 +975,7 @@ Implement diagnostic capabilities:
 // 4. Debug output: Optional verbose mode for troubleshooting
 // 5. Event tracing: Correlate user actions with system events
 ```
+
 **Validation Criteria:**
 
 - ✅ Errors logged with sufficient context
@@ -953,6 +1001,7 @@ $performanceMetrics = @(
 
 # Optional: Implement performance logging
 ```
+
 **Validation Criteria:**
 
 - ✅ All operations complete within acceptable time
@@ -985,6 +1034,7 @@ $maintainabilityChecks = @{
 # - Roslyn analyzers
 # - VS Code extensions
 ```
+
 **Validation Criteria:**
 
 - ✅ Maintainability Index > 80
@@ -1007,6 +1057,7 @@ Identify and track technical debt:
 // 5. Code smell indicators → Flag for refactoring
 // 6. Performance optimization opportunities → Measure first
 ```
+
 **Validation Criteria:**
 
 - ✅ No untracked TODO/FIXME comments
@@ -1035,6 +1086,7 @@ $deploymentChecks = @(
     "No hardcoded paths or environment variables"
 )
 ```
+
 **Validation Criteria:**
 
 - ✅ Can publish as self-contained single executable
@@ -1056,6 +1108,7 @@ Ensure portability across environments:
 # 4. Works from CI/CD pipeline
 # 5. Works with restricted permissions
 ```
+
 **Validation Criteria:**
 
 - ✅ No hardcoded local paths
@@ -1090,6 +1143,7 @@ $hash1 = (Get-FileHash "calculator/bin/Release/net8.0/calculator.dll").Hash
 
 # ... rebuild and verify hash matches
 ```
+
 **Validation Criteria:**
 
 - ✅ Builds are deterministic
@@ -1117,6 +1171,7 @@ foreach ($requirement in $buildRequirements.GetEnumerator()) {
     Write-Host "Checking: $($requirement.Name) = $($requirement.Value)"
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ .NET 8.0 SDK available
@@ -1153,6 +1208,7 @@ $workflows = @(
     }
 )
 ```
+
 **Validation Criteria:**
 
 - ✅ Multi-step workflows complete successfully
@@ -1183,6 +1239,7 @@ function Test-CalculatorLoad {
     Write-Host "Completed $iterations iterations in $($stopwatch.ElapsedMilliseconds)ms"
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ Handles 10,000+ consecutive operations
@@ -1213,6 +1270,7 @@ Ensure all changes go through proper review:
 - [ ] Backward compatibility maintained
 - [ ] Commit messages follow topic(subtopic): activity format
 ```
+
 **Validation Criteria:**
 
 - ✅ All changes reviewed by at least one team member
@@ -1238,6 +1296,7 @@ $branchProtection = @{
     }
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ Direct commits to main blocked
@@ -1259,6 +1318,7 @@ Verify documentation quality:
 ## Documentation Checklist
 
 ### User Documentation
+
 - [ ] Quick start guide (< 5 minutes to first calculation)
 - [ ] Usage examples for each operation
 - [ ] Troubleshooting guide
@@ -1266,6 +1326,7 @@ Verify documentation quality:
 - [ ] FAQ section
 
 ### Developer Documentation
+
 - [ ] Architecture overview
 - [ ] Code structure explanation
 - [ ] How to add new operations (extension guide)
@@ -1274,12 +1335,14 @@ Verify documentation quality:
 - [ ] Testing guide
 
 ### API Documentation
+
 - [ ] All public classes documented
 - [ ] All public methods documented
 - [ ] All parameters documented
 - [ ] Return values documented
 - [ ] Exceptions documented
 ```
+
 **Validation Criteria:**
 
 - ✅ README.md is comprehensive and current
@@ -1304,6 +1367,7 @@ Document system design:
 - [ ] Extension points identified
 - [ ] Future enhancements outlined
 ```
+
 **Validation Criteria:**
 
 - ✅ Architecture is well-documented
@@ -1333,6 +1397,7 @@ foreach ($package in $packages) {
     Write-Host "Checking $package for CVEs..."
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ No high/critical CVEs in dependencies
@@ -1353,6 +1418,7 @@ Check for security anti-patterns:
 // ✅ Proper disposal of resources
 // ✅ No use of deprecated/dangerous APIs
 ```
+
 **Validation Criteria:**
 
 - ✅ Zero security anti-patterns detected
@@ -1374,6 +1440,7 @@ dotnet list package --include-transitive
 # - No known CVEs in transitive dependencies
 # - All dependencies have known authors/maintainers
 ```
+
 **Validation Criteria:**
 
 - ✅ No version conflicts in dependency tree
@@ -1397,6 +1464,7 @@ $timer.Stop()
 
 Write-Host "Build completed in $($timer.ElapsedMilliseconds)ms"
 ```
+
 **Validation Criteria:**
 
 - ✅ Release build completes in < 90 seconds
@@ -1411,6 +1479,7 @@ Verify test efficiency:
 ```powershell
 dotnet test --configuration Release --logger "console" | Measure-Object -Property ElapsedMilliseconds
 ```
+
 **Validation Criteria:**
 
 - ✅ All 51 tests complete in < 15 seconds
@@ -1434,6 +1503,7 @@ $operations = @(
 
 # Verify all operations complete within acceptable time
 ```
+
 **Validation Criteria:**
 
 - ✅ All operations complete within 100ms
@@ -1456,6 +1526,7 @@ Check XML documentation completeness:
 // ✅ <exception> documented for thrown exceptions
 // ✅ Examples provided where helpful
 ```
+
 **Validation Criteria:**
 
 - ✅ 100% of public members documented
@@ -1470,18 +1541,21 @@ Verify documentation is current:
 
 ```markdown
 ✅ README.md includes:
-  - Project purpose and overview
-  - Quick start instructions
-  - Build and test commands
-  - Troubleshooting section
-  - Links to related documentation
+
+- Project purpose and overview
+- Quick start instructions
+- Build and test commands
+- Troubleshooting section
+- Links to related documentation
 
 ✅ Copilot Instructions:
-  - Reflects current .NET framework (net8.0)
-  - Package versions current
-  - Examples work and are tested
-  - Outdated information removed
+
+- Reflects current .NET framework (net8.0)
+- Package versions current
+- Examples work and are tested
+- Outdated information removed
 ```
+
 **Validation Criteria:**
 
 - ✅ README is accurate and current
@@ -1502,9 +1576,10 @@ git log --oneline -20 | ForEach-Object {
     # Verify: Related to actual changes
 }
 ```
+
 **Validation Criteria:**
 
-- ✅ All commits follow   opic(subtopic): activity` format
+- ✅ All commits follow opic(subtopic): activity` format
 - ✅ Commit messages are descriptive
 - ✅ No commits with vague messages ("fix", "update")
 - ✅ Each commit is logically cohesive
@@ -1540,6 +1615,7 @@ if (Test-Path "global.json") {
     Write-Host "SDK version: $($globalJson.sdk.version)"
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ Both projects target net8.0
@@ -1562,16 +1638,16 @@ calculator-xunit-testing/
 ├── calculator.tests/
 │   ├── calculator.tests.csproj ✅
 │   ├── CalculatorTest.cs ✅
-│   ├── TestData/
-│   │   └── CalculatorTestData.csv ✅
+│   ├── TestCases.csv ✅
 │   └── bin/, obj/ ✅
 └── calculator-xunit-testing.slnx ✅
 ```
+
 **Validation Criteria:**
 
 - ✅ Directory structure matches PRD specification
 - ✅ File naming follows conventions
-- ✅ Test data in dedicated TestData folder
+- ✅ Test data in project-root `TestCases.csv`
 - ✅ No extraneous files in project root
 
 #### 6.3 Project File (.csproj) Validation
@@ -1596,6 +1672,7 @@ Verify MSBuild configuration:
 ✅ ItemGroup (ProjectReference):
   - Test project references app project correctly
 ```
+
 **Validation Criteria:**
 
 - ✅ All required properties present
@@ -1628,6 +1705,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "❌ Build failed"
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ Clean build succeeds with 0 errors
@@ -1653,6 +1731,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "❌ Some tests failed"
 }
 ```
+
 **Validation Criteria:**
 
 - ✅ 51+ tests pass (0 failures, 0 skips)
@@ -1678,6 +1757,7 @@ $calculator = & "./calculator/bin/Release/net8.0/calculator.exe"
 # - Error: 5 / 0 → exception handled
 # - Invalid: 5 & 3 → invalid operator message
 ```
+
 **Validation Criteria:**
 
 - ✅ All operations calculate correctly
@@ -1697,25 +1777,28 @@ After completing all phases, generate a comprehensive report:
 
 ### Overall Status: ✅ PASS / ❌ FAIL
 
-| Check | Status | Details |
-|:------|:------:|:--------|
-| Code Quality | ✅ | 0 violations |
-| Test Coverage | ✅ | 85% coverage, 51/51 passing |
-| Security | ✅ | 0 CVEs, 0 anti-patterns |
-| Performance | ✅ | Build: 60s, Tests: 9s |
-| Documentation | ✅ | 100% API documented |
-| Compliance | ✅ | Full .NET 8.0 compliance |
-| Integration | ✅ | Full solution tested |
+| Check         | Status | Details                     |
+| :------------ | :----: | :-------------------------- |
+| Code Quality  |   ✅   | 0 violations                |
+| Test Coverage |   ✅   | 85% coverage, 51/51 passing |
+| Security      |   ✅   | 0 CVEs, 0 anti-patterns     |
+| Performance   |   ✅   | Build: 60s, Tests: 9s       |
+| Documentation |   ✅   | 100% API documented         |
+| Compliance    |   ✅   | Full .NET 8.0 compliance    |
+| Integration   |   ✅   | Full solution tested        |
 
 ### Recommendations:
+
 - If all gates pass: ✅ Ready for merge
 - If gates fail: ❌ Address failures before proceeding
 
 ### Sign-off:
+
 - Verified by: [Your Name/Role]
 - Timestamp: [Date/Time]
 - Build ID: [CI/CD Build ID if applicable]
 ```
+
 **Gate Criteria for Approval:**
 
 - ✅ ALL checks must pass (no exceptions)
@@ -1741,6 +1824,7 @@ dotnet build --configuration Release /p:EnableNETAnalyzers=true /p:EnforceCodeSt
 dotnet test --configuration Release --collect:"XPlat Code Coverage"
 dotnet format --verify-no-changes
 ```
+
 ### Run Specific Checks
 
 ```powershell
@@ -1753,26 +1837,27 @@ dotnet test --configuration Release
 # Coverage report only
 dotnet test --collect:"XPlat Code Coverage"
 ```
+
 ---
 
 ## Success Criteria Summary
 
 ✅ **Quality gate passes when ALL criteria met:**
 
-| Category | Metric | Target |
-|:---------|:------:|:------:|
-| **Code Quality** | Code style violations | 0 |
-| **Code Quality** | Cyclomatic complexity | < 10 |
-| **Tests** | Pass rate | 100% |
-| **Tests** | Code coverage | ≥ 80% |
-| **Tests** | Test count | 51+ |
-| **Security** | CVEs found | 0 |
-| **Security** | Anti-patterns | 0 |
-| **Performance** | Build time | < 90s |
-| **Performance** | Test time | < 15s |
-| **Documentation** | API docs | 100% |
-| **Compliance** | Framework | net8.0 |
-| **Compliance** | Standards | ✅ Compliant |
+| Category          |        Metric         |    Target    |
+| :---------------- | :-------------------: | :----------: |
+| **Code Quality**  | Code style violations |      0       |
+| **Code Quality**  | Cyclomatic complexity |     < 10     |
+| **Tests**         |       Pass rate       |     100%     |
+| **Tests**         |     Code coverage     |    ≥ 80%     |
+| **Tests**         |      Test count       |     51+      |
+| **Security**      |      CVEs found       |      0       |
+| **Security**      |     Anti-patterns     |      0       |
+| **Performance**   |      Build time       |    < 90s     |
+| **Performance**   |       Test time       |    < 15s     |
+| **Documentation** |       API docs        |     100%     |
+| **Compliance**    |       Framework       |    net8.0    |
+| **Compliance**    |       Standards       | ✅ Compliant |
 
 ---
 
@@ -1782,16 +1867,16 @@ This prompt is specifically designed to enable SW Tester/QA Engineer personas wi
 
 ### 🧪 Core QA Capabilities
 
-| Capability | Implementation | Benefit |
-|:-----------|:---------------|:--------|
-| **Automated Test Case Generation** | Phase 2.5.1 | Rapidly generate comprehensive test cases for all code paths |
-| **Edge Case Suggestions** | Phase 2.5.2 | Identify untested scenarios and boundary conditions automatically |
-| **Test Data Generation** | Phase 2.5.3 | Create realistic, comprehensive test datasets programmatically |
-| **Bug Reproduction Assistance** | Phase 2.5.4 | Generate reproducible test cases for known issues |
-| **Mock Data & Stubbing** | Phase 2.5.5 | Create reusable test fixtures and mock objects |
-| **Regression Test Writing** | Phase 2.5.6 | Document and test all previously fixed issues |
-| **Code Coverage Improvement** | Phase 2.5.7 | Identify gaps and generate tests for uncovered code |
-| **Automation Scripting** | Phase 2.5.8 | Build test orchestration and reporting frameworks |
+| Capability                         | Implementation | Benefit                                                           |
+| :--------------------------------- | :------------- | :---------------------------------------------------------------- |
+| **Automated Test Case Generation** | Phase 2.5.1    | Rapidly generate comprehensive test cases for all code paths      |
+| **Edge Case Suggestions**          | Phase 2.5.2    | Identify untested scenarios and boundary conditions automatically |
+| **Test Data Generation**           | Phase 2.5.3    | Create realistic, comprehensive test datasets programmatically    |
+| **Bug Reproduction Assistance**    | Phase 2.5.4    | Generate reproducible test cases for known issues                 |
+| **Mock Data & Stubbing**           | Phase 2.5.5    | Create reusable test fixtures and mock objects                    |
+| **Regression Test Writing**        | Phase 2.5.6    | Document and test all previously fixed issues                     |
+| **Code Coverage Improvement**      | Phase 2.5.7    | Identify gaps and generate tests for uncovered code               |
+| **Automation Scripting**           | Phase 2.5.8    | Build test orchestration and reporting frameworks                 |
 
 ### 📊 QA Engineer Workflow
 
@@ -1814,18 +1899,19 @@ This prompt is specifically designed to enable SW Tester/QA Engineer personas wi
    ↓
 9. Quality Gate Enforcement (Phase 8)
 ```
+
 ### 🎯 QA-Specific Success Metrics
 
-| Metric | Target | Phase |
-|:-------|:------:|:-----:|
-| Test Case Coverage | All code paths | 2.5.1 |
-| Edge Cases Identified | 100% | 2.5.2 |
-| Test Data Variety | ≥ 50 scenarios | 2.5.3 |
-| Bug Reproducibility | 100% | 2.5.4 |
-| Mock Fixture Coverage | All dependencies | 2.5.5 |
-| Regression Tests | All fixed issues | 2.5.6 |
-| Code Coverage Gaps | 0% uncovered paths | 2.5.7 |
-| Test Automation | Full CI/CD integration | 2.5.8 |
+| Metric                |         Target         | Phase |
+| :-------------------- | :--------------------: | :---: |
+| Test Case Coverage    |     All code paths     | 2.5.1 |
+| Edge Cases Identified |          100%          | 2.5.2 |
+| Test Data Variety     |     ≥ 50 scenarios     | 2.5.3 |
+| Bug Reproducibility   |          100%          | 2.5.4 |
+| Mock Fixture Coverage |    All dependencies    | 2.5.5 |
+| Regression Tests      |    All fixed issues    | 2.5.6 |
+| Code Coverage Gaps    |   0% uncovered paths   | 2.5.7 |
+| Test Automation       | Full CI/CD integration | 2.5.8 |
 
 ### 💡 QA Efficiency Gains
 

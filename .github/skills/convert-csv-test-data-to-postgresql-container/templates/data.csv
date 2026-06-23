@@ -1,1 +1,2 @@
-fields(type): firstNumber(decimal),secondNumber(decimal),operator(character),expectedResult(decimal),testDescription(string)    
+Operand1,Operand2,Operation,ExpectedResult
+1,2,Add,3

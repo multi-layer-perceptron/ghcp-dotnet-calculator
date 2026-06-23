@@ -55,7 +55,7 @@ param
 (
     [Parameter(Mandatory = $false)]
     [ValidateNotNullOrEmpty()]
-    [string]$CsvPath = (Join-Path -Path "$(git --rev-parse --show-toplevel)\programming\dotnet\csharp\workspace\calculator-xunit-testing\calculator.tests\TestData\CalculatorTestData.csv"),
+    [string]$CsvPath = (Join-Path -Path (git rev-parse --show-toplevel) -ChildPath "src/workspace/calculator-xunit-testing/calculator.tests/TestCases.csv"),
 
     [Parameter(Mandatory = $false)]
     [ValidateNotNullOrEmpty()]

@@ -19,7 +19,7 @@ High-signal areas include:
 - A console calculator project under `src/workspace/calculator-xunit-testing/calculator/`
 - An xUnit test project under `src/workspace/calculator-xunit-testing/calculator.tests/`
 - Workspace setup and reset scripts under `src/workspace/`
-- A PostgreSQL seeding skill for future CSV-backed test-data workflows
+- A PostgreSQL seeding skill for manual local workflows and a Testcontainers-first test strategy
 - Prompt, agent, and skill customization assets under `.github/`
 - GitHub workflows under `.github/workflows/`
 
@@ -98,7 +98,11 @@ src/
 - Prefer xUnit for tests in `calculator.tests`
 - Use async/await for I/O operations
 - Keep calculator behavior in the `calculator` project and assertions in `calculator.tests`
-- For future PostgreSQL-backed tests, read connection settings from `TEST_PG_*` environment variables
+- For CSV-backed calculator tests, keep `TestCases.csv` in the `calculator.tests` project root and copy it to the output directory
+- For iterative local app/UI development, use a persistent local PostgreSQL container seeded from `TestCases.csv`
+- For automated PostgreSQL-backed calculator tests, prefer Testcontainers with per-run randomized credentials and runtime CSV seeding
+- Use the PostgreSQL container seeding skill to maintain stable local connection settings during refactoring
+- Do not include plaintext credential examples in prompts, skills, docs, or test code
 - Follow Microsoft naming conventions strictly
 
 ### PowerShell
@@ -133,7 +137,7 @@ src/
 - Extend existing test projects before introducing new frameworks
 - For calculator validation, run `dotnet test src/workspace/calculator-xunit-testing/calculator.sln`
 - To recreate the exercise solution, run `pwsh src/workspace/Set-DotnetSlnForCalculator.ps1`; to reset it, run `pwsh src/workspace/Remove-DotnetSlnForCalculator.ps1`
-- Keep integration/E2E tests deterministic via environment variables
+- Keep integration/E2E tests deterministic and isolated; prefer ephemeral resources such as Testcontainers when feasible
 
 ---
 

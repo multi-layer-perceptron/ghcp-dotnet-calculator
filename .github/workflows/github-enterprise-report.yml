@@ -1,0 +1,401 @@
+name: GitHub Enterprise Information Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: 'GitHub Organization name'
+        required: true
+        type: string
+      include_private_repos:
+        description: 'Include private repositories'
+        required: false
+        type: boolean
+        default: true
+      include_security_alerts:
+        description: 'Include security alerts (requires admin access)'
+        required: false
+        type: boolean
+        default: true
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+env:
+  ORGANIZATION: ${{ github.event.inputs.organization || 'ms-mfg-community' }}
+  INCLUDE_PRIVATE: ${{ github.event.inputs.include_private_repos || 'true' }}
+  INCLUDE_SECURITY: ${{ github.event.inputs.include_security_alerts || 'true' }}
+
+jobs:
+  collect-enterprise-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: read
+      actions: read
+      checks: read
+      deployments: read
+      issues: read
+      packages: read
+      pull-requests: read
+      repository-projects: read
+      statuses: read
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install requests pandas python-dateutil
+
+    - name: Create data collection script
+      run: |
+        cat > collect_github_data.py << 'EOF'
+        #!/usr/bin/env python3
+        """
+        GitHub Enterprise Data Collection Script
+        Collects comprehensive organizational data, repositories, security features, and alerts
+        """
+        
+        import requests
+        import json
+        import csv
+        import os
+        import sys
+        from datetime import datetime, timezone
+        from typing import Dict, List, Any, Optional
+        import pandas as pd
+        
+        class GitHubEnterpriseCollector:
+            def __init__(self, token: str, organization: str):
+                self.token = token
+                self.organization = organization
+                self.headers = {
+                    'Authorization': f'token {token}',
+                    'Accept': 'application/vnd.github.v3+json',
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
+                self.base_url = 'https://api.github.com'
+                
+            def make_request(self, url: str, params: Dict = None) -> Optional[Dict]:
+                """Make authenticated request to GitHub API"""
+                try:
+                    response = requests.get(url, headers=self.headers, params=params)
+                    response.raise_for_status()
+                    return response.json()
+                except requests.exceptions.RequestException as e:
+                    print(f"Error making request to {url}: {e}")
+                    return None
+                    
+            def get_paginated_data(self, url: str, params: Dict = None) -> List[Dict]:
+                """Get all pages of data from paginated endpoint"""
+                all_data = []
+                page = 1
+                per_page = 100
+                
+                while True:
+                    current_params = params.copy() if params else {}
+                    current_params.update({'page': page, 'per_page': per_page})
+                    
+                    data = self.make_request(url, current_params)
+                    if not data:
+                        break
+                        
+                    if isinstance(data, list):
+                        if not data:  # Empty list means no more data
+                            break
+                        all_data.extend(data)
+                    else:
+                        # Handle single object response
+                        all_data.append(data)
+                        break
+                        
+                    page += 1
+                    
+                return all_data
+                
+            def get_organization_info(self) -> Dict:
+                """Get organization information"""
+                print(f"Collecting organization info for: {self.organization}")
+                url = f"{self.base_url}/orgs/{self.organization}"
+                return self.make_request(url) or {}
+                
+            def get_repositories(self, include_private: bool = True) -> List[Dict]:
+                """Get all repositories in the organization"""
+                print("Collecting repository information...")
+                url = f"{self.base_url}/orgs/{self.organization}/repos"
+                params = {'type': 'all' if include_private else 'public', 'sort': 'updated'}
+                return self.get_paginated_data(url, params)
+                
+            def get_repository_details(self, repo_name: str) -> Dict:
+                """Get detailed information about a specific repository"""
+                url = f"{self.base_url}/repos/{self.organization}/{repo_name}"
+                return self.make_request(url) or {}
+                
+            def get_security_alerts(self, repo_name: str) -> Dict:
+                """Get security alerts for a repository"""
+                alerts = {
+                    'code_scanning': [],
+                    'secret_scanning': [],
+                    'dependabot': []
+                }
+                
+                # Code scanning alerts
+                url = f"{self.base_url}/repos/{self.organization}/{repo_name}/code-scanning/alerts"
+                alerts['code_scanning'] = self.get_paginated_data(url)
+                
+                # Secret scanning alerts
+                url = f"{self.base_url}/repos/{self.organization}/{repo_name}/secret-scanning/alerts"
+                alerts['secret_scanning'] = self.get_paginated_data(url)
+                
+                # Dependabot alerts
+                url = f"{self.base_url}/repos/{self.organization}/{repo_name}/dependabot/alerts"
+                alerts['dependabot'] = self.get_paginated_data(url)
+                
+                return alerts
+                
+            def get_ghas_status(self, repo_name: str) -> Dict:
+                """Get GitHub Advanced Security status for repository"""
+                repo_details = self.get_repository_details(repo_name)
+                
+                return {
+                    'security_and_analysis': repo_details.get('security_and_analysis', {}),
+                    'has_vulnerability_alerts': repo_details.get('has_vulnerability_alerts', False),
+                    'has_projects': repo_details.get('has_projects', False),
+                    'has_wiki': repo_details.get('has_wiki', False),
+                    'has_pages': repo_details.get('has_pages', False),
+                    'has_discussions': repo_details.get('has_discussions', False)
+                }
+                
+            def get_license_info(self, repo_name: str) -> Dict:
+                """Get license information for repository"""
+                repo_details = self.get_repository_details(repo_name)
+                license_info = repo_details.get('license', {})
+                
+                return {
+                    'license_key': license_info.get('key', 'None'),
+                    'license_name': license_info.get('name', 'None'),
+                    'license_spdx_id': license_info.get('spdx_id', 'None')
+                }
+                
+            def collect_comprehensive_data(self, include_private: bool = True, include_security: bool = True) -> Dict:
+                """Collect all enterprise data"""
+                print("Starting comprehensive data collection...")
+                
+                # Organization info
+                org_info = self.get_organization_info()
+                
+                # Repositories
+                repositories = self.get_repositories(include_private)
+                
+                comprehensive_data = []
+                
+                for i, repo in enumerate(repositories, 1):
+                    print(f"Processing repository {i}/{len(repositories)}: {repo['name']}")
+                    
+                    repo_data = {
+                        # Organization info
+                        'org_name': org_info.get('name', ''),
+                        'org_login': org_info.get('login', ''),
+                        'org_id': org_info.get('id', ''),
+                        'org_type': org_info.get('type', ''),
+                        'org_created_at': org_info.get('created_at', ''),
+                        'org_updated_at': org_info.get('updated_at', ''),
+                        'org_public_repos': org_info.get('public_repos', 0),
+                        'org_private_repos': org_info.get('total_private_repos', 0),
+                        'org_owned_private_repos': org_info.get('owned_private_repos', 0),
+                        'org_followers': org_info.get('followers', 0),
+                        'org_following': org_info.get('following', 0),
+                        
+                        # Repository basic info
+                        'repo_name': repo['name'],
+                        'repo_full_name': repo['full_name'],
+                        'repo_id': repo['id'],
+                        'repo_private': repo['private'],
+                        'repo_fork': repo['fork'],
+                        'repo_archived': repo['archived'],
+                        'repo_disabled': repo['disabled'],
+                        'repo_created_at': repo['created_at'],
+                        'repo_updated_at': repo['updated_at'],
+                        'repo_pushed_at': repo['pushed_at'],
+                        'repo_size': repo['size'],
+                        'repo_stargazers_count': repo['stargazers_count'],
+                        'repo_watchers_count': repo['watchers_count'],
+                        'repo_forks_count': repo['forks_count'],
+                        'repo_open_issues_count': repo['open_issues_count'],
+                        'repo_language': repo.get('language', ''),
+                        'repo_default_branch': repo['default_branch'],
+                        'repo_topics': ','.join(repo.get('topics', [])),
+                        'repo_visibility': repo.get('visibility', ''),
+                        
+                        # License info
+                        **{f'repo_{k}': v for k, v in self.get_license_info(repo['name']).items()},
+                        
+                        # GHAS status
+                        **{f'ghas_{k}': v for k, v in self.get_ghas_status(repo['name']).items()},
+                    }
+                    
+                    # Security alerts (if enabled and accessible)
+                    if include_security:
+                        try:
+                            alerts = self.get_security_alerts(repo['name'])
+                            
+                            # Code scanning alerts summary
+                            code_scanning = alerts['code_scanning']
+                            repo_data.update({
+                                'code_scanning_total_alerts': len(code_scanning),
+                                'code_scanning_open_alerts': len([a for a in code_scanning if a.get('state') == 'open']),
+                                'code_scanning_fixed_alerts': len([a for a in code_scanning if a.get('state') == 'fixed']),
+                                'code_scanning_dismissed_alerts': len([a for a in code_scanning if a.get('state') == 'dismissed']),
+                            })
+                            
+                            # Secret scanning alerts summary
+                            secret_scanning = alerts['secret_scanning']
+                            repo_data.update({
+                                'secret_scanning_total_alerts': len(secret_scanning),
+                                'secret_scanning_open_alerts': len([a for a in secret_scanning if a.get('state') == 'open']),
+                                'secret_scanning_resolved_alerts': len([a for a in secret_scanning if a.get('state') == 'resolved']),
+                            })
+                            
+                            # Dependabot alerts summary
+                            dependabot = alerts['dependabot']
+                            repo_data.update({
+                                'dependabot_total_alerts': len(dependabot),
+                                'dependabot_open_alerts': len([a for a in dependabot if a.get('state') == 'open']),
+                                'dependabot_fixed_alerts': len([a for a in dependabot if a.get('state') == 'fixed']),
+                                'dependabot_dismissed_alerts': len([a for a in dependabot if a.get('state') == 'dismissed']),
+                            })
+                            
+                        except Exception as e:
+                            print(f"Warning: Could not collect security alerts for {repo['name']}: {e}")
+                            # Set default values for security alerts
+                            for alert_type in ['code_scanning', 'secret_scanning', 'dependabot']:
+                                for status in ['total', 'open', 'fixed', 'dismissed', 'resolved']:
+                                    key = f'{alert_type}_{status}_alerts'
+                                    if key not in repo_data:
+                                        repo_data[key] = 0
+                    
+                    comprehensive_data.append(repo_data)
+                
+                return {
+                    'organization': org_info,
+                    'repositories': comprehensive_data,
+                    'collection_timestamp': datetime.now(timezone.utc).isoformat(),
+                    'total_repositories': len(repositories)
+                }
+                
+            def save_to_csv(self, data: Dict, filename: str = 'github_enterprise_report.csv'):
+                """Save collected data to CSV file"""
+                print(f"Saving data to {filename}...")
+                
+                if not data['repositories']:
+                    print("No repository data to save")
+                    return
+                    
+                df = pd.DataFrame(data['repositories'])
+                df.to_csv(filename, index=False)
+                print(f"Data saved to {filename}")
+                
+                # Also save metadata
+                metadata_filename = filename.replace('.csv', '_metadata.json')
+                metadata = {
+                    'organization': data['organization'],
+                    'collection_timestamp': data['collection_timestamp'],
+                    'total_repositories': data['total_repositories']
+                }
+                
+                with open(metadata_filename, 'w') as f:
+                    json.dump(metadata, f, indent=2)
+                print(f"Metadata saved to {metadata_filename}")
+        
+        def main():
+            # Get environment variables
+            token = os.getenv('GITHUB_TOKEN')
+            organization = os.getenv('ORGANIZATION')
+            include_private = os.getenv('INCLUDE_PRIVATE', 'true').lower() == 'true'
+            include_security = os.getenv('INCLUDE_SECURITY', 'true').lower() == 'true'
+            
+            if not token:
+                print("Error: GITHUB_TOKEN environment variable is required")
+                sys.exit(1)
+                
+            if not organization:
+                print("Error: ORGANIZATION environment variable is required")
+                sys.exit(1)
+            
+            print(f"GitHub Enterprise Data Collection")
+            print(f"Organization: {organization}")
+            print(f"Include Private Repos: {include_private}")
+            print(f"Include Security Alerts: {include_security}")
+            print("-" * 50)
+            
+            # Initialize collector
+            collector = GitHubEnterpriseCollector(token, organization)
+            
+            # Collect data
+            try:
+                data = collector.collect_comprehensive_data(include_private, include_security)
+                
+                # Generate filename with timestamp
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f'github_enterprise_report_{organization}_{timestamp}.csv'
+                
+                # Save to CSV
+                collector.save_to_csv(data, filename)
+                
+                print(f"\nCollection completed successfully!")
+                print(f"Total repositories processed: {data['total_repositories']}")
+                print(f"Report saved as: {filename}")
+                
+            except Exception as e:
+                print(f"Error during data collection: {e}")
+                sys.exit(1)
+        
+        if __name__ == "__main__":
+            main()
+        EOF
+
+    - name: Run data collection
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python collect_github_data.py
+
+    - name: Upload CSV report as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: github-enterprise-report-${{ env.ORGANIZATION }}-${{ github.run_number }}
+        path: |
+          *.csv
+          *_metadata.json
+        retention-days: 30
+
+    - name: Create summary
+      run: |
+        echo "## GitHub Enterprise Report Generated 📊" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Organization:** ${{ env.ORGANIZATION }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+        echo "**Include Private Repos:** ${{ env.INCLUDE_PRIVATE }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Include Security Alerts:** ${{ env.INCLUDE_SECURITY }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The comprehensive CSV report has been generated and uploaded as an artifact." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Report Contents:" >> $GITHUB_STEP_SUMMARY
+        echo "- 📋 Organizational data and metadata" >> $GITHUB_STEP_SUMMARY
+        echo "- 📁 Repository information and statistics" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔒 GitHub Advanced Security (GHAS) features" >> $GITHUB_STEP_SUMMARY
+        echo "- 📜 Licensing details" >> $GITHUB_STEP_SUMMARY
+        echo "- 🚨 Security alerts (Code Scanning, Secret Scanning, Dependabot)" >> $GITHUB_STEP_SUMMARY
+        echo "- 📊 Comprehensive metrics and analytics" >> $GITHUB_STEP_SUMMARY
+
+    - name: Display file info
+      run: |
+        echo "Generated files:"
+        ls -la *.csv *.json 2>/dev/null || echo "No files generated"

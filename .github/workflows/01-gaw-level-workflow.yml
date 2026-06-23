@@ -1,0 +1,34 @@
+name: 01-level-workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print event and branch
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List repository contents
+        run: tree
+
+      - name: List src directory contents
+        shell: pwsh
+        run: Get-ChildItem -Recurse src

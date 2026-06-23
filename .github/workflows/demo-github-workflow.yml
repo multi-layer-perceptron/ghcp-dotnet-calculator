@@ -1,0 +1,62 @@
+name: Demo GitHub Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.azure-pipelines/**'
+  
+  pull_request:
+    branches:
+      - main
+  
+  schedule:
+    - cron: '0 0 * * *'  # Daily midnight build
+  
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    name: 'Build Job'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 'Print event and branch'
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Branch: ${{ github.ref_name }}"
+      
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+      
+      - name: 'List repository contents'
+        run: tree
+      
+      - name: 'List src directory contents'
+        shell: pwsh
+        run: Get-ChildItem -Recurse src
+
+  retrieve_values:
+    name: 'Retrieve Values'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+        
+      - name: 'Get current branch and job info'
+        run: |
+          echo "Current Branch: ${{ github.ref_name }}"
+          echo "Runner Job ID: ${{ github.job }}"
+          echo "Run ID: ${{ github.run_id }}"
+      
+      - name: 'Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      
+      - name: 'Run Python script'
+        run: python ./.azure-pipelines/src/getDirectoryContents.py
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}

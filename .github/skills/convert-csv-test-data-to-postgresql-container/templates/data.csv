@@ -1,0 +1,1 @@
+fields(type): firstNumber(decimal),secondNumber(decimal),operator(character),expectedResult(decimal),testDescription(string)    

@@ -1,51 +1,43 @@
 ---
-applyTo: "programming/dotnet/csharp/workspace/calculator-xunit-testing/**"
+description: "Guidance for the active .NET calculator console and xUnit solution"
+applyTo: "src/workspace/calculator-xunit-testing/**"
 ---
-# Project Overview
 
-The Calculator xUnit Testing project is a .NET 8.0 solution demonstrating test-driven development with xUnit, parameterized testing using CSV test data, Blazor web UI components, and a service-based architecture. The project includes a core calculator library, comprehensive unit tests, and an interactive web interface.
+# Calculator xUnit Testing Instructions
 
-# Folder Structure
+The Calculator xUnit Testing project is a .NET 8.0 solution demonstrating calculator logic and xUnit tests. The active workspace contains a console application project and a test project only.
 
-- `/calculator`: Core calculator library with arithmetic logic
-- `/calculator.tests`: xUnit unit tests with parameterized test data
-- `TestData/`: CSV files for test data
-- `/calculator.web`: Blazor web UI application
-- `Components/`: Reusable Razor components (CalculatorKeypad, HistoryPanel, ThemeToggle)
-- `Services/`: Business logic services (CalculatorService, HistoryService, ThemeService)
-- `Pages/`: Routable pages and layouts
-- `Models/`: Data models
-- `wwwroot/css/`: Styling for components
-- `/calculator.sln`: Solution file
+## Folder Structure
 
-# Libraries and Frameworks
+* `src/workspace/calculator-xunit-testing/calculator/`: .NET console project with calculator implementation
+* `src/workspace/calculator-xunit-testing/calculator.tests/`: xUnit test project
+* `src/workspace/calculator-xunit-testing/calculator.sln`: Solution file
+* `src/workspace/Set-DotnetSlnForCalculator.ps1`: Script that creates the active solution structure
+* `src/workspace/Remove-DotnetSlnForCalculator.ps1`: Script that removes the generated solution structure
 
-- **.NET 8.0**: Target framework (Long-Term Support)
-- **xUnit**: Unit testing framework with parameterized test support
-- **Blazor**: Interactive web UI framework with component-based architecture
-- **Microsoft.NET.Sdk.BlazorWebAssembly**: Blazor WebAssembly SDK
+## Libraries and Frameworks
 
-# Coding Standards
+* .NET 8.0 target framework
+* xUnit test framework
+* `Microsoft.NET.Test.Sdk`, `xunit.runner.visualstudio`, and `coverlet.collector` test dependencies in `calculator.tests.csproj`
 
-- **Naming**: PascalCase for classes, methods, and properties; camelCase for private fields and local variables.
-- **Testing**: Write tests before or alongside implementation (TDD); use `[MethodName]_[Condition]_[ExpectedResult]` naming for test methods.
-- **Test Data**: Store parameterized test data in CSV files within the `TestData/` folder; use `[MemberData]` attributes.
-- **Components**: Keep Razor components focused on UI rendering; use dependency injection for business logic.
-- **Assertions**: Use xUnit's `Assert` class for clarity in tests.
-- **Code Organization**: Separate concerns using service-based architecture; avoid over-engineering.
-- **Documentation**: Document public methods with XML documentation comments (`///`).
+## Coding Standards
 
-# Key Practices
+* Use PascalCase for classes, methods, and public members.
+* Use camelCase for parameters and local variables.
+* Keep calculator logic focused and deterministic.
+* Keep tests in `CalculatorTest.cs` and use descriptive test names such as `[MethodName]_[Scenario]_[ExpectedBehavior]`.
+* Use xUnit `Assert` APIs for test assertions.
+* Document public C# members with XML documentation comments.
 
-- Always run the following command before committing changes:
+## Key Practices
+
+Run the following command from the repository root after calculator changes:
 
 ```bash
-dotnet test
+dotnet test src/workspace/calculator-xunit-testing/calculator.sln
 ```
 
-- Use `[Theory]` with `[InlineData]` or `[MemberData]` for parameterized tests.
-- Inject services into Blazor components using the `@inject` directive.
-- Validate numeric inputs in calculator methods.
-- Keep test data in CSV files to avoid duplication.
-
-\n
+* Use `[Fact]` for single-scenario tests.
+* Use `[Theory]` with `[InlineData]` or `[MemberData]` when parameterized tests are introduced.
+* Keep generated `bin/` and `obj/` output out of documentation examples unless discussing build artifacts.

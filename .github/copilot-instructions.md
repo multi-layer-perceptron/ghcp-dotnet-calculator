@@ -1,21 +1,27 @@
-# GitHub Copilot Instructions for Project Gengo
+---
+title: GitHub Copilot Instructions for Calculator Workspace
+description: Repository-specific GitHub Copilot guidance for the calculator solution and customizations
+---
+
+## GitHub Copilot Instructions for Calculator Workspace
 
 **Version:** 2.0  
 **Last Updated:** May 2026  
-**Repository:** [project-gengo](https://github.com/ms-mfg-community/project-gengo)
+**Repository:** `ghcp-dotnet-calculator`
 
 ## Overview
 
-Project Gengo is a multi-technology learning repository demonstrating best practices across programming languages, frameworks, cloud platforms, and DevOps. These instructions guide GitHub Copilot to maintain consistency, quality, and alignment with project standards.
+This repository is a focused .NET calculator learning workspace with GitHub Copilot customization assets. These instructions guide GitHub Copilot to keep code, tests, prompts, skills, and workflow guidance aligned with the files that exist in this repository.
 
 High-signal areas include:
 
-- A .NET calculator workspace (console, library, Blazor web, xUnit tests, E2E tests) under `programming/dotnet/csharp/workspace/calculator-xunit-testing/`
-- PostgreSQL-backed test data and a skill for seeding CSV data into a local container
-- Azure deployment assets (Bicep infrastructure, PowerShell automation) under `infra/` and `scripting/azure/`
+- A .NET 8 calculator solution under `src/workspace/calculator-xunit-testing/`
+- A console calculator project under `src/workspace/calculator-xunit-testing/calculator/`
+- An xUnit test project under `src/workspace/calculator-xunit-testing/calculator.tests/`
+- Workspace setup and reset scripts under `src/workspace/`
+- A PostgreSQL seeding skill for future CSV-backed test-data workflows
 - Prompt, agent, and skill customization assets under `.github/`
-- GitHub Advanced Security workflows (CodeQL, dependency review, tfsec, alert triage) under `.github/workflows/`
-- Multi-language programming samples: C, C++, C#, Go, Java, JavaScript, Node, Python, TypeScript
+- GitHub workflows under `.github/workflows/`
 
 When generating or modifying code, prefer patterns that already exist in the repository over generic or outdated examples.
 
@@ -23,7 +29,7 @@ When generating or modifying code, prefer patterns that already exist in the rep
 
 ## Repository Structure
 
-```
+```text
 .github/
 ├── agents/          # Custom Copilot agent definitions (.agent.md)
 ├── instructions/    # Scoped instruction files (.instructions.md)
@@ -34,28 +40,20 @@ When generating or modifying code, prefer patterns that already exist in the rep
 ├── dependabot.yml
 └── dependency-review-config.yml
 
-programming/         # Multi-language samples and workspaces
-├── c/
-├── cpp/
-├── dotnet/csharp/workspace/calculator-xunit-testing/  # Primary active workspace
-├── go/
-├── java/
-├── javascript-html-css/
-├── node/
-├── python/
-├── typescript-html-css/
-└── typescript-react/
-
-iac/                 # Infrastructure as Code templates
-├── arm/
-├── bicep/
-└── terraform/
-
-infra/bicep/         # Azure deployment infrastructure
-scripting/           # Operational scripts (azure/, bash/, powershell/)
-databases/           # Database examples (kql/, rdbms/)
-ghas/                # GitHub Advanced Security assets
-docs/                # Documentation and PRDs
+src/
+├── workspace/
+│   ├── Set-DotnetSlnForCalculator.ps1
+│   ├── Remove-DotnetSlnForCalculator.ps1
+│   └── calculator-xunit-testing/
+│       ├── calculator.sln
+│       ├── calculator/
+│       │   ├── calculator.csproj
+│       │   ├── Calculator.cs
+│       │   └── CalculatorOperations.cs
+│       └── calculator.tests/
+│           ├── calculator.tests.csproj
+│           └── CalculatorTest.cs
+└── completed/
 ```
 
 ---
@@ -97,10 +95,10 @@ docs/                # Documentation and PRDs
 
 - Use `#nullable enable` in all source files
 - Include XML documentation (`///`) on all public members
-- Prefer xUnit for unit/integration tests; Playwright in a separate `.tests.e2e` project for browser tests
+- Prefer xUnit for tests in `calculator.tests`
 - Use async/await for I/O operations
-- Separate concerns: app, library, unit tests, E2E tests as distinct projects
-- For data-backed tests, read from `TEST_PG_*` environment variables
+- Keep calculator behavior in the `calculator` project and assertions in `calculator.tests`
+- For future PostgreSQL-backed tests, read connection settings from `TEST_PG_*` environment variables
 - Follow Microsoft naming conventions strictly
 
 ### PowerShell
@@ -133,7 +131,8 @@ docs/                # Documentation and PRDs
 - Include edge cases, error conditions, and happy paths
 - Aim for 80%+ coverage on critical paths
 - Extend existing test projects before introducing new frameworks
-- Use `Run-AllTests.ps1` (Windows) or `run-all-tests.sh` (Linux/macOS) for cross-language validation
+- For calculator validation, run `dotnet test src/workspace/calculator-xunit-testing/calculator.sln`
+- To recreate the exercise solution, run `pwsh src/workspace/Set-DotnetSlnForCalculator.ps1`; to reset it, run `pwsh src/workspace/Remove-DotnetSlnForCalculator.ps1`
 - Keep integration/E2E tests deterministic via environment variables
 
 ---
@@ -156,8 +155,7 @@ docs/                # Documentation and PRDs
 - Include parameter descriptions, metadata, and validation rules
 - Implement consistent tagging (environment, cost center, owner, project)
 - Use minimal RBAC permissions and enable diagnostics logging
-- Keep reusable infra in `infra/` or `iac/`; operational scripts in `scripting/azure/`
-- Reuse the calculator web deployment pattern in `infra/bicep/main.bicep` before creating new layouts
+- Add infrastructure assets only when needed for a tracked exercise, and document their location in the relevant prompt or skill
 
 ---
 
@@ -290,8 +288,6 @@ For Copilot CLI sessions, use `/skills reload`, `/skills list`, and `/skills inf
 ## Resources
 
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot)
-- [Project Quickstart](../docs/quickstart.md)
-- [Security Policy](../SECURITY.md)
 - [Agent Definitions](agents/)
 - [Workflow Examples](workflows/)
 - [Prompt Library](prompts/)

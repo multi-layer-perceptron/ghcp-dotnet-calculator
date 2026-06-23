@@ -30,27 +30,16 @@ A simple TypeScript calculator console application that performs basic arithmeti
 
 ## Project Structure
 
-`\`ts
-
-text
+```text
 calculator-typescript/
 ├── src/
 │   ├── calculator.ts    # Calculator class with arithmetic operations
-
-│   ├── cli.ts          # Command-line interface and main entry point
-
-│   └── test.ts         # Basic test suite demonstrating usage
-
-├── package.json        # Project dependencies and scripts
-
-├── tsconfig.json       # TypeScript compiler configuration
-
-└── README.md          # This file
-
-`\`ts
-
-text
-text
+│   ├── cli.ts           # Command-line interface and main entry point
+│   └── test.ts          # Basic test suite demonstrating usage
+├── package.json         # Project dependencies and scripts
+├── tsconfig.json        # TypeScript compiler configuration
+└── README.md            # This file
+```
 
 ## Prerequisites
 
@@ -62,16 +51,13 @@ text
 
 1. Navigate to the project directory:
 
-   ```
-
-bash
+   ```bash
    cd programming/typescript-react/workspace/calculator-typescript
    ```
 
 1. Install dependencies:
-   ```
 
-bash
+   ```bash
    npm install
    ```
 
@@ -81,55 +67,31 @@ bash
 
 To start the interactive calculator:
 
-`\`ts
-
-text
-bash
+```bash
 npm start
-
-`\`ts
-
-text
+```
 
 or
 
-`\`ts
-
-text
-bash
+```bash
 npm run dev
-
-`\`ts
-
-text
+```
 
 ### Running Tests
 
 To run the basic test suite:
 
-`\`ts
-
-text
-bash
+```bash
 npm test
-
-`\`ts
-
-text
+```
 
 ### Building the Project
 
 To compile TypeScript to JavaScript:
 
-`\`ts
-
-text
-bash
+```bash
 npm run build
-
-`\`ts
-
-text
+```
 
 The compiled JavaScript files will be in the `dist` directory.
 
@@ -137,10 +99,7 @@ The compiled JavaScript files will be in the `dist` directory.
 
 When you run the calculator, you'll see a menu like this:
 
-`\`ts
-
-text
-text
+```text
 === Simple Calculator ===
 
 Enter first operand: 10
@@ -150,10 +109,7 @@ Enter operator (+, -, *, /, %, ^): +
 Result: 10 + 5 = 15
 
 Do you want to perform another calculation? (yes/no):
-
-`\`ts
-
-text
+```
 
 Simply follow the prompts to perform calculations. Enter `yes` or `y` to continue, or `no` or `n` to exit.
 
@@ -169,133 +125,86 @@ The `Calculator` class provides static methods for performing arithmetic operati
 
 Adds two numbers and returns the sum.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 import { Calculator } from "./calculator";
+
 const result = Calculator.add(10, 5); // 15
-
-`\`ts
-
-text
+```
 
 ##### `subtract(first: number, second: number): number`
 
 Subtracts the second number from the first and returns the difference.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const result = Calculator.subtract(10, 5); // 5
-
-`\`ts
-
-text
+```
 
 ##### `multiply(first: number, second: number): number`
 
 Multiplies two numbers and returns the product.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const result = Calculator.multiply(10, 5); // 50
-
-`\`ts
-
-text
+```
 
 ##### `divide(first: number, second: number): number`
 
 Divides the first number by the second and returns the quotient. Returns `NaN` if dividing by zero.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const result = Calculator.divide(10, 5); // 2
 const error = Calculator.divide(10, 0); // NaN (with error message)
-
-`\`ts
-
-text
+```
 
 ##### `modulo(first: number, second: number): number`
 
 Returns the remainder when dividing the first number by the second. Returns `NaN` if dividing by zero.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const result = Calculator.modulo(10, 3); // 1
 const error = Calculator.modulo(10, 0); // NaN (with error message)
-
-`\`ts
-
-text
+```
 
 ##### `exponent(first: number, second: number): number`
 
 Raises the first number to the power of the second number.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const result = Calculator.exponent(2, 3); // 8
-
-`\`ts
-
-text
+```
 
 ##### `performCalculation(first: number, operator: string, second: number): number`
 
 Performs a calculation based on the provided operator. Returns `NaN` for invalid operators.
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const result = Calculator.performCalculation(10, "+", 5); // 15
-
-`\`ts
-
-text
+```
 
 ##### `isValidOperator(operator: string): boolean`
 
 Validates if a string is a valid operator (+, -, \*, /, %, ^).
 
-## Example
+Example:
 
-`\`ts
-
-text
-typescript
+```typescript
 const valid = Calculator.isValidOperator("+"); // true
 const invalid = Calculator.isValidOperator("?"); // false
-
-`\`ts
-
-text
+```
 
 ## Error Handling
 
@@ -336,19 +245,19 @@ The project uses strict TypeScript configuration (`strict: true`) for maximum ty
 ## Conversion Notes
 
 This TypeScript calculator was converted from a C# console application located at:
-`programming/dotnet/csharp/workspace/calculator-xunit-testing/calculator/Calculator.cs`
+`src/workspace/calculator-xunit-testing/calculator/Calculator.cs`
 
 Key differences from the C# version:
 
-- Uses Node.js `readline` module instead of `Console.ReadLine()`
+- Uses Node.js `readline`module instead of`Console.ReadLine()`
 
 - Uses `async/await` for handling asynchronous user input
 
 - Uses TypeScript's type system instead of C# types
 
-- Uses `Math.pow()` instead of `Math.Pow()`
+- Uses `Math.pow()`instead of`Math.Pow()`
 
-- Uses `NaN` instead of `double.NaN`
+- Uses `NaN`instead of`double.NaN`
 
 ## License
 

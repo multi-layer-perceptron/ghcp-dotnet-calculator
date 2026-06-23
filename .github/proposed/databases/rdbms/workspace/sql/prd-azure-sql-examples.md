@@ -12,7 +12,7 @@
 
 \n\n1. Executive Summary
 
-This document defines a comprehensive set of examples and demonstrations for Azure SQL CRUD (Create, Read, Update, Delete) operations using GitHub Copilot. The demonstrations showcase how GitHub Copilot assists developers in writing T-SQL queries efficiently and safely for the `demos` table in an Azure SQL database hosted on `<redacted>.database.windows.net`.
+This document defines a comprehensive set of examples and demonstrations for Azure SQL CRUD (Create, Read, Update, Delete) operations using GitHub Copilot. The demonstrations showcase how GitHub Copilot assists developers in writing T-SQL queries efficiently and safely for the `demos`table in an Azure SQL database hosted on`<redacted>.database.windows.net`.
 
 The examples are designed to teach best practices for database operations, demonstrate GitHub Copilot's contextual awareness, and provide a hands-on learning experience for workshop participants and developers.
 
@@ -66,7 +66,7 @@ Manual SQL query writing is time-consuming and error-prone. GitHub Copilot can s
 
 text
 
-Server=tcp:<redacted>.database.windows.net,1433;Initial Catalog=demos;Persist Security Info=False;User ID=<redacted>;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+Server=tcp:&lt;redacted&gt;.database.windows.net,1433;Initial Catalog=demos;Persist Security Info=False;User ID=&lt;redacted&gt;;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
 
 `\`sql
 
@@ -191,7 +191,7 @@ text
 \n\nDocument primary keys, data types, and constraints
 \n\nAdd schema file to context for subsequent operations
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -212,7 +212,7 @@ text
 
 \n\nExample 1: Basic SELECT
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -227,7 +227,7 @@ text
 
 \n\nExample 2: Filtered SELECT
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -242,7 +242,7 @@ text
 
 \n\nExample 3: Sorted and Limited Results
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -257,7 +257,7 @@ text
 
 \n\nExample 4: Pattern Matching
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -272,7 +272,7 @@ text
 
 \n\nExample 5: Aggregation
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -291,7 +291,7 @@ text
 
 \n\nExample 1: Single Record Insert with Auto-Increment ID
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -310,7 +310,7 @@ text
 
 \n\nExample 2: Insert and Return Inserted Record
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -325,7 +325,7 @@ text
 
 \n\nExample 3: Bulk Insert
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -340,7 +340,7 @@ text
 
 \n\nExample 4: Insert with Transaction
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -359,7 +359,7 @@ text
 
 \n\nExample 1: Single Record Update
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -376,7 +376,7 @@ text
 
 \n\nExample 2: Multi-Column Update
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -391,7 +391,7 @@ text
 
 \n\nExample 3: Conditional Bulk Update
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -406,7 +406,7 @@ text
 
 \n\nExample 4: Update with Calculation
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -425,7 +425,7 @@ text
 
 \n\nExample 1: Safe Single Record Delete
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -440,7 +440,7 @@ text
 
 \n\nExample 2: Conditional Delete with Backup
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -455,7 +455,7 @@ text
 
 \n\nExample 3: Soft Delete Pattern
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -470,7 +470,7 @@ text
 
 \n\nExample 4: Delete with Transaction
 
-## GitHub Copilot Prompt
+**GitHub Copilot Prompt:**
 
 `\`sql
 
@@ -724,7 +724,7 @@ text
 
 **Problem:** "Cannot connect to server"
 
-## Solutions
+**Solutions:**
 
 \n\nVerify firewall rules allow your IP address
 \n\nCheck connection string format
@@ -733,7 +733,7 @@ text
 
 **Problem:** "Login failed for user 'sqladmin'"
 
-## Solutions
+**Solutions:**
 
 \n\nVerify password is correct
 \n\nCheck if account is locked or disabled
@@ -744,7 +744,7 @@ text
 
 **Problem:** "Invalid object name 'demos'"
 
-## Solutions
+**Solutions:**
 
 \n\nVerify you're connected to the correct database
 \n\nCheck table name spelling and schema (use `dbo.demos`)
@@ -752,7 +752,7 @@ text
 
 **Problem:** "Transaction deadlock"
 
-## Solutions
+**Solutions:**
 
 \n\nImplement retry logic with exponential backoff
 \n\nOptimize query order to reduce lock contention

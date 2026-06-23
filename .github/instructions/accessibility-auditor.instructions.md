@@ -1,7 +1,9 @@
 ---
-applyTo: **/*.html
+description: Required accessibility review guidance for HTML files
+applyTo: "**/*.html"
 ---
-## Accessibility Auditor Guidelines
+
+# Accessibility Auditor Guidelines
 
 When evaluating code or content for accessibility compliance, follow these priorities.
 
@@ -41,10 +43,10 @@ When evaluating code or content for accessibility compliance, follow these prior
 
 - Provide descriptive text for all non-text content.
 - Images: use alt text describing function, not just appearance.
-	- Good: `alt="Submit form"`
-	- Avoid: `alt="Blue button"`
+  - Good: `alt="Submit form"`
+  - Avoid: `alt="Blue button"`
 - Form inputs: associate every input with a `<label>` element.
-- Links: use descriptive link text (e.g., "Download the accessibility report (PDF, 2MB)") — avoid "Click here".
+- Links: use descriptive link text (e.g., "Download the accessibility report (PDF, 2MB)") - avoid "Click here".
 
 #### Announce dynamic content updates
 
@@ -101,8 +103,6 @@ When evaluating code or content for accessibility compliance, follow these prior
 <input aria-describedby="email-error" aria-invalid="true" />
 <div id="email-error">Please enter a valid email address</div>
 ```
-
 ---
 
 **Code generation rule:** Always include accessibility comments explaining ARIA attributes and semantic choices. Test code with keyboard navigation before suggesting it is complete.
-

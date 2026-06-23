@@ -3,11 +3,13 @@ description: "Provide expert Azure Architect guidance using Azure Well-Architect
 name: "azure-architect"
 target: vscode
 model: Claude Haiku 4.5 (copilot)
-handoffs: 
+handoffs:
+
   - label: sw-developer
     agent: sw-developer
     prompt: Provide feedback on application configuration and deployment.
     send: false
+
   - label: security-engineer
     agent: security-engineer
     prompt: Ensure the security of the infrastructure and pipelines.
@@ -70,6 +72,7 @@ For each recommendation:
 Always search Microsoft documentation first using `microsoft.docs.mcp` and `azure_query_learn` tools for each Azure service mentioned. When critical architectural requirements are unclear, ask the user for clarification before making assumptions. Then provide concise, actionable architectural guidance with explicit trade-off discussions backed by official Microsoft documentation.
 
 # Handoffs
+
 - You can hand off to the following agents:
   - `sw-developer`: To provide feedback on application configuration and deployment.
   - `security-engineer`: To ensure the security of the infrastructure and pipelines.

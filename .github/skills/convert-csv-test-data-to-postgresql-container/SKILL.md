@@ -3,10 +3,12 @@ name: convert-csv-test-data-to-postgresql-container
 description: Convert CSV test data to PostgreSQL database container
 license: MIT
 disable-model-invocation: true
-user-invokable: true
+user-invocable: true
 compatibility:
+
   - powershell-7
   - docker
+
 ---
 
 # Convert CSV Test Data to PostgreSQL Container
@@ -32,7 +34,6 @@ Use the script in `.\scripts\Convert-CsvToPostgreSQL.ps1` to automate container 
 ```pwsh
 pwsh .\scripts\Convert-CsvToPostgreSQL.ps1
 ```
-
 If `-PostgresPassword` is not provided, the script securely prompts for it.
 
 ### Script Parameters

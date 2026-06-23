@@ -4,7 +4,7 @@
 
 ? **Successfully created** `CalculatorWeb.sln` - a consolidated solution combining Calculator.Core and CalculatorBlazor projects into a single, unified solution for easier management and deployment.
 
-**Location:** `programming\dotnet\csharp\experimental\calculator-xunit-testing\CalculatorWeb.sln`
+**Location:** `src\completed\calculator-xunit-testing\CalculatorWeb.sln`
 
 \n\nSolution Contents
 
@@ -129,7 +129,7 @@ text
 
 powershell
 
-cd C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\project-gengo\programming\dotnet\csharp\experimental\calculator-xunit-testing
+cd .\src\completed\calculator-xunit-testing
 
 dotnet build CalculatorWeb.sln
 
@@ -442,7 +442,7 @@ text
 
 powershell
 
-cd C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\project-gengo\programming\dotnet\csharp\experimental\calculator-xunit-testing
+cd .\src\completed\calculator-xunit-testing
 
 dotnet build CalculatorWeb.sln
 

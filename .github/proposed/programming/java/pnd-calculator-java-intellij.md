@@ -1,11 +1,13 @@
+# GitHub Copilot in IntelliJ IDEA for Java
+
 Using GitHub Copilot in JetBrains IntelliJ IDEA is a great way to enhance your Java development experience. Here's a step-by-step guide to set up and demonstrate a simple Java program with GitHub Copilot in IntelliJ IDEA:
 
-# Step 1: Set Up Your Environment
+## Step 1: Set Up Your Environment
 
 **Install IntelliJ IDEA**: If you haven't already, download and install IntelliJ IDEA.
 \n\n**Install GitHub Copilot Plugin**:
 
-Open IntelliJ IDEA and navigate to `File > Settings` (or `IntelliJ IDEA > Preferences` on macOS).
+Open IntelliJ IDEA and navigate to `File > Settings`(or`IntelliJ IDEA > Preferences` on macOS).
 
 In the settings window, select `Plugins` from the left sidebar.
 
@@ -19,7 +21,7 @@ Click `Install` and restart IntelliJ IDEA to activate the plugin[1](https://devb
 
 Go to `File > New > Project`.
 
-Select `Java` and click `Next`.
+Select `Java`and click`Next`.
 
 Configure your project settings and click `Finish`.
 
@@ -33,7 +35,7 @@ Right-click on the `src` folder, select `New > Java Class`, and name it `TodoLis
 
 \n\n**Install IntelliJ IDEA**: If you haven't already, download and install IntelliJ IDEA.
 \n\n**Install GitHub Copilot Plugin**:
-\n\nOpen IntelliJ IDEA and navigate to `File > Settings` (or `IntelliJ IDEA > Preferences` on macOS).
+\n\nOpen IntelliJ IDEA and navigate to `File > Settings`(or`IntelliJ IDEA > Preferences` on macOS).
 \n\nIn the settings window, select `Plugins` from the left sidebar.
 \n\nSearch for "GitHub Copilot" in the Marketplace tab.
 \n\nClick `Install` and restart IntelliJ IDEA to activate the plugin[1](https://devblogs.microsoft.com/java/free-plan-support-for-github-copilot-available-on-jetbrains-ides/)[2](https://www.restack.io/p/ai-copilots-answer-github-copilot-intellij-java-cat-ai).
@@ -42,7 +44,7 @@ Right-click on the `src` folder, select `New > Java Class`, and name it `TodoLis
 
 \n\n**Open IntelliJ IDEA** and create a new project:
 \n\nGo to `File > New > Project`.
-\n\nSelect `Java` and click `Next`.
+\n\nSelect `Java`and click`Next`.
 \n\nConfigure your project settings and click `Finish`.
 
 \n\n**Step 3: Write the Main Class**
@@ -935,7 +937,9 @@ Open IntelliJ IDEA and create a new Java project.
 Add your basic calculator app code. For example, a simple calculator class might look like this:
 
 `\`java
-  ```
+
+```
+
 `\`java
 
 java
@@ -1069,12 +1073,13 @@ java
 `\`java
 
 `\`java
-  ```
+```
+
 `\`java
 
 **Add JUnit to Your Project**:
 
-Open the `pom.xml` file if you're using Maven, or `build.gradle` if you're using Gradle, and add the JUnit dependency. For Maven, it looks like this:
+Open the `pom.xml`file if you're using Maven, or`build.gradle` if you're using Gradle, and add the JUnit dependency. For Maven, it looks like this:
 
 `\`java
 
@@ -1121,7 +1126,8 @@ Open the `pom.xml` file if you're using Maven, or `build.gradle` if you're using
 `\`java
 
 `\`java
-  ```
+```
+
 `\`java
 
 `\`java
@@ -1129,7 +1135,9 @@ Open the `pom.xml` file if you're using Maven, or `build.gradle` if you're using
 `\`java
 
 `\`java
-  ```
+
+```text
+
 `\`java
 
 groovy
@@ -1143,7 +1151,8 @@ groovy
 `\`java
 
 `\`java
-  ```
+```
+
 `\`java
 
 **Create Test Cases**:
@@ -1151,7 +1160,9 @@ groovy
 Create a new Java class for your test cases. For example, you can create a `CalculatorTest` class:
 
 `\`java
-  ```
+
+```text
+
 `\`java
 
 java
@@ -1373,7 +1384,8 @@ java
 `\`java
 
 `\`java
-  ```
+
+```text
 `\`java
 
 **Run Your Tests**:
@@ -1405,7 +1417,9 @@ Sure! Here's how you can use JUnit to test a basic calculator app written in Jav
 \n\nAdd your basic calculator app code. For example, a simple calculator class might look like this:
 
 `\`java
-  ```
+
+```
+
 `\`java
 
 java
@@ -1539,15 +1553,17 @@ java
 `\`java
 
 `\`java
-  ```
+```
+
 `\`java
 
 \n\n**Add JUnit to Your Project**:
-\n\nOpen the `pom.xml` file if you're using Maven, or `build.gradle` if you're using Gradle, and add the JUnit dependency. For Maven, it looks like this:
+\n\nOpen the `pom.xml`file if you're using Maven, or`build.gradle` if you're using Gradle, and add the JUnit dependency. For Maven, it looks like this:
 
 `\`java
 
 ```java
+
   <dependency>
 `\`java
 
@@ -1590,7 +1606,8 @@ java
 `\`java
 
 `\`java
-  ```
+```
+
 `\`java
 
 `\`java
@@ -1598,7 +1615,9 @@ java
 `\`java
 
 `\`java
-  ```
+
+```text
+
 `\`java
 
 groovy
@@ -1612,14 +1631,17 @@ groovy
 `\`java
 
 `\`java
-  ```
+```
+
 `\`java
 
 \n\n**Create Test Cases**:
 \n\nCreate a new Java class for your test cases. For example, you can create a `CalculatorTest` class:
 
 `\`java
-  ```
+
+```text
+
 `\`java
 
 java
@@ -1841,7 +1863,8 @@ java
 `\`java
 
 `\`java
-  ```
+
+```text
 `\`java
 
 \n\n**Run Your Tests**:

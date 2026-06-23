@@ -1,4 +1,5 @@
 ---
+description: Required testing automation guidance for Python test files
 applyTo: "**tests/**/*.py"
 ---
 
@@ -28,7 +29,6 @@ When writing Python tests, follow the practices below.
 from unittest.mock import patch
 
 import pytest
-
 
 class TestUserService:
     @pytest.fixture

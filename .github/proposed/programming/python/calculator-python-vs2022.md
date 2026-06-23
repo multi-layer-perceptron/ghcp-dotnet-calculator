@@ -9,7 +9,8 @@ Creating a basic calculator program in Python with Visual Studio 2022 is a great
    - In the `main.py` file (or any other Python file you create), write the code for your basic calculator. Here's an example:
 
 `\`python
- ```
+
+```text
 `\`python
 
 python
@@ -65,7 +66,7 @@ python
  print("Division: ", calculator.divide(10, 2))     # Output: 5
 `\`python
 
- ```
+```text
 `\`python
 
 1. **Run Your Program**:
@@ -76,7 +77,7 @@ python
    - You can enhance your calculator by adding error handling and allowing user input. Here's an example:
 
 `\`python
- ```
+```
 `\`python
 
 python
@@ -180,8 +181,7 @@ python
 ```python
  main()
 `\`python
-
- ```
+```
 `\`python
 
 This should help you get started with creating a basic calculator program in Python using Visual Studio 2022. If you have any questions or need further assistance, feel free to ask!
@@ -192,21 +192,23 @@ To test your Python calculator program with pytest in Visual Studio 2022, follow
    - Ensure you have Python and pytest installed. If not, you can install pytest using pip:
 
 `\`python
- ```
+
+```text
 `\`python
 
 sh
 
 `\`python
  pip install pytest
- ```
+```
 `\`python
 
 1. **Create Your Calculator Program**:
    - In Visual Studio 2022, create a new Python project and add your calculator code. For example, in `calculator.py`:
 
 `\`python
- ```
+
+```text
 `\`python
 
 python
@@ -247,15 +249,15 @@ python
          raise ValueError("Division by zero is not allowed.")
      return a / b
 `\`python
-
- ```
+```
 `\`python
 
 1. **Create Test Cases**:
    - Create a new file named `test_calculator.py` in your project directory and add your test cases:
 
 `\`python
- ```
+
+```text
 `\`python
 
 python
@@ -314,7 +316,7 @@ python
      calculator.divide(1, 0)
 `\`python
 
- ```
+```text
 `\`python
 
 1. **Configure pytest in Visual Studio**:

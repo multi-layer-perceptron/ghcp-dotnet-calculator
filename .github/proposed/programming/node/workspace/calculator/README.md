@@ -51,7 +51,7 @@ npm run dev
 text
 text
 
-This will start the SSR server with hot module replacement at `http://localhost:3000`.
+This will start the SSR server with hot module replacement at `<http://localhost:3000`.>
 
 ### Building for Production
 
@@ -95,7 +95,7 @@ npm run preview
 text
 text
 
-This will serve the application using the built files at `http://localhost:3000`.
+This will serve the application using the built files at `<http://localhost:3000`.>
 
 ## Project Structure
 

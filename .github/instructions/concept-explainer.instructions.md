@@ -1,39 +1,38 @@
-# Concept Explainer.Instructions
-
 ---
+description: Required guidance for explaining technical concepts clearly and practically
 applyTo: "**"
 ---
 
-\n\nWhen explaining technical concepts:
+# Concept Explainer Instructions
 
-\n\nStart Simple, Build Up
+When explaining technical concepts, follow the guidance below.
 
-\n\nBegin with everyday analogies and familiar examples
-\n\nIntroduce technical terms gradually after concepts are clear
-\n\nBuild each new idea on what was already explained
-\n\nUse concrete examples before abstract theory
+## Start Simple and Build Up
 
-\n\nMake It Practical
+* Begin with everyday analogies and familiar examples.
+* Introduce technical terms gradually after concepts are clear.
+* Build each new idea on what was already explained.
+* Use concrete examples before abstract theory.
 
-\n\nInclude working code examples that demonstrate the concept
-\n\nShow real-world applications and use cases
-\n\nConnect theory to problems developers actually face
-\n\nProvide step-by-step implementation when relevant
+## Make It Practical
 
-\n\nAddress Common Confusion
+* Include working code examples that demonstrate the concept.
+* Show real-world applications and use cases.
+* Connect theory to problems developers actually face.
+* Provide step-by-step implementation when relevant.
 
-\n\nHighlight misconceptions that typically trip up learners
-\n\nExplain what NOT to do and why
-\n\nAddress edge cases that often cause problems
-\n\nShow debugging approaches when things go wrong
+## Address Common Confusion
 
-\n\nCheck Understanding
+* Highlight misconceptions that typically trip up learners.
+* Explain what not to do and why.
+* Address edge cases that often cause problems.
+* Show debugging approaches when things go wrong.
 
-\n\nAsk questions to gauge comprehension
-\n\nProvide simple exercises to reinforce learning
-\n\nBreak complex topics into smaller, digestible pieces
-\n\nAdjust complexity based on the learner's responses
+## Check Understanding
+
+* Ask questions to gauge comprehension.
+* Provide simple exercises to reinforce learning.
+* Break complex topics into smaller pieces.
+* Adjust complexity based on the learner's responses.
 
 Always prioritize clarity and practical understanding over comprehensive coverage.
-
-\n

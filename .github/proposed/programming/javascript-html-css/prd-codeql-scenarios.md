@@ -78,6 +78,7 @@ While CodeQL provides comprehensive out-of-the-box security analysis with 200+ s
 
 ql
 /**
+
  * @name Potential XSS vulnerability
  * @description Finds direct DOM manipulation that could lead to XSS
  * @kind problem
@@ -87,6 +88,7 @@ ql
  * @id js/custom-xss-check
  * @tags security
  *       external/cwe/cwe-79
+
  */
 
 import javascript
@@ -234,9 +236,11 @@ yaml
 
 ```bash
 queries:
+
   - "*security*.ql"
   - "*console*.ql"
   - "*eval*.ql"
+
 `\`bash
 
 ## Include key security queries from the JavaScript query pack using directory patterns
@@ -338,7 +342,9 @@ Write-Host "🔍 Using single custom query: $customQueryPath" -ForegroundColor C
 
 ```bash
 Write-Host "📋 Using comprehensive query suite: $customQuerySuitePath" -ForegroundColor Cyan
+
 # Comprehensive suite analysis logic
+
 `\`bash
 
 } elseif ($useSelectiveQLS) {
@@ -352,7 +358,9 @@ Write-Host "🎯 Using selective query suite: $selectiveQuerySuitePath" -Foregro
 
 ```bash
 Write-Host "🔧 Using standard query suite" -ForegroundColor Cyan
+
 # Standard analysis fallback
+
 `\`bash
 
 }
@@ -405,6 +413,7 @@ text
 
 ql
 /**
+
  * @name Unsafe eval() usage in calculator
  * @description Detects eval() calls that could lead to code injection
  * @kind problem
@@ -414,6 +423,7 @@ ql
  * @id js/workshop-unsafe-eval
  * @tags security
  *       external/cwe/cwe-94
+
  */
 
 import javascript
@@ -428,7 +438,7 @@ select call, "Unsafe eval() usage detected. Consider using safer alternatives li
 text
 text
 
-**Expected Finding:** Will detect the `eval(display.innerText)` in `calculateResult()` function
+**Expected Finding:** Will detect the `eval(display.innerText)`in`calculateResult()` function
 
 ## Workshop Discussion Points
 
@@ -446,6 +456,7 @@ text
 
 ql
 /**
+
  * @name Hardcoded API keys and secrets
  * @description Finds potential hardcoded credentials in JavaScript
  * @kind problem
@@ -455,6 +466,7 @@ ql
  * @id js/workshop-hardcoded-secrets
  * @tags security
  *       external/cwe/cwe-798
+
  */
 
 import javascript
@@ -480,6 +492,7 @@ text
 
 ql
 /**
+
  * @name Console statements in production code
  * @description Finds console.log statements that should be removed for production
  * @kind problem
@@ -488,6 +501,7 @@ ql
  * @id js/workshop-console-statements
  * @tags maintainability
  *       best-practice
+
  */
 
 import javascript
@@ -510,6 +524,7 @@ text
 
 ql
 /**
+
  * @name Unsafe DOM manipulation
  * @description Detects potentially unsafe DOM content assignments
  * @kind problem
@@ -519,6 +534,7 @@ ql
  * @id js/workshop-dom-security
  * @tags security
  *       external/cwe/cwe-79
+
  */
 
 import javascript
@@ -832,6 +848,6 @@ Workshop participants should:
 
 ---
 
-**Document Status:** Ready for Workshop Implementation  
-**Next Review:** Post-workshop feedback incorporation  
+**Document Status:** Ready for Workshop Implementation
+**Next Review:** Post-workshop feedback incorporation
 **Distribution:** GHAS Workshop Participants, Security Teams, DevOps Engineers

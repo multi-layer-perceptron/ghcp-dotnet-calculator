@@ -20,12 +20,12 @@ Execute steps below sequentially one by one in the order they are listed.
 
 Project properties changes:
 
-\n\nTarget framework should be changed from `net8.0` to `net10.0`
+\n\nTarget framework should be changed from `net8.0`to`net10.0`
 
 \n\ncalculator.tests\calculator.tests.csproj modifications
 
 Project properties changes:
 
-\n\nTarget framework should be changed from `net8.0` to `net10.0`
+\n\nTarget framework should be changed from `net8.0`to`net10.0`
 
 \n

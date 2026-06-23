@@ -10,7 +10,7 @@
 
 text
 
-C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\project-gengo\programming\dotnet\csharp\experimental\calculator-xunit-testing\CalculatorWeb.sln
+.\src\completed\calculator-xunit-testing\CalculatorWeb.sln
 
 `\`powershell
 
@@ -97,7 +97,7 @@ text
 
 powershell
 
-cd C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\project-gengo\programming\dotnet\csharp\experimental\calculator-xunit-testing
+cd .\src\completed\calculator-xunit-testing
 
 `\`powershell
 
@@ -394,7 +394,7 @@ text
 
 \n\nFuture (Enhancement)
 
-\n\nUpgrade to .NET 10.0 (change `net8.0` ? `net10.0`)
+\n\nUpgrade to .NET 10.0 (change `net8.0`?`net10.0`)
 \n\nAdd additional projects (tests, services, APIs)
 \n\nDeploy to Azure App Service or Docker
 
@@ -450,7 +450,7 @@ text
 
 CalculatorWeb.sln successfully combines Calculator.Core and CalculatorBlazor into a single, unified solution. Both projects build successfully in Debug and Release configurations. The solution is ready for development, testing, and deployment.
 
-**Location:** `programming\dotnet\csharp\experimental\calculator-xunit-testing\CalculatorWeb.sln`
+**Location:** `src\completed\calculator-xunit-testing\CalculatorWeb.sln`
 
 **What's Next:** Start building and running!
 
@@ -458,7 +458,7 @@ CalculatorWeb.sln successfully combines Calculator.Core and CalculatorBlazor int
 
 powershell
 
-cd C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\project-gengo\programming\dotnet\csharp\experimental\calculator-xunit-testing
+cd .\src\completed\calculator-xunit-testing
 
 dotnet build CalculatorWeb.sln
 

@@ -7,4 +7,6 @@ tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'todo'] #
 
 <!-- Tip: Use /create-agent in chat to generate content with agent assistance -->
 
+# Demo Agent
+
 Define what this custom agent does, including its behavior, capabilities, and any specific instructions for its operation.

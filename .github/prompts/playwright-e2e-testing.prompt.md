@@ -7,9 +7,9 @@ description: Playwright E2E testing framework for calculator console and future 
 
 # Playwright End-to-End Testing Frameworkls
 
-**Version:** 1.0  
-**Last Updated:** January 29, 2026  
-**Framework:** Playwright for .NET (pwsh)  
+**Version:** 1.0
+**Last Updated:** January 29, 2026
+**Framework:** Playwright for .NET (pwsh)
 **Target:** Local development and CI/CD integration
 
 ## Overview
@@ -30,12 +30,14 @@ This framework sets up Playwright for **local E2E testing** of the calculator ap
 ### Prerequisites
 
 **Required:**
+
 - .NET 8.0 SDK or later
 - PowerShell 5.0+
 - Playwright binaries (auto-installed)
 - Chrome/Chromium browser (for headless tests)
 
 **Optional:**
+
 - VS Code Playwright Test for VSCode extension (`ms-playwright.playwright`)
 - Playwright Inspector for UI debugging
 
@@ -58,7 +60,6 @@ cd calculator.tests.e2e
 dotnet add reference ../calculator/calculator.csproj
 cd ..
 ```
-
 #### Step 2: Install Playwright NuGet Package
 
 ```powershell
@@ -73,7 +74,6 @@ pwsh bin/Debug/net8.0/playwright.ps1 install
 # Return to solution root
 cd ..
 ```
-
 #### Step 3: Verify Installation
 
 ```powershell
@@ -84,14 +84,13 @@ dotnet build calculator.tests.e2e/calculator.tests.e2e.csproj
 ls ~/.cache/ms-playwright*  # Linux/macOS
 dir $env:USERPROFILE\.cache\ms-playwright*  # Windows
 ```
-
 ---
 
 ## E2E Test Scenarios (Calculator Console)
 
 ### Test Project Structure
 
-```
+```text
 calculator.tests.e2e/
 ├── calculator.tests.e2e.csproj      # Project file with Playwright dependencies
 ├── CalculatorConsoleE2ETests.cs     # Main console interaction tests
@@ -102,7 +101,6 @@ calculator.tests.e2e/
 └── Helpers/
     └── ProcessHelper.cs             # Process execution utilities
 ```
-
 ### Phase 1: Console Application Process Testing
 
 #### Console Process Fixture
@@ -116,8 +114,8 @@ public class CalculatorConsoleFixture : IAsyncLifetime
     private Process? _process;
     private StreamReader? _outputReader;
     private StreamWriter? _inputWriter;
-    
-    private const string CalculatorExePath = 
+
+    private const string CalculatorExePath =
         "./calculator/bin/Release/net8.0/calculator.exe";
 
     /// <summary>
@@ -164,16 +162,16 @@ public class CalculatorConsoleFixture : IAsyncLifetime
         // Read response with timeout
         var cts = new CancellationTokenSource(timeoutMs);
         var output = new StringBuilder();
-        
+
         try
         {
             while (!cts.Token.IsCancellationRequested)
             {
                 var line = await _outputReader.ReadLineAsync();
                 if (line == null) break;
-                
+
                 output.AppendLine(line);
-                
+
                 // Stop if we've received a prompt or result
                 if (line.Contains("Enter") || line.Contains("Result") || line.Contains("Error"))
                     break;
@@ -196,7 +194,7 @@ public class CalculatorConsoleFixture : IAsyncLifetime
         {
             _inputWriter?.WriteLine("exit");
             _inputWriter?.Flush();
-            
+
             if (!_process.WaitForExit(2000))
             {
                 _process.Kill();
@@ -211,7 +209,6 @@ public class CalculatorConsoleFixture : IAsyncLifetime
     }
 }
 ```
-
 ### Phase 2: Basic Interaction Tests
 
 #### Test: Single Calculation
@@ -276,7 +273,6 @@ public class CalculatorConsoleE2ETests : IAsyncLifetime
     }
 }
 ```
-
 ### Phase 3: Multi-Step Workflow Testing
 
 #### Test: Sequential Calculations
@@ -342,7 +338,6 @@ public class CalculatorWorkflowTests : IAsyncLifetime
     }
 }
 ```
-
 ### Phase 4: Error Handling Tests
 
 ```csharp
@@ -394,7 +389,7 @@ public class CalculatorErrorHandlingTests : IAsyncLifetime
         // Act
         var large1 = "999999999";
         var large2 = "999999999";
-        
+
         await _fixture!.SendInputAsync(large1);
         await _fixture.SendInputAsync("+");
         var result = await _fixture.SendInputAsync(large2);
@@ -404,7 +399,6 @@ public class CalculatorErrorHandlingTests : IAsyncLifetime
     }
 }
 ```
-
 ---
 
 ## Execution Commands
@@ -421,7 +415,6 @@ dotnet test calculator.tests.e2e/calculator.tests.e2e.csproj --configuration Rel
 # Generate coverage report
 dotnet test calculator.tests.e2e/calculator.tests.e2e.csproj --configuration Release --collect:"XPlat Code Coverage"
 ```
-
 ### Run Specific E2E Test
 
 ```powershell
@@ -431,14 +424,12 @@ dotnet test calculator.tests.e2e/calculator.tests.e2e.csproj --filter "Calculato
 # Run single test method
 dotnet test calculator.tests.e2e/calculator.tests.e2e.csproj --filter "E2E_Addition_UserEntersValidInputs_CalculatesCorrectly"
 ```
-
 ### Run in Watch Mode (Development)
 
 ```powershell
 # Watch mode with auto-rerun on file changes
 dotnet watch test calculator.tests.e2e/calculator.tests.e2e.csproj
 ```
-
 ---
 
 ## Future: Browser-Based E2E Testing
@@ -455,19 +446,19 @@ public class CalculatorWebUIE2ETests : PageTest
     public async Task E2E_WebUI_Addition_DisplaysCorrectResult()
     {
         await Page.GotoAsync("https://localhost:4200/calculator");
-        
+
         // Click operand 1 input
         await Page.FillAsync("input#operand1", "5");
-        
+
         // Select operator
         await Page.SelectOptionAsync("select#operator", "+");
-        
+
         // Click operand 2 input
         await Page.FillAsync("input#operand2", "3");
-        
+
         // Click calculate button
         await Page.ClickAsync("button#calculate");
-        
+
         // Assert result displayed
         var result = await Page.TextContentAsync("#result");
         Assert.AreEqual("8", result);
@@ -485,7 +476,6 @@ public class CalculatorWebUIE2ETests : PageTest
     }
 }
 ```
-
 ---
 
 ## CI/CD Integration
@@ -499,12 +489,12 @@ Add to `azure-pipelines/01-level-pipeline.yml`:
   displayName: 'End-to-End Tests'
   dependsOn: UnitTests
   condition: succeeded()
-  
+
   steps:
   - task: UseDotNet@2
     inputs:
       version: '8.0.x'
-  
+
   - task: PowerShell@2
     displayName: 'Install Playwright Browsers'
     inputs:
@@ -513,13 +503,13 @@ Add to `azure-pipelines/01-level-pipeline.yml`:
         cd src/workspace/calculator-xunit-testing/calculator.tests.e2e
         dotnet build
         pwsh bin/Debug/net8.0/playwright.ps1 install
-  
+
   - task: DotNetCoreCLI@2
     displayName: 'Run E2E Tests'
     inputs:
       command: 'test'
       arguments: 'src/workspace/calculator-xunit-testing/calculator.tests.e2e/calculator.tests.e2e.csproj --configuration Release --logger "trx;LogFileName=e2e-results.trx"'
-  
+
   - task: PublishTestResults@2
     displayName: 'Publish E2E Test Results'
     inputs:
@@ -527,7 +517,6 @@ Add to `azure-pipelines/01-level-pipeline.yml`:
       testResultsFiles: '**/*e2e-results.trx'
       mergeTestResults: true
 ```
-
 ---
 
 ## Success Criteria
@@ -552,4 +541,3 @@ Add to `azure-pipelines/01-level-pipeline.yml`:
 - [Playwright Best Practices](https://playwright.dev/dotnet/docs/best-practices)
 - [Process Testing with xUnit](https://xunit.net/)
 - [CI/CD Integration Patterns](https://azure.microsoft.com/en-us/services/devops/pipelines/)
-

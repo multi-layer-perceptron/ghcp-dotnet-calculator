@@ -4,15 +4,20 @@ This document provides a step-by-step guide for setting up and performing unit t
 
 \n\nTable of Contents
 
-\n\n[Project Overview](#project-overview)
-\n\n[Prerequisites](#prerequisites)
-\n\n[Setting Up the Test Environment](#setting-up-the-test-environment)
-\n\n[Creating Unit Tests](#creating-unit-tests)
-\n\n[Running the Tests](#running-the-tests)
-\n\n[Best Practices](#best-practices)
-\n\n[Advanced Testing Techniques](#advanced-testing-techniques)
+[Project Overview](#project-overview)
 
-\n\nProject Overview
+[Prerequisites](#prerequisites)
+
+[Setting Up the Test Environment](#setting-up-the-test-environment)
+Creating Unit Tests
+
+Running the Tests
+
+Best Practices
+
+Advanced Testing Techniques
+
+## Project Overview
 
 The Java calculator application is a simple command-line calculator that supports basic arithmetic operations:
 
@@ -23,9 +28,9 @@ The Java calculator application is a simple command-line calculator that support
 \n\nModulo (%)
 \n\nExponentiation (^)
 
-The application follows a typical Maven project structure, with the main code located in `src/main/java` and test code in `src/test/java`.
+The application follows a typical Maven project structure, with the main code located in `src/main/java`and test code in`src/test/java`.
 
-\n\nPrerequisites
+## Prerequisites
 
 Before setting up unit testing, ensure you have:
 
@@ -34,7 +39,7 @@ Before setting up unit testing, ensure you have:
 \n\nBasic understanding of JUnit 5 framework
 \n\nBasic understanding of Maven build system
 
-\n\nSetting Up the Test Environment
+## Setting Up the Test Environment
 
 \n\nStep 1: Verify Maven Dependencies
 
@@ -44,7 +49,9 @@ Ensure your `pom.xml` file includes the necessary JUnit 5 dependencies:
 
 xml
 
+```xml
 <dependencies>
+```
 
 ```java
 <!-- JUnit 5 dependencies -->
@@ -161,7 +168,7 @@ mkdir -p src/test/java/com/project13
 text
 text
 
-\n\nCreating Unit Tests
+## Creating Unit Tests
 
 \n\nStep 3: Create a Test Class
 
@@ -402,7 +409,7 @@ assertEquals(expected, App.calculate(a, b, operator), 0.0001,
 text
 text
 
-\n\nRunning the Tests
+## Running the Tests
 
 \n\nStep 8: Run Tests Using Maven
 
@@ -429,7 +436,7 @@ Most IDEs (like IntelliJ IDEA, Eclipse, or VS Code with Java extensions) have bu
 \n\nRight-click in the editor or on the test class/method
 \n\nSelect "Run Test" or equivalent option
 
-\n\nBest Practices
+## Best Practices
 
 \n\nFollow AAA Pattern
 
@@ -451,7 +458,7 @@ Use clear and descriptive test method names that indicate what's being tested.
 
 Include helpful error messages in assertions to make test failures easier to understand.
 
-\n\nAdvanced Testing Techniques
+## Advanced Testing Techniques
 
 \n\nTest Coverage Analysis
 

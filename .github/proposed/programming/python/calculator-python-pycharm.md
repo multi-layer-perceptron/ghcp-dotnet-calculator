@@ -7,11 +7,12 @@ Creating a basic calculator program and testing it with pytest in PyCharm is str
    - Choose a location for your project and click "Create".
 
 1. **Create Your Calculator Program**:
-   - In the Project Explorer, right-click on your project folder and select `New` > `Python File`.
+   - In the Project Explorer, right-click on your project folder and select `New`>`Python File`.
    - Name the file `calculator.py` and add the following code:
 
 `\`python
- ```
+
+```text
 `\`python
 
 python
@@ -53,28 +54,34 @@ python
      return a / b
 `\`python
 
- ```
+```
+
 `\`python
 
 1. **Install pytest**:
    - Open the terminal in PyCharm (View > Tool Windows > Terminal) and install pytest using pip:
 
 `\`python
- ```
+
+```text
 `\`python
 
 sh
 
 `\`python
- ```
+
+```
+
 `\`python
 
-   1. **Create Test Cases**:
-   - In the Project Explorer, right-click on your project folder and select `New` > `Python File`.
+1. **Create Test Cases**:
+
+   - In the Project Explorer, right-click on your project folder and select `New`>`Python File`.
    - Name the file `test_calculator.py` and add the following test cases:
 
 `\`python
- ```
+
+```text
 `\`python
 
 python
@@ -133,7 +140,7 @@ python
      calculator.divide(1, 0)
 `\`python
 
- ```
+```text
 `\`python
 
 1. **Run Your Tests**:

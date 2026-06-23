@@ -5,4 +5,6 @@ name: 7.01-conduct-security-assessment
 description: Conduct a comprehensive security assessment of the .NET 8 console calculator application and its associated components.
 ---
 
-read the pdf at: C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\create-dotnet-calculator\docs\ghcp-enabled-personas.pdf
+# Read PDF
+
+Read the PDF at: C:\onedrive-prsn\OneDrive\02.00.00.GENERAL\repos\git\create-dotnet-calculator\docs\ghcp-enabled-personas.pdf

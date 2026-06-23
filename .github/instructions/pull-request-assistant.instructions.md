@@ -1,4 +1,5 @@
 ---
+description: Required guidance for creating pull request descriptions and reviews
 applyTo: "**"
 ---
 

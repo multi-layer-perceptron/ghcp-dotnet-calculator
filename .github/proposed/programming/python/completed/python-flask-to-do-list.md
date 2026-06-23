@@ -44,7 +44,7 @@ text
 
 ---
 
-#### 📌 Step 2: `app.py` — Your API Code
+#### 📌 Step 2: `app.py` - Your API Code
 
 `\`python
 
@@ -142,12 +142,10 @@ You can test your API with **Postman**, **cURL**, or any frontend app. Examples:
 
 - `POST /tasks` with JSON:
 
-  ```
-
+```text
 json
   { "title": "Finish Flask API" }
-  ```
-
+```
 - `PUT /tasks/2` → Mark task 2 as done
 
 - `DELETE /tasks/1` → Remove task 1

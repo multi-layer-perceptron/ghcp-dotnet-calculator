@@ -1,8 +1,11 @@
+---
+description: Applies concise refactoring guidance for cleaner code structure
+name: refactor-guidelines
+---
+
 # Refactoring Guidelines
 
-\n\nPrefer pure functions where possible
-\n\nApply SOLID principles
-\n\nReplace long conditionals with strategy pattern
-\n\nAdd logging using our internal telemetry wrapper `hwLog()`
-
-\n
+- Prefer pure functions where possible.
+- Apply SOLID principles.
+- Replace long conditionals with the strategy pattern.
+- Add logging using the internal telemetry wrapper `hwLog()`.

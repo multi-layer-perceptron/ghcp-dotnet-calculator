@@ -35,74 +35,71 @@ tools:
 model: Claude Haiku 4.5 (copilot)
 ---
 
-\n\nCreate Basic Workflow
+# Create Basic Workflow
 
-\n\nOverview
+## Overview
 
 This prompt guides the creation of a basic CI/CD workflow. The workflow has two jobs. In the first job it will list the contents of this repo and upload the results as an artifact. In the second job it will download the artifact and display the results along with some workflow metadata.
 
-\n\nDetails
+## Details
 
 The workflow should demonstrate essential GitHub Actions capabilities with the following specifications and the file must be named: `01-level-workflow.yml`
 
-\n\nWorkflow Triggers
+## Workflow Triggers
 
-\n\nPush to main branch (excluding .github directory changes)
-\n\nPull requests targeting main branch
-\n\nScheduled execution (daily at midnight UTC)
-\n\nManual dispatch via GitHub UI
+- Push to main branch, excluding `.github` directory changes
+- Pull requests targeting main branch
+- Scheduled execution, daily at midnight UTC
+- Manual dispatch via GitHub UI
 
-\n\nJob 1: list-contents
+## Job 1: list-contents
 
 **Purpose:** Display repository structure and contents
 
-# Steps
+### Steps
 
-\n\nDisplay workflow trigger information (event name, branch, repository, actor)
-\n\nCheck out repository code using actions/checkout@v4
-\n\nList repository contents using tree command (depth 3, with sizes)
-\n\nList src directory contents recursively using PowerShell with:
+- Display workflow trigger information, including event name, branch, repository, and actor.
+- Check out repository code using `actions/checkout@v4`.
+- List repository contents using the ree` command with depth 3 and sizes.
+- List the `src` directory contents recursively using PowerShell with:
+  - Directory/file type indicators
+  - File sizes in KB
+  - Color-coded output, with yellow for directories and green for files
+  - Indentation based on directory depth
+  - Graceful handling if the `src` directory does not exist
 
-\n\nDirectory/file type indicators
-\n\nFile sizes in KB
-\n\nColor-coded output (Yellow for directories, Green for files)
-\n\nIndentation based on directory depth
-\n\nGraceful handling if src directory doesn't exist
-
-\n\nJob 2: retrieve-values
+## Job 2: retrieve-values
 
 **Purpose:** Display workflow metadata and context
 
 **Dependencies:** Must run after list-contents job completes
 
-## Steps
+### Steps
 
-\n\nDisplay comprehensive branch information including:
+- Display comprehensive branch information including:
+  - Branch name (`github.ref_name`)
+  - Full ref (`github.ref`)
+  - Head ref for pull requests (`github.head_ref`)
+  - Base ref for pull requests (`github.base_ref`)
+  - Default branch (`github.event.repository.default_branch`)
 
-\n\nBranch name (github.ref_name)
-\n\nFull ref (github.ref)
-\n\nHead ref for pull requests (github.head_ref)
-\n\nBase ref for pull requests (github.base_ref)
-\n\nDefault branch (github.event.repository.default_branch)
+## Technical Requirements
 
-\n\nTechnical Requirements
+- Runner: `ubuntu-latest` for both jobs
+- PowerShell Core (`pwsh`) for cross-platform scripting
+- Proper formatting with section dividers (`==========`)
+- Color-coded console output for better readability
+- Descriptive job and step names for clarity
 
-\n\nRunner: ubuntu-latest for both jobs
-\n\nPowerShell Core (pwsh) for cross-platform scripting
-\n\nProper formatting with section dividers (==========)
-\n\nColor-coded console output for better readability
-\n\nDescriptive job and step names for clarity
-
-\n\nPath Resolution
+## Path Resolution
 
 All paths in this document are relative to the git repository root, which can be obtained using:
 
 ```pwsh
-
 $repoRoot = git rev-parse --show-toplevel
+```
 
-```text
-\n\nOutput Location
+## Output Location
 
 .github/workflows/01-level-workflow.yml
 
@@ -110,11 +107,11 @@ $repoRoot = git rev-parse --show-toplevel
 
 Create a GitHub Actions workflow that automates repository content listing and workflow metadata reporting with the following requirements:
 
-\n\nMultiple trigger types (push, PR, schedule, manual)
-\n\nRepository content listing using tree command
-\n\nDirectory-specific listing using PowerShell
-\n\nWorkflow metadata reporting
-\n\nJob dependencies and sequencing
+- Multiple trigger types, including push, PR, schedule, and manual dispatch
+- Repository content listing using the ree` command
+- Directory-specific listing using PowerShell
+- Workflow metadata reporting
+- Job dependencies and sequencing
 
 ## Response
 
@@ -123,20 +120,18 @@ Created comprehensive workflow with two jobs: list-contents and retrieve-values.
 ## PRD Location
 
 ```text
-pwsh
-\n\nRelative path
+Relative path:
 
 cicd/prd-01-level-workspace.md
 
-\n\nFull path resolution
+Full path resolution:
 
 $repoRoot = git rev-parse --show-toplevel
 
 Join-Path -Path $repoRoot -ChildPath "cicd/prd-01-level-workspace.md"
 
 ```text
-\n\nRelated Documentation
+## Related Documentation
 
-\n\n[GitHub Actions Documentation](https://docs.github.com/en/actions)
-
-\n
+[GitHub Actions Documentation](https://docs.github.com/en/actions)
+```

@@ -1,50 +1,38 @@
-# Issue Manager.Instructions
-
 ---
+description: Required guidance for creating and managing actionable GitHub issues
 applyTo: "**"
 ---
 
-\n\nIssue Manager Guidelines
+# Issue Manager Instructions
 
-When creating or managing GitHub issues:
+When creating or managing GitHub issues, make issues actionable and easy for contributors to understand.
 
-\n\nBug Report Essentials
+## Bug Report Essentials
 
-**Description**: Clear, concise summary of the problem
+* Include a clear, concise description of the problem.
+* Provide numbered steps to reproduce the issue.
+* Describe expected behavior and actual behavior.
+* Record environment details, including OS, browser or client, app version, and relevant dependencies.
+* Add screenshots, error logs, or stack traces as additional context when useful.
 
-**Steps to Reproduce**: Numbered list of exact actions that cause the issue
+## Feature Request Structure
 
-**Expected vs Actual Behavior**: What should happen vs what actually happens
+* Describe the specific problem the feature solves.
+* Summarize the proposed solution.
+* Include 2-3 concrete use cases.
+* Define success criteria that explain how to measure whether the feature works.
 
-**Environment**: OS, browser/client, app version, relevant dependencies
+## Issue Management Best Practices
 
-**Additional Context**: Screenshots, error logs, or stack traces
+* Use clear, descriptive titles that summarize the request.
+* Apply appropriate labels for type, priority, and component area.
+* Ask clarifying questions when details are missing.
+* Link related issues using `#number` syntax.
+* Provide specific next steps and realistic timelines.
 
-\n\nFeature Request Structure
+## Key Response Guidelines
 
-**Problem**: What specific problem does this solve?
-
-**Proposed Solution**: Brief description of the suggested approach
-
-**Use Cases**: 2-3 concrete examples of when this would be valuable
-
-**Success Criteria**: How to measure if the feature works
-
-\n\nIssue Management Best Practices
-
-\n\nUse clear, descriptive titles that summarize the request
-\n\nApply appropriate labels: bug/feature, priority level, component areas
-\n\nAsk clarifying questions when details are missing
-\n\nLink related issues using #number syntax
-\n\nProvide specific next steps and realistic timelines
-
-\n\nKey Response Guidelines
-
-\n\nRequest reproduction steps for unclear bugs
-\n\nAsk for screenshots/logs when visual issues are reported
-\n\nExplain technical concepts clearly for non-technical users
-\n\nUpdate issue status regularly with progress information
-
-Focus on making issues actionable and easy for contributors to understand.
-
-\n
+* Request reproduction steps for unclear bugs.
+* Ask for screenshots or logs when visual issues are reported.
+* Explain technical concepts clearly for non-technical users.
+* Update issue status regularly with progress information.

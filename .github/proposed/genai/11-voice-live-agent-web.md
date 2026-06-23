@@ -112,7 +112,7 @@ text
 
 python
 
-def __init__(
+def \_\_init\_\_(
 
 ```bash
 self,
@@ -146,6 +146,7 @@ state_callback=None,
 
 ```bash
 # Store Azure Voice Live connection and configuration parameters
+
 `\`bash
 
 ```bash
@@ -170,6 +171,7 @@ self.instructions = instructions
 
 ```bash
 # Initialize runtime state - connection established in start()
+
 `\`bash
 
 ```bash
@@ -304,6 +306,7 @@ async def _handle_event(self, event, conn, verbose=False):
 
 ```bash
 # Import event types for processing different Voice Live server events
+
 `\`bash
 
 ```bash
@@ -496,6 +499,7 @@ if self._response_cancelled:
 
 ```bash
 # Update state when assistant starts speaking
+
 `\`bash
 
 ```bash

@@ -61,28 +61,22 @@ text
 
 1. **Clone or navigate to the calculator directory**
 
-   ```
-
+```text
 bash
    cd calculator/
-   ```
-
+```
 1. **Install dependencies**
 
-   ```
-
+```text
 bash
    npm install
-   ```
-
+```
 1. **Build the TypeScript code**
 
-   ```
-
+```text
 bash
    npm run build
-   ```
-
+```
 1. **Open the calculator**
    - Open `index.html` in your web browser, or
    - Use Visual Studio Code Live Server extension
@@ -250,10 +244,12 @@ The calculator features comprehensive multi-language documentation:
 text
 typescript
 /**
+
  * English: Function to add two numbers
  * German: Funktion zum Addieren zweier Zahlen
  * Hindi: दो संख्याओं को जोड़ने के लिए फ़ंक्शन
  * Japanese: 二つの数値を足し算する関数
+
  */
 function add(a: number, b: number): number {
   return a + b;
@@ -274,12 +270,10 @@ text
 
 1. **Open project in VS Code**:
 
-   ```
-
+```text
 bash
    code .
-   ```
-
+```
 1. **Run and debug**:
    - Use `Ctrl+Shift+P` → "TypeScript: Build"
    - Open `index.html` with Live Server

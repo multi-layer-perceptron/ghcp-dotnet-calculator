@@ -1,0 +1,63 @@
+name: 05-level-workflow
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  REPO_VARIABLE: ${{ vars.REPO_LEVEL_VARIABLE }}
+  REPO_SECRET: ${{ secrets.REPO_LEVEL_SECRET }}
+
+jobs:
+  list-contents:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - run: |
+        echo "🎉 The job was triggered by event: ${{ github.event_name }}"
+        echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
+    
+    - uses: actions/checkout@v4
+    
+    - name: list-contents-with-echo
+      run: |
+        echo "The repository ${{ github.repository }} contains the following files:"
+        tree
+
+    # Add a step to list the directory contents of the repository with a powershell script at src/scripts/Get-DirectoryContents.ps1 
+    - name: list-contents-with-powershell-script
+      uses: azure/powershell@v2
+      with:
+        inlineScript: |
+          chmod +x src/scripts/Get-DirectoryContents.ps1
+          src/scripts/Get-DirectoryContents.ps1
+        azPSVersion: 'latest'
+
+    # Add a step to list the directory contents of the repository with a powershell script at src/scripts/Get-DirectoryContents.ps1 
+    - name: list-contents-with-powershell-inline
+      uses: azure/powershell@v2
+      with:
+        inlineScript: Get-ChildItem -Path . -Recurse
+        azPSVersion: 'latest'
+
+    # List the directory contents of the repository using a python script at src/scripts/getDirectoryContents.py
+    - name: list-contents-with-python
+      run: python3 src/scripts/getDirectoryContents.py
+
+  retrieve-values:
+      runs-on: ubuntu-latest
+      needs: list-contents
+      environment: qua
+      env:
+        QUA_VARIABLE: ${{ vars.QUA_VARIABLE }}
+        QUA_SECRET: ${{ secrets.QUA_SECRET }}
+      steps:
+      - name: retrieve-secrets
+        run: echo "The value of the secret is ${{ env.QUA_SECRET }}"
+      
+      - name: retrieve-variables
+        run: echo "The value of the variable is ${{ env.QUA_VARIABLE }}"
+
+      - name: retrieve-repo-values
+        run: |
+          echo "The value of the repository variable is ${{ env.REPO_VARIABLE }}"
+          echo "The value of the repository secret is ${{ env.REPO_SECRET }}"

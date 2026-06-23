@@ -1,0 +1,100 @@
+name: 01-Level Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  list-contents:
+    name: List Repository Contents
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Display Workflow Trigger Information
+        run: |
+          Write-Host "========== Workflow Trigger Information ==========" -ForegroundColor Cyan
+          Write-Host "Event Name:    ${{ github.event_name }}" -ForegroundColor Yellow
+          Write-Host "Branch:        ${{ github.ref_name }}" -ForegroundColor Yellow
+          Write-Host "Repository:    ${{ github.repository }}" -ForegroundColor Yellow
+          Write-Host "Actor:         ${{ github.actor }}" -ForegroundColor Yellow
+          Write-Host "================================================" -ForegroundColor Cyan
+        shell: pwsh
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: List Repository Contents with Tree Command
+        run: |
+          Write-Host "========== Repository Contents (Tree - Depth 3) ==========" -ForegroundColor Cyan
+          tree -L 3 -h --du 2>/dev/null || Write-Host "Tree command not available, using alternative listing" -ForegroundColor Yellow
+          Write-Host "========================================================" -ForegroundColor Cyan
+        shell: pwsh
+
+      - name: List Directory Contents with PowerShell
+        run: |
+          function Get-DirectoryTree {
+            param(
+              [string]$Path = '.',
+              [int]$Depth = 0,
+              [int]$MaxDepth = 3
+            )
+            
+            if ($Depth -gt $MaxDepth) { return }
+            
+            try {
+              $items = Get-ChildItem -Path $Path -Force -ErrorAction SilentlyContinue | Sort-Object -Property @{Expression = {$_.PSIsContainer}; Descending = $true}, Name
+              
+              foreach ($item in $items) {
+                $indent = "  " * $Depth
+                $type = if ($item.PSIsContainer) { "[DIR]" } else { "[FILE]" }
+                $size = if (-not $item.PSIsContainer) { " ({0:N0} KB)" -f ($item.Length / 1KB) } else { "" }
+                
+                if ($item.PSIsContainer) {
+                  Write-Host "$indent$type $($item.Name)" -ForegroundColor Yellow
+                } else {
+                  Write-Host "$indent$type $($item.Name)$size" -ForegroundColor Green
+                }
+                
+                if ($item.PSIsContainer -and $Depth -lt $MaxDepth) {
+                  Get-DirectoryTree -Path $item.FullName -Depth ($Depth + 1) -MaxDepth $MaxDepth
+                }
+              }
+            }
+            catch {
+              Write-Host "Error accessing path: $_" -ForegroundColor Red
+            }
+          }
+          
+          Write-Host "========== Repository Structure (PowerShell) ==========" -ForegroundColor Cyan
+          Get-DirectoryTree -Path '.' -MaxDepth 3
+          Write-Host "======================================================" -ForegroundColor Cyan
+        shell: pwsh
+
+  retrieve-values:
+    name: Display Workflow Metadata
+    runs-on: ubuntu-latest
+    needs: list-contents
+    
+    steps:
+      - name: Display Branch Information
+        run: |
+          Write-Host "========== Branch and Workflow Metadata ==========" -ForegroundColor Cyan
+          Write-Host "Branch Name (ref_name):              ${{ github.ref_name }}" -ForegroundColor Yellow
+          Write-Host "Full Reference (ref):                ${{ github.ref }}" -ForegroundColor Yellow
+          Write-Host "Head Reference (head_ref):           ${{ github.head_ref }}" -ForegroundColor Yellow
+          Write-Host "Base Reference (base_ref):           ${{ github.base_ref }}" -ForegroundColor Yellow
+          Write-Host "Default Branch:                      ${{ github.event.repository.default_branch }}" -ForegroundColor Yellow
+          Write-Host "Workflow ID:                         ${{ github.run_id }}" -ForegroundColor Yellow
+          Write-Host "Workflow Attempt:                    ${{ github.run_attempt }}" -ForegroundColor Yellow
+          Write-Host "Job ID:                              ${{ github.job }}" -ForegroundColor Yellow
+          Write-Host "================================================" -ForegroundColor Cyan
+        shell: pwsh

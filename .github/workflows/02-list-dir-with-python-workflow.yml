@@ -3,7 +3,7 @@
 # Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/add-scripts
 # Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsrun
 
-name: 02-script-runners-workflow
+name: 02-list-dir-with-python-workflow
 on:
   push:
     branches: [main]
@@ -36,4 +36,10 @@ jobs:
       # Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsshell
       - name: list-contents-with-python
         run: |
-          python3 -c "import os; print('\n'.join(os.listdir('./src')))"
+          python3 <<'PY'
+          from pathlib import Path
+
+          root = Path("./src")
+          for path in sorted(root.rglob("*")):
+              print(path.as_posix())
+          PY

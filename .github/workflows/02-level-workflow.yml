@@ -1,37 +1,37 @@
 name: 02-level-workflow
 on:
   push:
-    branches: [ main ]
-    paths-ignore: [.github/**] 
+    branches: [main]
+    paths-ignore: [.github/**]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        echo "🎉 The job was triggered by event: ${{ github.event_name }}"
-        echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
-    
-    - uses: actions/checkout@v4
-    
-    - name: list-contents-with-echo
-      run: |
-        echo "The repository ${{ github.repository }} contains the following files:"
-        tree
+      - run: |
+          echo "🎉 The job was triggered by event: ${{ github.event_name }}"
+          echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
 
-    # Add a step to list the directory contents of the repository with a powershell script at src/scripts/Get-DirectoryContents.ps1 
-    - name: list-contents-with-powershell
-      uses: azure/powershell@v2
-      with:
-        inlineScript: |
-          chmod +x src/scripts/Get-DirectoryContents.ps1
-          src/scripts/Get-DirectoryContents.ps1
-        azPSVersion: 'latest'
+      - uses: actions/checkout@v4
 
-      # List the directory contents of the repository using a inline python script at for the directory at src 
-    - name: list-contents-with-python
-      run: |
-        python3 -c "import os; print('\n'.join(os.listdir('./src')))"
+      - name: list-contents-with-echo
+        run: |
+          echo "The repository ${{ github.repository }} contains the following files:"
+          tree
+
+      # Add a step to list the directory contents of the repository with a powershell script at scripts/Get-DirectoryContents.ps1
+      - name: list-contents-with-powershell
+        uses: azure/powershell@v2
+        with:
+          inlineScript: |
+            chmod +x scripts/Get-DirectoryContents.ps1
+            scripts/Get-DirectoryContents.ps1
+          azPSVersion: "latest"
+
+        # List the directory contents of the repository using a inline python script at for the directory at src
+      - name: list-contents-with-python
+        run: |
+          python3 -c "import os; print('\n'.join(os.listdir('./src')))"

@@ -1,4 +1,4 @@
-name: 04-level-workflow
+name: 04-environments-workflow
 on:
   push:
   workflow_dispatch:

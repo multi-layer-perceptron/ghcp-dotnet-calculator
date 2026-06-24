@@ -1,0 +1,27 @@
+name: 10-run-name-workflow
+
+run-name: 10-run-name-workflow started by ${{ github.actor }} on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  show-run-name:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: explain-run-name
+        run: |
+          echo "This workflow introduces run-name for clearer entries in the Actions UI."
+          echo "Actor: ${{ github.actor }}"
+          echo "Ref name: ${{ github.ref_name }}"
+
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: show-latest-commit
+        run: git log -1 --oneline

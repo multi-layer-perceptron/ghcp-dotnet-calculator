@@ -1,0 +1,36 @@
+name: 14-error-handling-workflow
+
+run-name: 14-error-handling-workflow experimental matrix handling on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix-experimental-check:
+    name: ${{ matrix.check_name }} check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: ${{ matrix.check_name == 'experimental' }}
+    strategy:
+      matrix:
+        check_name:
+          - stable
+          - experimental
+    steps:
+      - name: show-check-type
+        run: |
+          echo "This workflow introduces continue-on-error for experimental matrix rows."
+          echo "Check name: ${{ matrix.check_name }}"
+          echo "Experimental rows are tolerated with continue-on-error."
+
+      - name: simulate-check-result
+        run: |
+          if [ "${{ matrix.check_name }}" = "experimental" ]; then
+            echo "Simulating a tolerated failure for the experimental row."
+            exit 1
+          fi
+          echo "Stable row completed successfully."

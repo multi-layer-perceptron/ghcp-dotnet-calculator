@@ -1,0 +1,32 @@
+name: 17-run-defaults-workflow
+
+run-name: 17-run-defaults-workflow defaults on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  use-run-defaults:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: show-default-shell
+        run: |
+          Write-Output "This workflow introduces defaults.run.shell."
+          Write-Output "Every run step in this workflow uses PowerShell unless it overrides the shell."
+
+      - name: list-workflow-count
+        run: |
+          $workflowCount = (Get-ChildItem -Path .github/workflows -Filter '??-*-workflow.yml').Count
+          Write-Output "Staged workflow count: $workflowCount"

@@ -1,0 +1,34 @@
+name: 15-dependency-cache-workflow
+
+run-name: 15-dependency-cache-workflow restores a NuGet cache on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  restore-with-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: setup-dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: restore-nuget-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('src/workspace/calculator-xunit-testing/**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: restore-calculator-solution
+        run: dotnet restore src/workspace/calculator-xunit-testing/calculator.slnx

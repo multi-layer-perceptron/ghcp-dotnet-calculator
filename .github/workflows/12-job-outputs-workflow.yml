@@ -1,0 +1,37 @@
+name: 12-job-outputs-workflow
+
+run-name: 12-job-outputs-workflow passes job outputs on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      branch_name: ${{ steps.metadata.outputs.branch_name }}
+      short_sha: ${{ steps.metadata.outputs.short_sha }}
+    steps:
+      - name: prepare-metadata
+        id: metadata
+        run: |
+          echo "branch_name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+  consume-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: collect-metadata
+    steps:
+      - name: show-metadata-from-needs
+        env:
+          BRANCH_NAME: ${{ needs.collect-metadata.outputs.branch_name }}
+          SHORT_SHA: ${{ needs.collect-metadata.outputs.short_sha }}
+        run: |
+          echo "Branch from upstream job output: $BRANCH_NAME"
+          echo "Short SHA from upstream job output: $SHORT_SHA"

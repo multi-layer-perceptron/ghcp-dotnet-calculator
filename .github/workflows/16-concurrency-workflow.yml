@@ -1,0 +1,25 @@
+name: 16-concurrency-workflow
+
+run-name: 16-concurrency-workflow concurrency group for ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  show-concurrency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: explain-concurrency
+        run: |
+          echo "This workflow introduces a concurrency group."
+          echo "New runs for the same workflow and ref cancel in-progress runs."
+          echo "Group: ${{ github.workflow }}-${{ github.ref }}"

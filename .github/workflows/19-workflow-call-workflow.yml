@@ -1,0 +1,23 @@
+name: 19-workflow-call-workflow
+
+on:
+  workflow_call:
+    inputs:
+      report_title:
+        description: Title to print from the reusable workflow
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  reusable-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: print-reusable-report
+        run: |
+          echo "This workflow introduces workflow_call so another workflow can reuse it."
+          echo "Report title: ${{ inputs.report_title }}"
+          echo "Called from repository: ${{ github.repository }}"

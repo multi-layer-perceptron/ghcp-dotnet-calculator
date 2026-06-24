@@ -1,0 +1,31 @@
+name: 13-matrix-workflow
+
+run-name: 13-matrix-workflow matrix run on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix-directory-check:
+    name: Directory check on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: show-runner-and-workflows
+        shell: pwsh
+        run: |
+          Write-Output "This workflow introduces a basic matrix strategy."
+          Write-Output "Matrix OS: ${{ matrix.os }}"
+          Get-ChildItem -Path .github/workflows -Filter '??-*-workflow.yml' | Select-Object -ExpandProperty Name

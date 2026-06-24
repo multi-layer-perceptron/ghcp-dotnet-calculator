@@ -1,0 +1,16 @@
+name: 20-reusable-call-workflow
+
+run-name: 20-reusable-call-workflow calls reusable workflow on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  call-reusable-workflow:
+    uses: ./.github/workflows/19-workflow-call-workflow.yml
+    with:
+      report_title: Called from 20-reusable-call-workflow

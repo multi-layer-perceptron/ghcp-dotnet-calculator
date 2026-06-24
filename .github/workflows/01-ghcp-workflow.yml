@@ -1,4 +1,4 @@
-name: 01-Level Workflow
+name: 01-metadata-listing-workflow
 
 on:
   push:

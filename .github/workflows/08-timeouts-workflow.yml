@@ -1,0 +1,26 @@
+name: 08-timeouts-workflow
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: explain-timeout
+        run: |
+          echo "This job introduces timeout-minutes so a stuck run cannot continue forever."
+          echo "The timeout for this job is 5 minutes."
+
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: list-source-root
+        run: |
+          echo "Top-level source workspace contents:"
+          find src -maxdepth 2 -type d -print | sort

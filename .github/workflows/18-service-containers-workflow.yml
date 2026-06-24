@@ -1,0 +1,35 @@
+name: 18-service-containers-workflow
+
+run-name: 18-service-containers-workflow service container on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-redis-service:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    services:
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - "6379:6379"
+    steps:
+      - name: explain-service-container
+        run: |
+          echo "This workflow introduces service containers."
+          echo "The redis service is available on localhost:6379 from the runner job."
+
+      - name: verify-redis-port
+        run: |
+          timeout 10 bash -c 'until </dev/tcp/127.0.0.1/6379; do sleep 1; done'
+          echo "Redis service container is accepting TCP connections."

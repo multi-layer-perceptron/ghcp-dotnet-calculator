@@ -1,7 +1,7 @@
-# This is a GitHub Actions workflow configuration file named 01-level-workflow.
+# This is a GitHub Actions workflow configuration file named 01-basic-triggers-workflow.
 # It defines the events that trigger the workflow and the jobs that run as a result.
 
-name: 01-level-workflow
+name: 01-basic-triggers-workflow
 
 on:
   # Trigger the workflow on push events to the main branch, excluding changes in the .github directory.

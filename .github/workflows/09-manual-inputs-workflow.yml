@@ -1,0 +1,50 @@
+name: 09-manual-inputs-workflow
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      target_folder:
+        description: Folder to inspect during a manual run
+        required: true
+        default: src
+        type: choice
+        options:
+          - src
+          - scripts
+          - .github/workflows
+      include_files:
+        description: Include files in the directory listing
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-manual-inputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: resolve-inputs
+        env:
+          REQUESTED_TARGET: ${{ inputs.target_folder }}
+          INCLUDE_FILES: ${{ inputs.include_files }}
+        run: |
+          target="${REQUESTED_TARGET:-src}"
+          include_files="${INCLUDE_FILES:-true}"
+          echo "target_folder=$target" >> "$GITHUB_ENV"
+          echo "include_files=$include_files" >> "$GITHUB_ENV"
+
+      - name: list-requested-folder
+        run: |
+          echo "Inspecting $target_folder"
+          if [ "$include_files" = "true" ]; then
+            find "$target_folder" -maxdepth 2 -print | sort
+          else
+            find "$target_folder" -maxdepth 2 -type d -print | sort
+          fi

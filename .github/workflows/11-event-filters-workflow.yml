@@ -1,0 +1,47 @@
+name: 11-event-filters-workflow
+
+run-name: 11-event-filters-workflow filtered run for ${{ github.ref_name }}
+
+on:
+  push:
+    branches:
+      - main
+      - releases/**
+    paths:
+      - src/**
+      - scripts/**
+      - .github/workflows/11-event-filters-workflow.yml
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+    paths:
+      - src/**
+      - scripts/**
+      - .github/workflows/11-event-filters-workflow.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-filtered-event:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: show-filtered-event
+        run: |
+          echo "This workflow introduces branch, path, and activity-type filters."
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+
+      - name: checkout-repository
+        uses: actions/checkout@v4
+
+      - name: show-filtered-files
+        run: |
+          echo "The filters are defined in this workflow file:"
+          sed -n '1,45p' .github/workflows/11-event-filters-workflow.yml

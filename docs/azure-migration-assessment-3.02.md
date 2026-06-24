@@ -123,7 +123,7 @@ ms.topic: how-to
   * The app is currently self-contained for calculator behavior and does not require production database configuration
   * Future PostgreSQL-backed runtime behavior should use environment-specific configuration from App Settings and Key Vault rather than local Docker settings
 * Workflow deployment-readiness gaps remain outside the application code
-  * Existing level workflows are useful learning artifacts but are not Azure deployment pipelines
+  * Existing workshop workflows are useful learning artifacts but are not Azure deployment pipelines
   * Current workflow diagnostics still need separate cleanup before using GitHub Actions as a production deployment path
 
 ### Informational recommendations

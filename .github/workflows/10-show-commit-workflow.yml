@@ -2,10 +2,10 @@
 # Demonstrates a dynamic run-name so runs are easier to identify in the Actions UI.
 # Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#run-name
 
-name: 10-run-name-workflow
+name: 10-show-commit-workflow
 
 # Expressions can reference github and inputs contexts in run-name.
-run-name: 10-run-name-workflow started by ${{ github.actor }} on ${{ github.ref_name }}
+run-name: 10-show-commit-workflow started by ${{ github.actor }} on ${{ github.ref_name }}
 
 on:
   push:

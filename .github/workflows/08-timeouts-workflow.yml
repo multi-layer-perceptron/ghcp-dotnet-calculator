@@ -20,7 +20,11 @@ jobs:
       - name: explain-timeout
         run: |
           echo "This job introduces timeout-minutes so a stuck run cannot continue forever."
-          echo "The timeout for this job is 5 minutes."
+          echo "The timeout for this job is 5 minutes." 
+          for minute in {1..7}; do
+            echo "Delay minute ${minute} of 7..."
+            sleep 60
+          done
 
       - name: checkout-repository
         uses: actions/checkout@v4

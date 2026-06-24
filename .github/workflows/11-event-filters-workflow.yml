@@ -1,9 +1,15 @@
+# Workflow 11: Event filters
+# Demonstrates branch, path, and pull request activity-type filters.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#using-filters
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#filter-pattern-cheat-sheet
+
 name: 11-event-filters-workflow
 
 run-name: 11-event-filters-workflow filtered run for ${{ github.ref_name }}
 
 on:
   push:
+    # Push runs only when both the branch and path filters match.
     branches:
       - main
       - releases/**
@@ -12,6 +18,7 @@ on:
       - scripts/**
       - .github/workflows/11-event-filters-workflow.yml
   pull_request:
+    # Activity types narrow pull_request runs to common CI events.
     types:
       - opened
       - synchronize

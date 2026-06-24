@@ -1,8 +1,14 @@
+# Workflow 09: Manual inputs
+# Demonstrates workflow_dispatch inputs for manually triggered workflow runs.
+# Docs: https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_dispatchinputs
+
 name: 09-manual-inputs-workflow
 
 on:
   push:
   workflow_dispatch:
+    # Manual inputs are available through the inputs context during workflow_dispatch runs.
     inputs:
       target_folder:
         description: Folder to inspect during a manual run

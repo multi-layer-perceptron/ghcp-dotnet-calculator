@@ -1,3 +1,8 @@
+# Workflow 17: Run defaults
+# Demonstrates defaults.run.shell so all run steps use PowerShell unless overridden.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/set-default-values-for-jobs
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#defaultsrun
+
 name: 17-run-defaults-workflow
 
 run-name: 17-run-defaults-workflow defaults on ${{ github.ref_name }}
@@ -10,6 +15,7 @@ permissions:
   contents: read
 
 defaults:
+  # These defaults apply to every run step in the workflow unless a job or step overrides them.
   run:
     shell: pwsh
 

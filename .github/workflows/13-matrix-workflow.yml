@@ -1,3 +1,8 @@
+# Workflow 13: Matrix strategy
+# Demonstrates running the same job across multiple runner operating systems.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstrategymatrix
+
 name: 13-matrix-workflow
 
 run-name: 13-matrix-workflow matrix run on ${{ github.ref_name }}
@@ -15,6 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
     strategy:
+      # Each value in matrix.os creates a separate job run.
       matrix:
         os:
           - ubuntu-latest

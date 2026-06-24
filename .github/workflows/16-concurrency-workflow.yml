@@ -1,3 +1,8 @@
+# Workflow 16: Concurrency
+# Demonstrates canceling older in-progress runs for the same workflow and ref.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#concurrency
+
 name: 16-concurrency-workflow
 
 run-name: 16-concurrency-workflow concurrency group for ${{ github.ref_name }}
@@ -10,6 +15,7 @@ permissions:
   contents: read
 
 concurrency:
+  # Include github.workflow so this group does not cancel runs from unrelated workflows.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 

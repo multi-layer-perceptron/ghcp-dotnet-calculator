@@ -1,3 +1,8 @@
+# Workflow 18: Service containers
+# Demonstrates a Redis service container with Docker health checks and port mapping.
+# Docs: https://docs.github.com/en/actions/tutorials/use-containerized-services/use-docker-service-containers
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idservices
+
 name: 18-service-containers-workflow
 
 run-name: 18-service-containers-workflow service container on ${{ github.ref_name }}
@@ -14,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     services:
+      # Service containers require a Linux runner and run on the job's Docker network.
       redis:
         image: redis:7-alpine
         options: >-

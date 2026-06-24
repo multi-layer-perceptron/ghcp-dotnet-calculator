@@ -1,3 +1,8 @@
+# Workflow 12: Job outputs
+# Demonstrates mapping step outputs to job outputs and consuming them through needs.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idoutputs
+
 name: 12-job-outputs-workflow
 
 run-name: 12-job-outputs-workflow passes job outputs on ${{ github.ref_name }}
@@ -13,6 +18,7 @@ jobs:
   collect-metadata:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Job outputs are available only to downstream jobs that declare this job in needs.
     outputs:
       branch_name: ${{ steps.metadata.outputs.branch_name }}
       short_sha: ${{ steps.metadata.outputs.short_sha }}

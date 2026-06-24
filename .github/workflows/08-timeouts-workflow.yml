@@ -1,3 +1,7 @@
+# Workflow 08: Timeouts
+# Demonstrates job-level timeout-minutes to prevent hung jobs from running indefinitely.
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes
+
 name: 08-timeouts-workflow
 
 on:
@@ -10,6 +14,7 @@ permissions:
 jobs:
   bounded-run:
     runs-on: ubuntu-latest
+    # GitHub cancels the job if it exceeds this limit.
     timeout-minutes: 5
     steps:
       - name: explain-timeout

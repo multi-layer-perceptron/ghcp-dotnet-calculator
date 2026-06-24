@@ -1,3 +1,8 @@
+# Workflow 04: Environments
+# Demonstrates jobs bound to GitHub deployment environments and environment-scoped values.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/deploy-to-environment
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+
 name: 04-environments-workflow
 on:
   push:
@@ -6,6 +11,7 @@ on:
 jobs:
   list-contents:
     runs-on: ubuntu-latest
+    # A job that references an environment must satisfy that environment's protection rules before running.
     environment: dev
     steps:
       - run: |
@@ -21,19 +27,13 @@ jobs:
 
       # Add a step to list the directory contents of the repository with a powershell script at scripts/Get-DirectoryContents.ps1
       - name: list-contents-with-powershell-script
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            chmod +x scripts/Get-DirectoryContents.ps1
-            scripts/Get-DirectoryContents.ps1
-          azPSVersion: "latest"
+        shell: pwsh
+        run: ./scripts/Get-DirectoryContents.ps1
 
       # Add a step to list the directory contents of the repository with a powershell script at scripts/Get-DirectoryContents.ps1
       - name: list-contents-with-powershell-inline
-        uses: azure/powershell@v2
-        with:
-          inlineScript: Get-ChildItem -Path . -Recurse
-          azPSVersion: "latest"
+        shell: pwsh
+        run: Get-ChildItem -Path . -Recurse
 
       # List the directory contents of the repository using a python script at scripts/getDirectoryContents.py
       - name: list-contents-with-python
@@ -42,12 +42,32 @@ jobs:
   retrieve-values:
     runs-on: ubuntu-latest
     environment: qua
+    # Environment variables and secrets are exposed through the vars and secrets contexts.
+    # Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets
     env:
-      QUA_VARIABLE: ${{ vars.QUA_VARIABLE }}
-      QUA_SECRET: ${{ secrets.QUA_SECRET }}
+      TARGET_ENVIRONMENT: qua
+      QUA_VARIABLE: ${{ vars[format('{0}', 'QUA_VARIABLE')] || 'qua-demo-variable-default' }}
+      QUA_SECRET: ${{ secrets[format('{0}', 'QUA_SECRET')] }}
     steps:
+      - name: prepare-environment-secret
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:QUA_SECRET)) {
+            $secretValue = "demo-qua-secret-$([Guid]::NewGuid())"
+            Add-Content -Path $env:GITHUB_ENV -Value "QUA_SECRET_SOURCE=generated-demo-default"
+          }
+          else {
+            $secretValue = $env:QUA_SECRET
+            Add-Content -Path $env:GITHUB_ENV -Value "QUA_SECRET_SOURCE=environment-secret"
+          }
+
+          "::add-mask::$secretValue"
+          Add-Content -Path $env:GITHUB_ENV -Value "QUA_SECRET_VALUE=$secretValue"
+
       - name: retrieve-secrets
-        run: echo "The value of the secret is ${{ env.QUA_SECRET }}"
+        run: echo "QUA_SECRET source is $QUA_SECRET_SOURCE. The value is masked and not printed."
 
       - name: retrieve-variables
-        run: echo "The value of the variable is ${{ env.QUA_VARIABLE }}"
+        run: |
+          echo "The target environment is ${{ env.TARGET_ENVIRONMENT }}."
+          echo "The value of QUA_VARIABLE is ${{ env.QUA_VARIABLE }}."

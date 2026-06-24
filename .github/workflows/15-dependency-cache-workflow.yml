@@ -1,3 +1,8 @@
+# Workflow 15: Dependency cache
+# Demonstrates restoring NuGet packages with actions/cache before dotnet restore.
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching
+# Docs: https://github.com/actions/setup-dotnet?tab=readme-ov-file#caching-nuget-packages
+
 name: 15-dependency-cache-workflow
 
 run-name: 15-dependency-cache-workflow restores a NuGet cache on ${{ github.ref_name }}
@@ -26,6 +31,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
+          # hashFiles changes the cache key whenever calculator project files change.
           key: ${{ runner.os }}-nuget-${{ hashFiles('src/workspace/calculator-xunit-testing/**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-

@@ -1,3 +1,8 @@
+# Workflow 07: Permissions
+# Demonstrates least-privilege GITHUB_TOKEN permissions at workflow scope.
+# Docs: https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions
+
 name: 07-permissions-workflow
 
 on:
@@ -5,6 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  # Setting one permission makes unspecified scopes default to none.
   contents: read
 
 jobs:

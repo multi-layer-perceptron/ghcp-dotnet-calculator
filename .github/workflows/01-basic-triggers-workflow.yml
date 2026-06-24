@@ -1,21 +1,25 @@
-# This is a GitHub Actions workflow configuration file named 01-basic-triggers-workflow.
-# It defines the events that trigger the workflow and the jobs that run as a result.
+# Workflow 01: Basic triggers
+# Demonstrates push, pull_request, schedule, and workflow_dispatch events.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#on
 
 name: 01-basic-triggers-workflow
 
 on:
   # Trigger the workflow on push events to the main branch, excluding changes in the .github directory.
   push:
-    branches: [ main ]
-    paths-ignore: [.github/**] 
+    branches: [main]
+    paths-ignore: [.github/**]
 
   # Trigger the workflow on pull request events targeting the main branch.
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Schedule the workflow to run every 24 hours.
-  schedule: 
-    - cron:  '0 0 * * *' 
+  # Scheduled workflows use POSIX cron syntax and run on the default branch.
+  # Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onschedule
+  schedule:
+    - cron: "0 0 * * *"
 
   # Allow the workflow to be manually triggered.
   workflow_dispatch:
@@ -26,23 +30,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - run: |
-        # Print messages indicating the event that triggered the job and the branch name.
-        echo "🎉 The job was triggered by event: ${{ github.event_name }}!"
-        echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
-    
-    # Check out the repository using the actions/checkout action.
-    - uses: actions/checkout@v4
-    
-    - name: list-contents-with-echo
-      run: |
-        # List the contents of the repository using the tree command.
-        echo "The repository ${{ github.repository }} contains the following files:"
-        tree
+      - run: |
+          # Print messages indicating the event that triggered the job and the branch name.
+          echo "🎉 The job was triggered by event: ${{ github.event_name }}!"
+          echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
 
-    - name: list-contents-with-powershell
-      shell: pwsh
-      run: |
-        # List the contents of the src directory using PowerShell.
-        Write-Output "Listing directory contents using PowerShell:"
-        Get-ChildItem -Path ./src -Recurse
+      # Check out the repository using the actions/checkout action.
+      - uses: actions/checkout@v4
+
+      - name: list-contents-with-echo
+        run: |
+          # List the contents of the repository using the tree command.
+          echo "The repository ${{ github.repository }} contains the following files:"
+          tree
+
+      - name: list-contents-with-powershell
+        shell: pwsh
+        run: |
+          # List the contents of the src directory using PowerShell.
+          Write-Output "Listing directory contents using PowerShell:"
+          Get-ChildItem -Path ./src -Recurse

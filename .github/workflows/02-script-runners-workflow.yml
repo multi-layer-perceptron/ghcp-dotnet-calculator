@@ -1,3 +1,8 @@
+# Workflow 02: Script runners
+# Demonstrates inline shell commands, a checked-in PowerShell script, and inline Python.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/add-scripts
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsrun
+
 name: 02-script-runners-workflow
 on:
   push:
@@ -24,14 +29,11 @@ jobs:
 
       # Add a step to list the directory contents of the repository with a powershell script at scripts/Get-DirectoryContents.ps1
       - name: list-contents-with-powershell
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            chmod +x scripts/Get-DirectoryContents.ps1
-            scripts/Get-DirectoryContents.ps1
-          azPSVersion: "latest"
+        shell: pwsh
+        run: ./scripts/Get-DirectoryContents.ps1
 
-        # List the directory contents of the repository using a inline python script at for the directory at src
+      # Inline run steps can choose any executable available on the runner image.
+      # Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsshell
       - name: list-contents-with-python
         run: |
           python3 -c "import os; print('\n'.join(os.listdir('./src')))"

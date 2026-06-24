@@ -1,3 +1,8 @@
+# Workflow 14: Error handling
+# Demonstrates continue-on-error for an experimental matrix row.
+# Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations#handling-failures
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idcontinue-on-error
+
 name: 14-error-handling-workflow
 
 run-name: 14-error-handling-workflow experimental matrix handling on ${{ github.ref_name }}
@@ -14,6 +19,7 @@ jobs:
     name: ${{ matrix.check_name }} check
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # The experimental row can fail without failing the entire workflow run.
     continue-on-error: ${{ matrix.check_name == 'experimental' }}
     strategy:
       matrix:

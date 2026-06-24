@@ -1,7 +1,13 @@
+# Workflow 19: Reusable workflow definition
+# Demonstrates workflow_call inputs for a workflow that can be called by another workflow.
+# Docs: https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call
+
 name: 19-workflow-call-workflow
 
 on:
   workflow_call:
+    # Reusable workflow inputs must declare a type.
     inputs:
       report_title:
         description: Title to print from the reusable workflow

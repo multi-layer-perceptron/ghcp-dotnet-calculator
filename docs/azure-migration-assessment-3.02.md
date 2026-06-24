@@ -9,6 +9,7 @@ ms.topic: how-to
 
 * Overall status: Partial success with validated local baseline
 * Prechecks completed: Yes
+* App Modernization assessment reports list: Opened successfully from the available extension tool
 * App Modernization assessment report viewer: Opened successfully from the available extension tool
 * App Modernization assessment command execution: Not executed from this chat runtime
 * Reason: Direct assessment commands such as `mcp_github_copilot_appmod-precheck-assessment` and `mcp_github_copilot_appmod-run-assessment` are not exposed in the current toolset
@@ -17,8 +18,10 @@ ms.topic: how-to
 ## Assessment Artifact Location
 
 * Local report path: `docs/azure-migration-assessment-3.02.md`
+* Extension report list view: Opened through the migration assessment reports list viewer
 * Extension report view: Opened through the migration assessment report viewer
-* Extension raw report files: Not exposed to this chat runtime
+* Extension raw report files and report IDs: Not exposed to this chat runtime
+* Extension output caveat: The viewer tool response used generic Java-application wording and did not return source-specific finding data to chat
 
 ## Execution Context
 
@@ -34,15 +37,21 @@ ms.topic: how-to
 * Azure Developer CLI availability: `azd.exe` 1.25.600.0 installed
 * Docker availability: Docker Desktop 29.5.3 available during test execution
 * Repository status at assessment time:
-  * Existing unrelated modified file: `.github/prompts/create-basic-workflow.prompt.md`
+  * `git status --short` produced no output before this report refresh
 * Commands executed for baseline validation:
   * `dotnet --info`
   * `code --list-extensions | Select-String -Pattern "modern|migrate|azure|github.copilot"`
   * `docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"`
+  * `Get-NetTCPConnection -LocalPort 5297,5432,55432 -ErrorAction SilentlyContinue | Select-Object LocalAddress,LocalPort,State,OwningProcess`
+  * `Get-Process -Id 9136,19488,34324 -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,Path`
   * `dotnet build .\calculator.slnx`
   * `dotnet test .\calculator.slnx --verbosity minimal`
   * `dotnet list .\calculator.slnx package`
   * `Get-Command az,azd,docker,dotnet -ErrorAction SilentlyContinue | Select-Object Name,Version,Source`
+* Assessment tooling invoked:
+  * Azure best practices for deployment planning
+  * Migration assessment reports list viewer
+  * Migration assessment latest report viewer
 
 ## Runtime Baseline Results
 
@@ -70,10 +79,13 @@ ms.topic: how-to
   * Persistent local PostgreSQL container for iterative local app/UI workflows
   * Testcontainers PostgreSQL for automated test isolation in `calculator.tests`
   * One persistent local container was running during assessment: `test-container` on host port `55432`, mapped to PostgreSQL port `5432`
+  * One transient Testcontainers Ryuk container was visible immediately after the test run
   * The persistent container did not block solution build or tests
 * Local application interference check:
-  * A previously running Blazor app process on `http://localhost:5297` was stopped before report generation
-  * Stopping the app surfaced a Blazor `JSDisconnectedException` during component disposal in `Home.razor`
+  * No process was listening on Blazor app port `5297` during this assessment refresh
+  * Local PostgreSQL was listening on port `5432` through a `postgres` process
+  * Docker and WSL forwarding owned port `55432` for the persistent PostgreSQL container
+  * `Home.razor` still awaits JavaScript interop during disposal without handling disconnected circuits, so the previous `JSDisconnectedException` finding remains open
 
 ## Dependency Baseline
 
@@ -94,7 +106,7 @@ ms.topic: how-to
 
 * App Modernization extension assessment commands not executed in-session
   * Direct precheck and assessment commands are not available in the current chat toolset
-  * The extension report viewer opened, but raw generated findings and file paths were not returned to this chat
+  * The extension reports list and report viewer opened, but raw generated findings, report IDs, and file paths were not returned to this chat
   * Run the extension-native assessment workflow from the App Modernization UI or a tool context that exposes the assessment commands before using this report as a production migration signoff
 
 ### Major issues
@@ -110,6 +122,9 @@ ms.topic: how-to
 * Runtime configuration has not been externalized for Azure
   * The app is currently self-contained for calculator behavior and does not require production database configuration
   * Future PostgreSQL-backed runtime behavior should use environment-specific configuration from App Settings and Key Vault rather than local Docker settings
+* Workflow deployment-readiness gaps remain outside the application code
+  * Existing level workflows are useful learning artifacts but are not Azure deployment pipelines
+  * Current workflow diagnostics still need separate cleanup before using GitHub Actions as a production deployment path
 
 ### Informational recommendations
 
@@ -117,6 +132,7 @@ ms.topic: how-to
 * Retain the split PostgreSQL strategy: persistent local container for manual development, Testcontainers for automated tests
 * Add Infrastructure as Code under `infra/` when moving from assessment to implementation
 * Prefer `azd` for deployment orchestration once a deployment plan exists
+* Validate future deployment assets with `azd provision --preview` or Azure deployment what-if before provisioning resources
 * Use managed identity and least-privilege RBAC where Azure services need to access Key Vault or PostgreSQL-adjacent resources
 * Keep historical `.NET 8` references in pre-upgrade prompts and reports where they describe that earlier stage; current active code targets `.NET 10`
 
@@ -150,7 +166,7 @@ ms.topic: how-to
   * Passing automated tests with isolated PostgreSQL test execution
   * Clear local PostgreSQL workflow for iterative development
 * What must be completed next:
-  * Run the official App Modernization assessment command path and capture raw artifacts
+  * Run the official App Modernization assessment command path and capture raw artifacts, report IDs, and file paths
   * Harden Blazor JS interop disposal and reconnect behavior
   * Produce formal DB migration artifacts for Azure PostgreSQL
   * Define Azure runtime configuration and secret mapping
@@ -160,7 +176,7 @@ ms.topic: how-to
 
 ### Phase A: Close blockers
 
-* Execute official App Modernization extension assessment commands and capture generated artifact paths
+* Execute official App Modernization extension assessment commands and capture generated artifact paths, report IDs, and source-specific findings
 * Add a small Blazor disposal fix so `Home.razor` ignores expected JS disconnection during circuit teardown
 * Decide whether the first Azure migration should host only `calculator.web` or also package the console app as a separate sample artifact
 
@@ -184,7 +200,8 @@ ms.topic: how-to
 * Missing from this run:
   * Extension-native precheck output from `mcp_github_copilot_appmod-precheck-assessment`
   * Extension-native assessment output from `mcp_github_copilot_appmod-run-assessment`
-  * Raw file path or report ID from the migration assessment report viewer
+  * Raw file path or report ID from the migration assessment reports list and report viewer
+  * Source-specific finding payload from the report viewer
 * Recommended remediation:
   * Run the App Modernization extension workflow from a context where assessment commands are available
   * Append the generated report IDs, file paths, and command output summaries to this report

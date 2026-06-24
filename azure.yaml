@@ -1,0 +1,11 @@
+name: ghcp-dotnet-calculator
+metadata:
+  template: ghcp-dotnet-calculator@0.0.1-beta
+infra:
+  provider: bicep
+  path: infra
+services:
+  web:
+    project: ./src/workspace/calculator-xunit-testing/calculator.web
+    language: csharp
+    host: appservice

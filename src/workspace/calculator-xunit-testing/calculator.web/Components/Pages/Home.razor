@@ -46,8 +46,14 @@
 
 		if (keyboardModule is not null)
 		{
-			await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
-			await keyboardModule.DisposeAsync();
+			try
+			{
+				await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
+				await keyboardModule.DisposeAsync();
+			}
+			catch (JSDisconnectedException)
+			{
+			}
 		}
 
 		dotNetReference?.Dispose();

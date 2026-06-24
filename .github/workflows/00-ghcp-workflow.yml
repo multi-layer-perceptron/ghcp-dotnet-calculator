@@ -1,23 +1,23 @@
-name: 01-metadata-listing-workflow
+name: 00-ghcp-workflow
 
 on:
   push:
     branches:
       - main
     paths-ignore:
-      - '.github/**'
+      - ".github/**"
   pull_request:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
   list-contents:
     name: List Repository Contents
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Display Workflow Trigger Information
         run: |
@@ -73,7 +73,7 @@ jobs:
               Write-Host "Error accessing path: $_" -ForegroundColor Red
             }
           }
-          
+
           Write-Host "========== Repository Structure (PowerShell) ==========" -ForegroundColor Cyan
           Get-DirectoryTree -Path '.' -MaxDepth 3
           Write-Host "======================================================" -ForegroundColor Cyan
@@ -83,7 +83,7 @@ jobs:
     name: Display Workflow Metadata
     runs-on: ubuntu-latest
     needs: list-contents
-    
+
     steps:
       - name: Display Branch Information
         run: |

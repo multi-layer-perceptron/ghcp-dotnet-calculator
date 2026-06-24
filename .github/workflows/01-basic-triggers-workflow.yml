@@ -33,7 +33,7 @@ jobs:
       - run: |
           # Print messages indicating the event that triggered the job and the branch name.
           echo "🎉 The job was triggered by event: ${{ github.event_name }}!"
-          echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
+          echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
       # Check out the repository using the actions/checkout action.
       - uses: actions/checkout@v4

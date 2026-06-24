@@ -21,6 +21,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       # Each value in matrix.os creates a separate job run.
+      # task-item: add mac os-latest to the matrix.os list to run on macOS as well.
       matrix:
         os:
           - ubuntu-latest

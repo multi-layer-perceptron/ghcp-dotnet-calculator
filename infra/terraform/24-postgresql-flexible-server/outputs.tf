@@ -1,13 +1,3 @@
-output "application_client_id" {
-  description = "Client ID for calc-project-app-01 to store as GitHub variable AZURE_CLIENT_ID after bootstrap"
-  value       = data.azuread_application.main.client_id
-}
-
-output "service_principal_object_id" {
-  description = "Object ID for the calc-project-app-01 service principal"
-  value       = data.azuread_service_principal.main.object_id
-}
-
 output "federated_credential_subject" {
   description = "GitHub OIDC subject allowed to authenticate as calc-project-app-01"
   value       = local.github_oidc_subject

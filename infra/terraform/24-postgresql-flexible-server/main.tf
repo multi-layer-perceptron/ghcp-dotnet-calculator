@@ -30,6 +30,7 @@ resource "azurerm_key_vault" "main" {
   }
 }
 
+# The workflow OIDC principal is expected to have resource-group Contributor rights from bootstrap setup.
 resource "azurerm_role_assignment" "current_identity_key_vault_secrets_officer" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets Officer"
@@ -76,7 +77,7 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ma
   server_name         = azurerm_postgresql_flexible_server.main.name
   resource_group_name = data.azurerm_resource_group.main.name
   tenant_id           = var.tenant_id
-  # Fall back to the currently authenticated OIDC principal's object ID to avoid requiring Microsoft Graph read permissions during plan.
+  # Fall back to the currently authenticated OIDC principal's object ID to avoid requiring Microsoft Graph read permissions during Terraform execution.
   # This principal is configured as the PostgreSQL Entra administrator when an explicit admin object ID is not provided.
   object_id           = coalesce(var.postgresql_entra_admin_object_id, data.azurerm_client_config.current.object_id)
   principal_name      = coalesce(var.postgresql_entra_admin_name, var.application_name)

@@ -82,16 +82,14 @@ resource "azurerm_postgresql_flexible_server" "main" {
     tenant_id                     = var.tenant_id
   }
 
+  high_availability {
+    mode = "Disabled"
+  }
+
   tags = {
     environment = "dev"
     project     = "calculator"
     workflow    = "24-deploy-resources-workflow"
-  }
-
-  lifecycle {
-    // zone cannot be changed on a server with high_availability configured;
-    // changes require swapping the primary and standby availability zones.
-    ignore_changes = [zone]
   }
 }
 

@@ -1,0 +1,80 @@
+# Workflow 21: Reusable workflow caller
+# Demonstrates calling a local reusable workflow as a job with the uses keyword.
+# Docs: https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows#calling-a-reusable-workflow
+# Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses
+
+name: 21-reusable-call-workflow
+
+run-name: 21-reusable-call-workflow calls reusable workflow on ${{ github.ref_name }}
+
+on:
+  push:
+  workflow_dispatch:
+    # Manual runs can override the translation inputs without changing the workflow file.
+    inputs:
+      report_title:
+        # The reusable workflow enforces the 128-character limit so every caller gets the same validation.
+        description: Report title to translate. Maximum 128 characters.
+        required: true
+        type: string
+        default: "Advances in Neural Information Processing Systems: Attention is All You Need, 2027"
+      source_language:
+        # Two-letter language inputs use ISO 639-1 codes; nl-BE adds the ISO 3166-1 alpha-2 Belgium region code.
+        # These values are passed through to the reusable workflow and then normalized for the translation API.
+        description: Source language or locale for the report title. Use ISO 639-1 codes en, fr, de, or nl-BE for Belgian Dutch/Flemish.
+        required: true
+        type: choice
+        default: "en"
+        options:
+          - "en"
+          - "fr"
+          - "de"
+          - "nl-BE"
+      target_language:
+        # Keep source and target options aligned so the same ISO 639-1 and locale rules apply to both inputs.
+        description: Target language or locale for the report title. Use ISO 639-1 codes en, fr, de, or nl-BE for Belgian Dutch/Flemish.
+        required: true
+        type: choice
+        default: "de"
+        options:
+          - "en"
+          - "fr"
+          - "de"
+          - "nl-BE"
+
+permissions:
+  # The workflow only needs repository read access because it calls local workflow files and prints output.
+  contents: read
+
+jobs:
+  warn-when-languages-match:
+    # This warning is informational; the reusable workflow still handles same-language requests safely.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: ${{ (inputs.source_language || 'en') == (inputs.target_language || 'de') }}
+    steps:
+      - name: show-matching-language-warning
+        run: echo "::warning::Source and target languages are both '${{ inputs.source_language || 'en' }}'. The title will be returned unchanged."
+
+  call-title-translator:
+    # Local reusable workflows are called from jobs, not from steps.
+    # The reusable workflow receives explicit inputs and returns outputs like a small workflow-level function.
+    uses: ./.github/workflows/19-called-workflow.yml
+    with:
+      # The called workflow owns title validation, keeping the limit in one place for every caller.
+      report_title: "${{ inputs.report_title || 'Advances in Neural Information Processing Systems: Attention is All You Need, 2027' }}"
+      source_language: ${{ inputs.source_language || 'en' }}
+      target_language: ${{ inputs.target_language || 'de' }}
+      # Pass the caller workflow name explicitly because the called workflow runs in its own workflow context.
+      caller_workflow: ${{ github.workflow }}
+
+  display-translated-title:
+    # Downstream jobs consume reusable workflow outputs through the needs context.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: call-title-translator
+    steps:
+      - name: show-translated-title
+        run: |
+          echo "Source title: ${{ inputs.report_title || 'Advances in Neural Information Processing Systems: Attention is All You Need, 2027' }}"
+          echo "Translated title: ${{ needs.call-title-translator.outputs.translated_title }}"

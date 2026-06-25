@@ -80,19 +80,27 @@ jobs:
         run: |
           state_account_name="${TF_STATE_STORAGE_ACCOUNT_NAME:-calctfstate${{ github.repository_id }}}"
 
-          az storage account show \
+          if az storage account show \
             --name "$state_account_name" \
             --resource-group "$TF_STATE_RESOURCE_GROUP_NAME" \
-            --only-show-errors 1>/dev/null 2>&1 || \
-          az storage account create \
-            --name "$state_account_name" \
-            --resource-group "$TF_STATE_RESOURCE_GROUP_NAME" \
-            --location "$TF_STATE_LOCATION" \
-            --sku Standard_LRS \
-            --kind StorageV2 \
-            --min-tls-version TLS1_2 \
-            --allow-blob-public-access false \
-            --only-show-errors 1>/dev/null
+            --only-show-errors 1>/dev/null 2>&1; then
+            az storage account update \
+              --name "$state_account_name" \
+              --resource-group "$TF_STATE_RESOURCE_GROUP_NAME" \
+              --set tags.SecurityControl=Ignore \
+              --only-show-errors 1>/dev/null
+          else
+            az storage account create \
+              --name "$state_account_name" \
+              --resource-group "$TF_STATE_RESOURCE_GROUP_NAME" \
+              --location "$TF_STATE_LOCATION" \
+              --sku Standard_LRS \
+              --kind StorageV2 \
+              --min-tls-version TLS1_2 \
+              --allow-blob-public-access false \
+              --tags SecurityControl=Ignore \
+              --only-show-errors 1>/dev/null
+          fi
 
           account_key=$(az storage account keys list \
             --account-name "$state_account_name" \

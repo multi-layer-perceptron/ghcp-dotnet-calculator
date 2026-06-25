@@ -8,7 +8,6 @@ name: 20-reusable-call-workflow
 run-name: 20-reusable-call-workflow calls reusable workflow on ${{ github.ref_name }}
 
 on:
-  push:
   workflow_dispatch:
     # Manual runs can override the translation inputs without changing the workflow file.
     inputs:

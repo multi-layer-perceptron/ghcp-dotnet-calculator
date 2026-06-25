@@ -1,11 +1,10 @@
 # Workflow 04: Environments
-# Demonstrates jobs bound to GitHub deployment environments and environment-scoped values. Comment to demo push trigger.
+# Demonstrates jobs bound to GitHub deployment environments and environment-scoped values.
 # Docs: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/deploy-to-environment
 # Docs: https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
 
 name: 04-environments-workflow
 on:
-  push:
   workflow_dispatch:
 
 jobs:

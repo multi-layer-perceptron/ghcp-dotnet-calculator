@@ -8,7 +8,6 @@ name: 18-service-containers-workflow
 run-name: 18-service-containers-workflow service container on ${{ github.ref_name }}
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:

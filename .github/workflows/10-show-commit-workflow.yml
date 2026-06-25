@@ -8,7 +8,6 @@ name: 10-show-commit-workflow
 run-name: 10-show-commit-workflow started by ${{ github.actor }} on ${{ github.ref_name }}
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:

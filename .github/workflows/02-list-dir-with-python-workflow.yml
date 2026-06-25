@@ -5,11 +5,6 @@
 
 name: 02-list-dir-with-python-workflow
 on:
-  push:
-    branches: [main]
-    paths-ignore: [.github/**]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:

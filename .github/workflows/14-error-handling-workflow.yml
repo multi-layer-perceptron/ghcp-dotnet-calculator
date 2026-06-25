@@ -8,7 +8,6 @@ name: 14-error-handling-workflow
 run-name: 14-error-handling-workflow experimental matrix handling on ${{ github.ref_name }}
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:

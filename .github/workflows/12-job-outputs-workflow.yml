@@ -8,7 +8,6 @@ name: 12-job-outputs-workflow
 run-name: 12-job-outputs-workflow passes job outputs on ${{ github.ref_name }}
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:

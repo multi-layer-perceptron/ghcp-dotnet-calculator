@@ -5,7 +5,6 @@
 name: 08-timeouts-workflow
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:

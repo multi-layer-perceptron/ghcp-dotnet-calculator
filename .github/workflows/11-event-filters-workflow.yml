@@ -3,25 +3,6 @@ name: 11-event-filters-workflow
 run-name: 11-event-filters-workflow filtered run for ${{ github.ref_name }}
 
 on:
-  push:
-    branches:
-      - main
-      - releases/**
-    paths:
-      - src/**
-      - scripts/**
-      - .github/workflows/11-event-filters-workflow.yml
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-    branches:
-      - main
-    paths:
-      - src/**
-      - scripts/**
-      - .github/workflows/11-event-filters-workflow.yml
   workflow_dispatch:
 
 permissions:

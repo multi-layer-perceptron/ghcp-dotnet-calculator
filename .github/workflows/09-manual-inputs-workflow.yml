@@ -6,7 +6,6 @@
 name: 09-manual-inputs-workflow
 
 on:
-  push:
   workflow_dispatch:
     # Manual inputs are available through the inputs context during workflow_dispatch runs.
     inputs:

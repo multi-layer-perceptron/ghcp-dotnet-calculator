@@ -3,7 +3,6 @@ name: 15-dependency-cache-workflow
 run-name: 15-dependency-cache-workflow restores a NuGet cache on ${{ github.ref_name }}
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:

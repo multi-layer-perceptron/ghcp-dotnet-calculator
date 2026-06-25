@@ -60,7 +60,7 @@ jobs:
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
 
       - name: azure-login
-        uses: Azure/login@1384c340ab2dda50fed2bee3041d1d87018aa5e8
+        uses: Azure/login@2
         with:
           client-id: ${{ env.ARM_CLIENT_ID }}
           tenant-id: ${{ env.ARM_TENANT_ID }}

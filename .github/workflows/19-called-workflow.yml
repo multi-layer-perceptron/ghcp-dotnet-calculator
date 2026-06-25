@@ -141,6 +141,18 @@ jobs:
               "The Future is Faster Than You Think - Peter Diamandis (2020)|nl-BE")
                 translated_title="De toekomst is sneller dan u denkt - Peter Diamandis (2020)"
                 ;;
+              "Be Your Future Self Now: The Science of Intentional Transformation (Benjamin Hardy, 2022)|en")
+                translated_title="Be Your Future Self Now: The Science of Intentional Transformation (Benjamin Hardy, 2022)"
+                ;;
+              "Be Your Future Self Now: The Science of Intentional Transformation (Benjamin Hardy, 2022)|fr")
+                translated_title="Soyez votre futur soi dès maintenant : la science de la transformation intentionnelle (Benjamin Hardy, 2022)"
+                ;;
+              "Be Your Future Self Now: The Science of Intentional Transformation (Benjamin Hardy, 2022)|de")
+                translated_title="Seien Sie jetzt Ihr zukünftiges Selbst: Die Wissenschaft der intentionalen Transformation (Benjamin Hardy, 2022)"
+                ;;
+              "Be Your Future Self Now: The Science of Intentional Transformation (Benjamin Hardy, 2022)|nl-BE")
+                translated_title="Wees nu uw toekomstige zelf: de wetenschap van intentionele transformatie (Benjamin Hardy, 2022)"
+                ;;
               *)
                 echo "::error::No deterministic translation is configured for report title '$report_title' and target language '$target_language'."
                 exit 1

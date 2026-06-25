@@ -120,7 +120,9 @@ jobs:
             -backend-config="key=24-postgresql-flexible-server.tfstate"
 
       - name: terraform-format-check
-        run: terraform fmt -check -recursive
+        run: |
+          cd infra/terraform/24-postgresql-flexible-server
+          terraform fmt -check -diff -recursive
 
       - name: terraform-validate
         run: terraform validate

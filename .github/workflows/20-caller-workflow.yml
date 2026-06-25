@@ -76,4 +76,5 @@ jobs:
     steps:
       - name: show-translated-title
         run: |
+          echo "Source title: ${{ inputs.report_title || 'The quick brown fox jumps over the lazy dog' }}"
           echo "Translated title: ${{ needs.call-title-translator.outputs.translated_title }}"

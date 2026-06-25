@@ -35,4 +35,8 @@ jobs:
       - name: list-workflow-count
         run: |
           $workflowCount = (Get-ChildItem -Path .github/workflows -Filter '??-*-workflow.yml').Count
+          $workflowNameList = (Get-ChildItem -Path .github/workflows -Filter '??-*-workflow.yml').Name
+          foreach ($workflowName in $workflowNameList) {
+              Write-Output "Workflow: $workflowName"
+          }
           Write-Output "Staged workflow count: $workflowCount"

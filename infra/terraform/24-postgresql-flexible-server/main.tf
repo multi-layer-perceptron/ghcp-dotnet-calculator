@@ -76,7 +76,8 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ma
   server_name         = azurerm_postgresql_flexible_server.main.name
   resource_group_name = data.azurerm_resource_group.main.name
   tenant_id           = var.tenant_id
-  # Fall back to the currently authenticated OIDC principal to avoid requiring Microsoft Graph read permissions during plan.
+  # Fall back to the currently authenticated OIDC principal's object ID to avoid requiring Microsoft Graph read permissions during plan.
+  # This principal is configured as the PostgreSQL Entra administrator when an explicit admin object ID is not provided.
   object_id           = coalesce(var.postgresql_entra_admin_object_id, data.azurerm_client_config.current.object_id)
   principal_name      = coalesce(var.postgresql_entra_admin_name, var.application_name)
   principal_type      = var.postgresql_entra_admin_type

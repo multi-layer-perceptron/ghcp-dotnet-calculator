@@ -91,25 +91,46 @@ jobs:
               ;;
           esac
 
+          case "$target_language" in
+            en|fr|de|nl-BE)
+              ;;
+            *)
+              echo "::error::Unsupported target language '$target_language'."
+              exit 1
+              ;;
+          esac
+
           if [ "$source_language" = "$target_language" ]; then
             # Do not translate when source and target are already the same.
             translated_title="$report_title"
           else
-            case "$target_language" in
-              en)
+            case "$report_title|$target_language" in
+              "The quick brown fox jumps over the lazy dog|en")
                 translated_title="The quick brown fox jumps over the lazy dog"
                 ;;
-              fr)
+              "The quick brown fox jumps over the lazy dog|fr")
                 translated_title="Le vif renard brun saute par-dessus le chien paresseux"
                 ;;
-              de)
+              "The quick brown fox jumps over the lazy dog|de")
                 translated_title="Der schnelle braune Fuchs springt über den faulen Hund"
                 ;;
-              nl-BE)
+              "The quick brown fox jumps over the lazy dog|nl-BE")
                 translated_title="De snelle bruine vos springt over de luie hond"
                 ;;
+              "Advances in Neural Information Processing Systems: Attention is All You Need, 2027|en")
+                translated_title="Advances in Neural Information Processing Systems: Attention is All You Need, 2027"
+                ;;
+              "Advances in Neural Information Processing Systems: Attention is All You Need, 2027|fr")
+                translated_title="Avancées dans les systèmes de traitement de l'information neuronale : L'attention est tout ce dont vous avez besoin, 2027"
+                ;;
+              "Advances in Neural Information Processing Systems: Attention is All You Need, 2027|de")
+                translated_title="Fortschritte in neuronalen Informationsverarbeitungssystemen: Aufmerksamkeit ist alles, was Sie brauchen, 2027"
+                ;;
+              "Advances in Neural Information Processing Systems: Attention is All You Need, 2027|nl-BE")
+                translated_title="Vooruitgang in neurale informatieverwerkingssystemen: Aandacht is alles wat u nodig hebt, 2027"
+                ;;
               *)
-                echo "::error::Unsupported target language '$target_language'."
+                echo "::error::No deterministic translation is configured for report title '$report_title' and target language '$target_language'."
                 exit 1
                 ;;
             esac

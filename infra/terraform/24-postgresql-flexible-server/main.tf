@@ -45,6 +45,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
   name                          = var.postgresql_server_name
   resource_group_name           = data.azurerm_resource_group.main.name
   location                      = var.location
+  zone                          = var.postgresql_zone
   version                       = var.postgresql_version
   sku_name                      = var.postgresql_sku_name
   storage_mb                    = var.postgresql_storage_mb

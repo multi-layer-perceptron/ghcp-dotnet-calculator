@@ -139,7 +139,7 @@ jobs:
           POSTGRESQL_ADMIN_USERNAME_SECRET_NAME: postgresql-admin-username
           POSTGRESQL_ADMIN_PASSWORD_SECRET_NAME: postgresql-admin-password
         run: |
-          secret_expiry_utc=$(date -u -d '+30 days' '+%Y-%m-%dT%H:%M:%SZ')
+          secret_expiry_utc=$(python -c "from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) + timedelta(days=30)).strftime('%Y-%m-%dT%H:%M:%SZ'))")
 
           for attempt in 1 2 3 4 5; do
             if az keyvault secret set \

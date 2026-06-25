@@ -55,6 +55,12 @@ variable "postgresql_database_name" {
   default     = "calculator_test_data"
 }
 
+variable "postgresql_zone" {
+  description = "Availability zone for the PostgreSQL Flexible Server primary instance"
+  type        = string
+  default     = "2"
+}
+
 variable "postgresql_version" {
   description = "PostgreSQL major version"
   type        = string

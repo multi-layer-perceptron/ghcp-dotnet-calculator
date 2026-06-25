@@ -4,31 +4,26 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
+locals {
+  github_oidc_subject = "repo:${var.github_repository}:ref:${var.github_ref}"
+}
+
 // =====================================================
 // GitHub OIDC Identity
 // =====================================================
 
-resource "azuread_application" "main" {
+data "azuread_application" "main" {
   display_name = var.application_name
 }
 
-resource "azuread_service_principal" "main" {
-  client_id = azuread_application.main.client_id
-}
-
-resource "azuread_application_federated_identity_credential" "github_main" {
-  application_id = azuread_application.main.id
-  display_name   = "github-main"
-  description    = "GitHub Actions OIDC federation for ${var.github_repository} ${var.github_ref}"
-  audiences      = ["api://AzureADTokenExchange"]
-  issuer         = "https://token.actions.githubusercontent.com"
-  subject        = "repo:${var.github_repository}:ref:${var.github_ref}"
+data "azuread_service_principal" "main" {
+  client_id = data.azuread_application.main.client_id
 }
 
 resource "azurerm_role_assignment" "github_oidc_contributor" {
   scope                = data.azurerm_resource_group.main.id
   role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.main.object_id
+  principal_id         = data.azuread_service_principal.main.object_id
 }
 
 // =====================================================
@@ -43,7 +38,7 @@ resource "azurerm_key_vault" "main" {
   sku_name                      = "standard"
   rbac_authorization_enabled    = true
   public_network_access_enabled = true
-  purge_protection_enabled      = false
+  purge_protection_enabled      = true
   soft_delete_retention_days    = 7
 
   tags = {
@@ -56,7 +51,7 @@ resource "azurerm_key_vault" "main" {
 resource "azurerm_role_assignment" "github_oidc_key_vault_secrets_officer" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = azuread_service_principal.main.object_id
+  principal_id         = data.azuread_service_principal.main.object_id
 }
 
 resource "azurerm_role_assignment" "current_identity_key_vault_secrets_officer" {
@@ -92,6 +87,12 @@ resource "azurerm_postgresql_flexible_server" "main" {
     project     = "calculator"
     workflow    = "24-deploy-resources-workflow"
   }
+
+  lifecycle {
+    // zone cannot be changed on a server with high_availability configured;
+    // changes require swapping the primary and standby availability zones.
+    ignore_changes = [zone]
+  }
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure_services" {
@@ -105,7 +106,7 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ma
   server_name         = azurerm_postgresql_flexible_server.main.name
   resource_group_name = data.azurerm_resource_group.main.name
   tenant_id           = var.tenant_id
-  object_id           = coalesce(var.postgresql_entra_admin_object_id, azuread_service_principal.main.object_id)
+  object_id           = coalesce(var.postgresql_entra_admin_object_id, data.azuread_service_principal.main.object_id)
   principal_name      = coalesce(var.postgresql_entra_admin_name, var.application_name)
   principal_type      = var.postgresql_entra_admin_type
 }

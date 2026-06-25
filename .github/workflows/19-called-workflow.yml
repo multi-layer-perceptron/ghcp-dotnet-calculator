@@ -129,6 +129,18 @@ jobs:
               "Advances in Neural Information Processing Systems: Attention is All You Need, 2027|nl-BE")
                 translated_title="Vooruitgang in neurale informatieverwerkingssystemen: Aandacht is alles wat u nodig hebt, 2027"
                 ;;
+              "The Future is Faster Than You Think - Peter Diamandis (2020)|en")
+                translated_title="The Future is Faster Than You Think - Peter Diamandis (2020)"
+                ;;
+              "The Future is Faster Than You Think - Peter Diamandis (2020)|fr")
+                translated_title="L'avenir est plus rapide que vous ne le pensez - Peter Diamandis (2020)"
+                ;;
+              "The Future is Faster Than You Think - Peter Diamandis (2020)|de")
+                translated_title="Die Zukunft ist schneller, als Sie denken - Peter Diamandis (2020)"
+                ;;
+              "The Future is Faster Than You Think - Peter Diamandis (2020)|nl-BE")
+                translated_title="De toekomst is sneller dan u denkt - Peter Diamandis (2020)"
+                ;;
               *)
                 echo "::error::No deterministic translation is configured for report title '$report_title' and target language '$target_language'."
                 exit 1

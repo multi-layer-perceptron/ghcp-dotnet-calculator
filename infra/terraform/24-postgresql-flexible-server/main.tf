@@ -82,10 +82,6 @@ resource "azurerm_postgresql_flexible_server" "main" {
     tenant_id                     = var.tenant_id
   }
 
-  high_availability {
-    mode = "Disabled"
-  }
-
   tags = {
     environment = "dev"
     project     = "calculator"

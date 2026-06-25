@@ -35,8 +35,4 @@ jobs:
 
       - name: simulate-check-result
         run: |
-          if [ "${{ matrix.check_name }}" = "experimental" ]; then
-            echo "Simulating a tolerated failure for the experimental row."
-            exit 1
-          fi
-          echo "Stable row completed successfully."
+          echo "${{ matrix.check_name }} row completed successfully."

@@ -45,6 +45,7 @@ jobs:
         working-directory: infra/terraform/24-postgresql-flexible-server
     steps:
       - name: validate-oidc-configuration
+        working-directory: .
         run: |
           if [ -z "$ARM_CLIENT_ID" ]; then
             echo "::error::Provide the calc-project-app-01 application client ID in the azure_client_id workflow input after bootstrap."

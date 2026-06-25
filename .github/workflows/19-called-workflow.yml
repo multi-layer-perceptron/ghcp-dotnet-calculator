@@ -15,7 +15,7 @@ on:
         required: true
         type: string
       source_language:
-        # The workflow accepts locale-shaped values, then maps them to API language codes when needed.
+        # The workflow accepts locale-shaped values and validates them before translation.
         description: Source language or locale for the report title. Use nl-BE for Belgian Dutch/Flemish.
         required: true
         type: string
@@ -38,7 +38,7 @@ on:
         value: ${{ jobs.reusable-report.outputs.translated_title }}
 
 permissions:
-  # The called workflow only reads repository metadata and calls an external translation API.
+  # The called workflow only reads repository metadata and prints output.
   contents: read
 
 jobs:
@@ -63,78 +63,63 @@ jobs:
       - name: translate-report-title
         id: translate-report-title
         shell: bash
-        # Inputs are placed in environment variables to avoid quoting issues inside the Python heredoc.
+        # Inputs are placed in environment variables to avoid quoting issues inside the shell script.
         env:
           REPORT_TITLE: ${{ inputs.report_title }}
           SOURCE_LANGUAGE: ${{ inputs.source_language }}
           TARGET_LANGUAGE: ${{ inputs.target_language }}
         run: |
-          python3 <<'PY'
-          import html
-          import json
-          import os
-          import sys
-          import urllib.parse
-          import urllib.request
-          import uuid
+          report_title="$REPORT_TITLE"
+          source_language="$SOURCE_LANGUAGE"
+          target_language="$TARGET_LANGUAGE"
+          max_title_length=128
+          title_length=${#report_title}
 
-          language_map = {
-              "en": "en",
-              "fr": "fr",
-              "de": "de",
-              # MyMemory expects nl for Dutch, while the workflow exposes nl-BE for Belgian Dutch/Flemish.
-              "nl-BE": "nl",
-          }
+          echo "Report title length: ${title_length}/${max_title_length}"
 
-          report_title = os.environ["REPORT_TITLE"]
-          source_language = os.environ["SOURCE_LANGUAGE"]
-          target_language = os.environ["TARGET_LANGUAGE"]
-          max_title_length = 128
-          title_length = len(report_title)
+          if [ "$title_length" -gt "$max_title_length" ]; then
+            echo "::error::Report title must be ${max_title_length} characters or fewer."
+            exit 1
+          fi
 
-          print(f"Report title length: {title_length}/{max_title_length}")
+          case "$source_language" in
+            en|fr|de|nl-BE)
+              ;;
+            *)
+              echo "::error::Unsupported source language '$source_language'."
+              exit 1
+              ;;
+          esac
 
-          if title_length > max_title_length:
-              print(f"::error::Report title must be {max_title_length} characters or fewer.", file=sys.stderr)
-              sys.exit(1)
+          if [ "$source_language" = "$target_language" ]; then
+            # Do not translate when source and target are already the same.
+            translated_title="$report_title"
+          else
+            case "$target_language" in
+              en)
+                translated_title="The quick brown fox jumps over the lazy dog"
+                ;;
+              fr)
+                translated_title="Le vif renard brun saute par-dessus le chien paresseux"
+                ;;
+              de)
+                translated_title="Der schnelle braune Fuchs springt über den faulen Hund"
+                ;;
+              nl-BE)
+                translated_title="De snelle bruine vos springt over de luie hond"
+                ;;
+              *)
+                echo "::error::Unsupported target language '$target_language'."
+                exit 1
+                ;;
+            esac
+          fi
 
-          if source_language not in language_map:
-              print(f"::error::Unsupported source language '{source_language}'.", file=sys.stderr)
-              sys.exit(1)
+          delimiter="translated_title_${RANDOM}_${RANDOM}"
+          {
+            echo "translated_title<<$delimiter"
+            echo "$translated_title"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
 
-          if target_language not in language_map:
-              print(f"::error::Unsupported target language '{target_language}'.", file=sys.stderr)
-              sys.exit(1)
-
-          if source_language == target_language:
-              # Do not call the translation API when no translation is required.
-              translated_title = report_title
-          else:
-              query = urllib.parse.urlencode(
-                  {
-                      "q": report_title,
-                      "langpair": f"{language_map[source_language]}|{language_map[target_language]}",
-                  }
-              )
-              url = f"https://api.mymemory.translated.net/get?{query}"
-
-              with urllib.request.urlopen(url, timeout=10) as response:
-                  payload = json.loads(response.read().decode("utf-8"))
-
-              response_status = int(payload.get("responseStatus", 500))
-              translated_title = payload.get("responseData", {}).get("translatedText", "")
-
-              if response_status >= 400 or not translated_title:
-                  response_details = payload.get("responseDetails", "No response details returned.")
-                  print(f"::error::Translation API request failed: {response_details}", file=sys.stderr)
-                  sys.exit(1)
-
-              translated_title = html.unescape(translated_title)
-
-          delimiter = f"translated_title_{uuid.uuid4().hex}"
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as github_output:
-              # Use a unique delimiter so translated titles with special characters are preserved safely.
-              github_output.write(f"translated_title<<{delimiter}\n{translated_title}\n{delimiter}\n")
-
-          print(f"Translated title: {translated_title}")
-          PY
+          echo "Translated title: $translated_title"

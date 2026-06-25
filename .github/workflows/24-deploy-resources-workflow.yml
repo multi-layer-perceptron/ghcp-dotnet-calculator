@@ -139,16 +139,20 @@ jobs:
           POSTGRESQL_ADMIN_USERNAME_SECRET_NAME: postgresql-admin-username
           POSTGRESQL_ADMIN_PASSWORD_SECRET_NAME: postgresql-admin-password
         run: |
+          secret_expiry_utc=$(date -u -d '+30 days' '+%Y-%m-%dT%H:%M:%SZ')
+
           for attempt in 1 2 3 4 5; do
             if az keyvault secret set \
               --vault-name "$KEY_VAULT_NAME" \
               --name "$POSTGRESQL_ADMIN_USERNAME_SECRET_NAME" \
               --value "$TF_VAR_postgresql_admin_username" \
+              --expires "$secret_expiry_utc" \
               --only-show-errors 1>/dev/null && \
               az keyvault secret set \
                 --vault-name "$KEY_VAULT_NAME" \
                 --name "$POSTGRESQL_ADMIN_PASSWORD_SECRET_NAME" \
                 --value "$TF_VAR_postgresql_admin_password" \
+                --expires "$secret_expiry_utc" \
                 --only-show-errors 1>/dev/null; then
               echo "PostgreSQL credentials were stored in Key Vault $KEY_VAULT_NAME."
               exit 0

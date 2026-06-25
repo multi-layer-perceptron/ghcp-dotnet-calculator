@@ -9,24 +9,6 @@ locals {
 }
 
 // =====================================================
-// GitHub OIDC Identity
-// =====================================================
-
-data "azuread_application" "main" {
-  display_name = var.application_name
-}
-
-data "azuread_service_principal" "main" {
-  client_id = data.azuread_application.main.client_id
-}
-
-resource "azurerm_role_assignment" "github_oidc_contributor" {
-  scope                = data.azurerm_resource_group.main.id
-  role_definition_name = "Contributor"
-  principal_id         = data.azuread_service_principal.main.object_id
-}
-
-// =====================================================
 // Key Vault
 // =====================================================
 
@@ -46,12 +28,6 @@ resource "azurerm_key_vault" "main" {
     project     = "calculator"
     workflow    = "24-deploy-resources-workflow"
   }
-}
-
-resource "azurerm_role_assignment" "github_oidc_key_vault_secrets_officer" {
-  scope                = azurerm_key_vault.main.id
-  role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azuread_service_principal.main.object_id
 }
 
 resource "azurerm_role_assignment" "current_identity_key_vault_secrets_officer" {
@@ -100,7 +76,7 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ma
   server_name         = azurerm_postgresql_flexible_server.main.name
   resource_group_name = data.azurerm_resource_group.main.name
   tenant_id           = var.tenant_id
-  object_id           = coalesce(var.postgresql_entra_admin_object_id, data.azuread_service_principal.main.object_id)
+  object_id           = coalesce(var.postgresql_entra_admin_object_id, data.azurerm_client_config.current.object_id)
   principal_name      = coalesce(var.postgresql_entra_admin_name, var.application_name)
   principal_type      = var.postgresql_entra_admin_type
 }

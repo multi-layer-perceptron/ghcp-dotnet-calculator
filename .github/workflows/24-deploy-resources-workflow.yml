@@ -147,12 +147,14 @@ jobs:
               --name "$POSTGRESQL_ADMIN_USERNAME_SECRET_NAME" \
               --value "$TF_VAR_postgresql_admin_username" \
               --expires "$secret_expiry_utc" \
+              --content-type "text/plain" \
               --only-show-errors 1>/dev/null && \
               az keyvault secret set \
                 --vault-name "$KEY_VAULT_NAME" \
                 --name "$POSTGRESQL_ADMIN_PASSWORD_SECRET_NAME" \
                 --value "$TF_VAR_postgresql_admin_password" \
                 --expires "$secret_expiry_utc" \
+                --content-type "text/plain" \
                 --only-show-errors 1>/dev/null; then
               echo "PostgreSQL credentials were stored in Key Vault $KEY_VAULT_NAME."
               exit 0

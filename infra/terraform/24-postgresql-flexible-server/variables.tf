@@ -55,6 +55,12 @@ variable "postgresql_database_name" {
   default     = "calculator_test_data"
 }
 
+variable "postgresql_zone" {
+  description = "Availability zone for the PostgreSQL Flexible Server primary instance"
+  type        = string
+  default     = "2"
+}
+
 variable "postgresql_version" {
   description = "PostgreSQL major version"
   type        = string
@@ -113,4 +119,29 @@ variable "postgresql_entra_admin_type" {
   description = "Entra principal type for the PostgreSQL administrator"
   type        = string
   default     = "ServicePrincipal"
+}
+
+variable "postgresql_additional_entra_admin_object_id" {
+  description = "Entra object ID of the additional PostgreSQL administrator. Required when postgresql_additional_entra_admin_name is set."
+  type        = string
+  default     = null
+
+  validation {
+    condition = (
+      var.postgresql_additional_entra_admin_object_id == null
+    ) == (var.postgresql_additional_entra_admin_name == null)
+    error_message = "postgresql_additional_entra_admin_object_id and postgresql_additional_entra_admin_name must both be set or both be null."
+  }
+}
+
+variable "postgresql_additional_entra_admin_name" {
+  description = "UPN or display name of the additional Entra principal to configure as PostgreSQL administrator"
+  type        = string
+  default     = null
+}
+
+variable "postgresql_additional_entra_admin_type" {
+  description = "Entra principal type for the additional PostgreSQL administrator (User, Group, or ServicePrincipal)"
+  type        = string
+  default     = "User"
 }

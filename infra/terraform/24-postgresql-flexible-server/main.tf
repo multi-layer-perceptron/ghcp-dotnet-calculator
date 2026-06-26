@@ -45,6 +45,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
   name                          = var.postgresql_server_name
   resource_group_name           = data.azurerm_resource_group.main.name
   location                      = var.location
+  zone                          = var.postgresql_zone
   version                       = var.postgresql_version
   sku_name                      = var.postgresql_sku_name
   storage_mb                    = var.postgresql_storage_mb
@@ -79,9 +80,19 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ma
   tenant_id           = var.tenant_id
   # Fall back to the currently authenticated OIDC principal's object ID to avoid requiring Microsoft Graph read permissions during Terraform execution.
   # This principal is configured as the PostgreSQL Entra administrator when an explicit admin object ID is not provided.
-  object_id           = coalesce(var.postgresql_entra_admin_object_id, data.azurerm_client_config.current.object_id)
-  principal_name      = coalesce(var.postgresql_entra_admin_name, var.application_name)
-  principal_type      = var.postgresql_entra_admin_type
+  object_id      = coalesce(var.postgresql_entra_admin_object_id, data.azurerm_client_config.current.object_id)
+  principal_name = coalesce(var.postgresql_entra_admin_name, var.application_name)
+  principal_type = var.postgresql_entra_admin_type
+}
+
+resource "azurerm_postgresql_flexible_server_active_directory_administrator" "additional" {
+  count               = (var.postgresql_additional_entra_admin_object_id != null && var.postgresql_additional_entra_admin_name != null) ? 1 : 0
+  server_name         = azurerm_postgresql_flexible_server.main.name
+  resource_group_name = data.azurerm_resource_group.main.name
+  tenant_id           = var.tenant_id
+  object_id           = var.postgresql_additional_entra_admin_object_id
+  principal_name      = var.postgresql_additional_entra_admin_name
+  principal_type      = var.postgresql_additional_entra_admin_type
 }
 
 resource "azurerm_postgresql_flexible_server_database" "main" {

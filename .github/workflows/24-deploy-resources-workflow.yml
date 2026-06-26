@@ -39,6 +39,7 @@ env:
 jobs:
   terraform-plan:
     name: Terraform plan
+    if: ${{ inputs.terraform_action == 'plan' || inputs.terraform_action == 'apply' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     environment: plan

@@ -85,6 +85,16 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ma
   principal_type = var.postgresql_entra_admin_type
 }
 
+resource "azurerm_postgresql_flexible_server_active_directory_administrator" "additional" {
+  count               = (var.postgresql_additional_entra_admin_object_id != null && var.postgresql_additional_entra_admin_name != null) ? 1 : 0
+  server_name         = azurerm_postgresql_flexible_server.main.name
+  resource_group_name = data.azurerm_resource_group.main.name
+  tenant_id           = var.tenant_id
+  object_id           = var.postgresql_additional_entra_admin_object_id
+  principal_name      = var.postgresql_additional_entra_admin_name
+  principal_type      = var.postgresql_additional_entra_admin_type
+}
+
 resource "azurerm_postgresql_flexible_server_database" "main" {
   name      = var.postgresql_database_name
   server_id = azurerm_postgresql_flexible_server.main.id

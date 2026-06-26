@@ -20,6 +20,14 @@ on:
         description: Application client ID for calc-project-app-01 after bootstrap federation is created.
         required: true
         type: string
+      postgresql_additional_entra_admin_object_id:
+        description: Optional Entra object ID of autocloudarc@autocloudarc.dev to register as an additional PostgreSQL Entra administrator.
+        required: false
+        type: string
+      postgresql_additional_entra_admin_name:
+        description: Optional UPN of the additional PostgreSQL Entra administrator (e.g. autocloudarc@autocloudarc.dev). Required when postgresql_additional_entra_admin_object_id is provided.
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -35,6 +43,8 @@ env:
   TF_VAR_tenant_id: 54d665dd-30f1-45c5-a8d5-d6ffcdb518f9
   TF_VAR_postgresql_admin_password: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
   TF_VAR_postgresql_admin_username: postgres_user
+  TF_VAR_postgresql_additional_entra_admin_object_id: ${{ inputs.postgresql_additional_entra_admin_object_id }}
+  TF_VAR_postgresql_additional_entra_admin_name: ${{ inputs.postgresql_additional_entra_admin_name }}
 
 jobs:
   terraform:

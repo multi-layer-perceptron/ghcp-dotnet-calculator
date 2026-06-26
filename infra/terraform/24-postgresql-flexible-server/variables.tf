@@ -43,6 +43,18 @@ variable "key_vault_name" {
   default     = "calc-kvt-01"
 }
 
+variable "key_vault_additional_secrets_officer_object_id" {
+  description = "Optional Entra object ID to assign as an additional Key Vault Secrets Officer"
+  type        = string
+  default     = null
+}
+
+variable "key_vault_additional_secrets_officer_name" {
+  description = "Optional display name or UPN for the additional Key Vault Secrets Officer"
+  type        = string
+  default     = null
+}
+
 variable "postgresql_server_name" {
   description = "Globally unique Azure Database for PostgreSQL Flexible Server name"
   type        = string

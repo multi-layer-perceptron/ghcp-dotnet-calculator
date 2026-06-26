@@ -37,6 +37,13 @@ resource "azurerm_role_assignment" "current_identity_key_vault_secrets_officer" 
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+resource "azurerm_role_assignment" "additional_key_vault_secrets_officer" {
+  count                = var.key_vault_additional_secrets_officer_object_id != null ? 1 : 0
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = var.key_vault_additional_secrets_officer_object_id
+}
+
 // =====================================================
 // PostgreSQL Flexible Server
 // =====================================================

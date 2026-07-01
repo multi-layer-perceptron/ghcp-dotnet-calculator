@@ -20,4 +20,9 @@
   <ItemGroup>
     <ProjectReference Include="..\calculator\calculator.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="TestCases.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

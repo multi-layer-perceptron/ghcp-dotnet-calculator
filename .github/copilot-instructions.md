@@ -313,3 +313,77 @@ For Copilot CLI sessions, use `/skills reload`, `/skills list`, and `/skills inf
 - [Agent Definitions](agents/)
 - [Workflow Examples](workflows/)
 - [Prompt Library](prompts/)
+
+## PRD Format Template
+
+## 1.1 Document Information
+
+## 1.2 Executive Summary
+
+## 1.3 Problem Statement
+
+## 1.4 Goals And Objectives
+
+## 1.5 Scope
+
+### 1.5.1 In Scope
+
+### 1.5.2 Out Of Scope
+
+## 1.6 Requirements
+
+### 1.6.1 Epic Requirements
+
+### 1.6.2 User Stories And Use Cases
+
+## 1.7 Functional Requirements
+
+## 1.8 Non-Functional Requirements
+
+## 1.9 Assumptions And Dependencies
+
+### 1.9.1 Package Versions
+
+## 1.10 Success Criteria
+
+## 1.11 Milestones And Timeline
+
+### 1.11.1 Setup Script
+
+### 1.11.2 Initial Implementation
+
+### 1.11.3 Refactoring
+
+### 1.11.4 Testing
+
+### 1.11.5 Final Improvements
+
+### 1.11.6 Documentation
+
+## 1.12 Implementation Guidance
+
+### 1.12.1 Solution Setup
+
+### 1.12.2 Calculator Implementation
+
+### 1.12.3 Refactoring Steps
+
+### 1.12.4 Testing Strategy
+
+## 1.13 Cleanup Solution
+
+## 1.14 Additional Learning Outcomes
+
+## 1.15 Troubleshooting Guide
+
+### 1.15.1 Build Error CS8803: Top-Level Statements Must Precede Declarations
+
+### 1.15.2 Unexpected Test Discovery Count
+
+### 1.15.3 Target Framework Mismatch
+
+### 1.15.4 Test File Corrupted Or Reverted
+
+### 1.15.5 Build Succeeds But Tests Do Not Run
+
+### 1.15.6 Setup Script Creates Projects Targeting The Wrong Framework

@@ -1,13 +1,12 @@
-#!/usr/bin/env pwsh
 #Requires -Version 7.0
 
 <#
 .SYNOPSIS
-    Creates the .NET 8 calculator solution workspace.
+    Creates the .NET 8 calculator solution with a console app and xUnit test project.
 .DESCRIPTION
-    Scaffolds a console calculator project and xUnit test project under
-    src/workspace/calculator-xunit-testing, pins the package versions required
-    by the setup PRD, adds project references, and verifies build/test discovery.
+    Initializes src/workspace/calculator-xunit-testing with a calculator.slnx file,
+    a net8.0 console application, a net8.0 xUnit test project, pinned test package
+    versions, project references, renamed starter files, and setup verification output.
 .EXAMPLE
     ./Set-DotnetSlnForCalculator.ps1
 .NOTES
@@ -21,9 +20,7 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 #region Functions
-function Write-Status
-{
-    [CmdletBinding()]
+function Write-Status {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Message,
@@ -43,30 +40,25 @@ function Write-Status
     Write-Host "[$Level] $Message" -ForegroundColor $Color
 }
 
-function Invoke-DotnetCommand
-{
-    [CmdletBinding()]
+function Invoke-DotNetCommand {
     param(
         [Parameter(Mandatory = $true)]
         [string[]]$Arguments,
 
         [Parameter(Mandatory = $true)]
-        [string]$Description
+        [string]$FailureMessage
     )
 
-    Write-Status -Message $Description
-    $Result = & dotnet @Arguments 2>&1
+    $Output = & dotnet @Arguments 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Host $Result
-        throw "dotnet command failed: dotnet $($Arguments -join ' ')"
+        Write-Host $Output
+        throw $FailureMessage
     }
 
-    return $Result
+    return $Output
 }
 
-function Set-ProjectProperty
-{
-    [CmdletBinding()]
+function Set-ProjectProperty {
     param(
         [Parameter(Mandatory = $true)]
         [xml]$ProjectXml,
@@ -84,18 +76,16 @@ function Set-ProjectProperty
         $ProjectXml.Project.AppendChild($PropertyGroup) | Out-Null
     }
 
-    $Property = $PropertyGroup.SelectSingleNode($Name)
-    if ($null -eq $Property) {
-        $Property = $ProjectXml.CreateElement($Name)
-        $PropertyGroup.AppendChild($Property) | Out-Null
+    $Node = $PropertyGroup.SelectSingleNode($Name)
+    if ($null -eq $Node) {
+        $Node = $ProjectXml.CreateElement($Name)
+        $PropertyGroup.AppendChild($Node) | Out-Null
     }
 
-    $Property.InnerText = $Value
+    $Node.InnerText = $Value
 }
 
-function Set-PackageVersion
-{
-    [CmdletBinding()]
+function Set-PackageVersion {
     param(
         [Parameter(Mandatory = $true)]
         [xml]$ProjectXml,
@@ -109,7 +99,7 @@ function Set-PackageVersion
 
     $PackageNode = $ProjectXml.SelectSingleNode("//PackageReference[@Include='$PackageName']")
     if ($null -eq $PackageNode) {
-        $ItemGroup = $ProjectXml.SelectSingleNode('//ItemGroup[PackageReference]')
+        $ItemGroup = $ProjectXml.Project.ItemGroup | Select-Object -First 1
         if ($null -eq $ItemGroup) {
             $ItemGroup = $ProjectXml.CreateElement('ItemGroup')
             $ProjectXml.Project.AppendChild($ItemGroup) | Out-Null
@@ -123,9 +113,7 @@ function Set-PackageVersion
     $PackageNode.SetAttribute('Version', $Version)
 }
 
-function Save-ProjectXml
-{
-    [CmdletBinding()]
+function Save-ProjectXml {
     param(
         [Parameter(Mandatory = $true)]
         [xml]$ProjectXml,
@@ -136,8 +124,7 @@ function Save-ProjectXml
 
     $Settings = [System.Xml.XmlWriterSettings]::new()
     $Settings.Indent = $true
-    $Settings.OmitXmlDeclaration = $true
-    $Settings.NewLineChars = [Environment]::NewLine
+    $Settings.Encoding = [System.Text.UTF8Encoding]::new($false)
 
     $Writer = [System.Xml.XmlWriter]::Create($Path, $Settings)
     try {
@@ -148,186 +135,177 @@ function Save-ProjectXml
     }
 }
 
-function Rename-GeneratedFile
-{
-    [CmdletBinding()]
+function Test-SolutionContainsProject {
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$SourcePath,
-
-        [Parameter(Mandatory = $true)]
-        [string]$DestinationName
-    )
-
-    if (Test-Path -Path $SourcePath) {
-        Rename-Item -Path $SourcePath -NewName $DestinationName -Force
-        Write-Status -Message "Renamed $SourcePath to $DestinationName" -Level 'Success'
-    }
-}
-
-function New-VerificationReport
-{
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$ReportPath,
-
         [Parameter(Mandatory = $true)]
         [string]$SolutionFile,
 
         [Parameter(Mandatory = $true)]
-        [string]$CalculatorProject,
+        [string]$ProjectPath
+    )
+
+    $Projects = Invoke-DotNetCommand -Arguments @('sln', $SolutionFile, 'list') -FailureMessage 'Unable to list solution projects.'
+    $NormalizedProjects = $Projects | ForEach-Object { $_.ToString().Replace('\', '/') }
+    $NormalizedProjectPath = $ProjectPath.Replace('\', '/')
+
+    return $NormalizedProjects -contains $NormalizedProjectPath
+}
+
+function Add-ProjectToSolution {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$SolutionFile,
 
         [Parameter(Mandatory = $true)]
-        [string]$TestProject
+        [string]$ProjectPath
     )
 
-    $ReportDate = Get-Date -Format 'yyyy-MM-dd'
-    $Lines = @(
-        '---',
-        'title: Solution Setup Verification',
-        'description: Verification report for the .NET 8 calculator xUnit solution setup',
-        "ms.date: $ReportDate",
-        'ms.topic: reference',
-        '---',
-        '',
-        '## Summary',
-        '',
-        'The .NET 8 calculator solution setup completed successfully. The setup script created or verified the solution, console project, xUnit test project, project reference, package versions, and build/test discovery checks.',
-        '',
-        '## Created Assets',
-        '',
-        "* Solution file: ``$SolutionFile``",
-        "* Console project: ``$CalculatorProject``",
-        "* Test project: ``$TestProject``",
-        '* Console source file: `calculator/Calculator.cs`',
-        '* Test source file: `calculator.tests/CalculatorTest.cs`',
-        '',
-        '## Configuration Verification',
-        '',
-        '| Check | Result |',
-        '|-------|--------|',
-        '| Repository root detected with `git rev-parse --show-toplevel` | Pass |',
-        '| Solution directory exists at `src/workspace/calculator-xunit-testing` | Pass |',
-        '| Solution includes `calculator` and `calculator.tests` projects | Pass |',
-        '| `calculator.csproj` targets `net8.0` | Pass |',
-        '| `calculator.tests.csproj` targets `net8.0` | Pass |',
-        '| `SuppressTfmSupportBuildErrors` is set to `true` | Pass |',
-        '| xUnit packages match PRD section 1.9.2 | Pass |',
-        '| Test project references the console project | Pass |',
-        '| `Program.cs` was renamed to `Calculator.cs` | Pass |',
-        '| `UnitTest1.cs` was renamed to `CalculatorTest.cs` | Pass |',
-        '',
-        '## Validation Commands',
-        '',
-        '```powershell',
-        './src/workspace/Set-DotnetSlnForCalculator.ps1',
-        'dotnet build ./src/workspace/calculator-xunit-testing/calculator.slnx',
-        'dotnet test ./src/workspace/calculator-xunit-testing/calculator.slnx --list-tests',
-        '```',
-        '',
-        'Both validation commands completed successfully during setup.'
-    )
+    if (Test-SolutionContainsProject -SolutionFile $SolutionFile -ProjectPath $ProjectPath) {
+        Write-Status "Project already registered: $ProjectPath" 'Info'
+        return
+    }
 
-    Set-Content -Path $ReportPath -Value $Lines -Encoding UTF8
-    Write-Status -Message "Created verification report: $ReportPath" -Level 'Success'
+    Invoke-DotNetCommand -Arguments @('sln', $SolutionFile, 'add', $ProjectPath) -FailureMessage "Failed to add project to solution: $ProjectPath" | Out-Null
+    Write-Status "Registered project: $ProjectPath" 'Success'
 }
 #endregion Functions
 
 #region Main Execution
 if ($MyInvocation.InvocationName -ne '.') {
     try {
-        $RepoRoot = (& git rev-parse --show-toplevel 2>$null)
+        $RepoRoot = (git rev-parse --show-toplevel).Trim()
         if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($RepoRoot)) {
-            throw 'Unable to detect repository root with git rev-parse --show-toplevel.'
+            throw 'Unable to detect repository root with git rev-parse.'
         }
 
-        $RepoRoot = $RepoRoot.Trim()
-        $WorkspacePath = Join-Path -Path $RepoRoot -ChildPath 'src' | Join-Path -ChildPath 'workspace'
+        $WorkspacePath = Join-Path -Path $RepoRoot -ChildPath 'src/workspace'
         $SolutionRoot = Join-Path -Path $WorkspacePath -ChildPath 'calculator-xunit-testing'
         $SolutionFile = Join-Path -Path $SolutionRoot -ChildPath 'calculator.slnx'
-        $CalculatorProject = Join-Path -Path $SolutionRoot -ChildPath 'calculator' | Join-Path -ChildPath 'calculator.csproj'
-        $TestProject = Join-Path -Path $SolutionRoot -ChildPath 'calculator.tests' | Join-Path -ChildPath 'calculator.tests.csproj'
+        $CalculatorProjectDir = Join-Path -Path $SolutionRoot -ChildPath 'calculator'
+        $CalculatorTestProjectDir = Join-Path -Path $SolutionRoot -ChildPath 'calculator.tests'
+        $CalculatorProjectFile = Join-Path -Path $CalculatorProjectDir -ChildPath 'calculator.csproj'
+        $CalculatorTestProjectFile = Join-Path -Path $CalculatorTestProjectDir -ChildPath 'calculator.tests.csproj'
         $VerificationReport = Join-Path -Path $SolutionRoot -ChildPath 'SOLUTION_SETUP_VERIFICATION.md'
 
-        Write-Status -Message "Repository root: $RepoRoot"
+        Write-Status "Repository root: $RepoRoot" 'Info'
         New-Item -ItemType Directory -Path $SolutionRoot -Force | Out-Null
-        Write-Status -Message "Solution directory ready: $SolutionRoot" -Level 'Success'
+        Write-Status "Solution directory ready: $SolutionRoot" 'Success'
 
-        Push-Location -Path $SolutionRoot
+        Push-Location $SolutionRoot
         try {
             if (-not (Test-Path -Path $SolutionFile)) {
-                Invoke-DotnetCommand -Arguments @('new', 'sln', '--name', 'calculator') -Description 'Creating calculator solution' | Out-Null
-                Write-Status -Message 'Created calculator.slnx' -Level 'Success'
+                Invoke-DotNetCommand -Arguments @('new', 'sln', '--name', 'calculator', '--format', 'slnx') -FailureMessage 'Failed to create solution file.' | Out-Null
+                Write-Status 'Created solution: calculator.slnx' 'Success'
             }
             else {
-                Write-Status -Message 'Solution already exists'
+                Write-Status 'Solution already exists: calculator.slnx' 'Info'
             }
 
-            if (-not (Test-Path -Path $CalculatorProject)) {
-                Invoke-DotnetCommand -Arguments @('new', 'console', '--name', 'calculator', '--framework', 'net8.0', '--force') -Description 'Creating console calculator project' | Out-Null
-                Write-Status -Message 'Created calculator project' -Level 'Success'
-            }
-            else {
-                Write-Status -Message 'Calculator project already exists'
-            }
-
-            if (-not (Test-Path -Path $TestProject)) {
-                Invoke-DotnetCommand -Arguments @('new', 'xunit', '--name', 'calculator.tests', '--framework', 'net8.0', '--force') -Description 'Creating xUnit test project' | Out-Null
-                Write-Status -Message 'Created calculator.tests project' -Level 'Success'
+            if (-not (Test-Path -Path $CalculatorProjectFile)) {
+                Invoke-DotNetCommand -Arguments @('new', 'console', '--name', 'calculator', '--framework', 'net8.0') -FailureMessage 'Failed to create calculator console project.' | Out-Null
+                Write-Status 'Created console project: calculator/calculator.csproj' 'Success'
             }
             else {
-                Write-Status -Message 'Test project already exists'
+                Write-Status 'Console project already exists: calculator/calculator.csproj' 'Info'
             }
 
-            Rename-GeneratedFile -SourcePath (Join-Path -Path $SolutionRoot -ChildPath 'calculator' | Join-Path -ChildPath 'Program.cs') -DestinationName 'Calculator.cs'
-            Rename-GeneratedFile -SourcePath (Join-Path -Path $SolutionRoot -ChildPath 'calculator.tests' | Join-Path -ChildPath 'UnitTest1.cs') -DestinationName 'CalculatorTest.cs'
+            if (-not (Test-Path -Path $CalculatorTestProjectFile)) {
+                Invoke-DotNetCommand -Arguments @('new', 'xunit', '--name', 'calculator.tests', '--framework', 'net8.0') -FailureMessage 'Failed to create calculator xUnit test project.' | Out-Null
+                Write-Status 'Created test project: calculator.tests/calculator.tests.csproj' 'Success'
+            }
+            else {
+                Write-Status 'Test project already exists: calculator.tests/calculator.tests.csproj' 'Info'
+            }
 
-            [xml]$CalculatorXml = Get-Content -Path $CalculatorProject
-            Set-ProjectProperty -ProjectXml $CalculatorXml -Name 'TargetFramework' -Value 'net8.0'
-            Set-ProjectProperty -ProjectXml $CalculatorXml -Name 'ImplicitUsings' -Value 'enable'
-            Set-ProjectProperty -ProjectXml $CalculatorXml -Name 'Nullable' -Value 'enable'
-            Save-ProjectXml -ProjectXml $CalculatorXml -Path $CalculatorProject
-            Write-Status -Message 'Configured calculator.csproj for net8.0' -Level 'Success'
+            [xml]$CalculatorProjectXml = Get-Content -Path $CalculatorProjectFile
+            Set-ProjectProperty -ProjectXml $CalculatorProjectXml -Name 'TargetFramework' -Value 'net8.0'
+            Set-ProjectProperty -ProjectXml $CalculatorProjectXml -Name 'ImplicitUsings' -Value 'enable'
+            Set-ProjectProperty -ProjectXml $CalculatorProjectXml -Name 'Nullable' -Value 'enable'
+            Save-ProjectXml -ProjectXml $CalculatorProjectXml -Path $CalculatorProjectFile
+            Write-Status 'Configured calculator project for net8.0.' 'Success'
 
-            [xml]$TestXml = Get-Content -Path $TestProject
-            Set-ProjectProperty -ProjectXml $TestXml -Name 'TargetFramework' -Value 'net8.0'
-            Set-ProjectProperty -ProjectXml $TestXml -Name 'ImplicitUsings' -Value 'enable'
-            Set-ProjectProperty -ProjectXml $TestXml -Name 'Nullable' -Value 'enable'
-            Set-ProjectProperty -ProjectXml $TestXml -Name 'IsPackable' -Value 'false'
-            Set-ProjectProperty -ProjectXml $TestXml -Name 'IsTestProject' -Value 'true'
-            Set-ProjectProperty -ProjectXml $TestXml -Name 'SuppressTfmSupportBuildErrors' -Value 'true'
-            Set-PackageVersion -ProjectXml $TestXml -PackageName 'xunit' -Version '2.6.2'
-            Set-PackageVersion -ProjectXml $TestXml -PackageName 'xunit.runner.visualstudio' -Version '2.5.1'
-            Set-PackageVersion -ProjectXml $TestXml -PackageName 'Microsoft.NET.Test.Sdk' -Version '17.5.0'
-            Set-PackageVersion -ProjectXml $TestXml -PackageName 'coverlet.collector' -Version '6.0.0'
-            Save-ProjectXml -ProjectXml $TestXml -Path $TestProject
-            Write-Status -Message 'Configured calculator.tests.csproj for PRD package versions' -Level 'Success'
+            [xml]$CalculatorTestProjectXml = Get-Content -Path $CalculatorTestProjectFile
+            Set-ProjectProperty -ProjectXml $CalculatorTestProjectXml -Name 'TargetFramework' -Value 'net8.0'
+            Set-ProjectProperty -ProjectXml $CalculatorTestProjectXml -Name 'ImplicitUsings' -Value 'enable'
+            Set-ProjectProperty -ProjectXml $CalculatorTestProjectXml -Name 'Nullable' -Value 'enable'
+            Set-ProjectProperty -ProjectXml $CalculatorTestProjectXml -Name 'IsPackable' -Value 'false'
+            Set-ProjectProperty -ProjectXml $CalculatorTestProjectXml -Name 'IsTestProject' -Value 'true'
+            Set-ProjectProperty -ProjectXml $CalculatorTestProjectXml -Name 'SuppressTfmSupportBuildErrors' -Value 'true'
+            Set-PackageVersion -ProjectXml $CalculatorTestProjectXml -PackageName 'xunit' -Version '2.6.2'
+            Set-PackageVersion -ProjectXml $CalculatorTestProjectXml -PackageName 'xunit.runner.visualstudio' -Version '2.5.1'
+            Set-PackageVersion -ProjectXml $CalculatorTestProjectXml -PackageName 'Microsoft.NET.Test.Sdk' -Version '17.5.0'
+            Set-PackageVersion -ProjectXml $CalculatorTestProjectXml -PackageName 'coverlet.collector' -Version '6.0.0'
+            Save-ProjectXml -ProjectXml $CalculatorTestProjectXml -Path $CalculatorTestProjectFile
+            Write-Status 'Configured test project for net8.0 and pinned xUnit packages.' 'Success'
 
-            Invoke-DotnetCommand -Arguments @('sln', '.\calculator.slnx', 'add', '.\calculator\calculator.csproj') -Description 'Adding calculator project to solution' | Out-Null
-            Invoke-DotnetCommand -Arguments @('sln', '.\calculator.slnx', 'add', '.\calculator.tests\calculator.tests.csproj') -Description 'Adding calculator.tests project to solution' | Out-Null
-            Invoke-DotnetCommand -Arguments @('add', '.\calculator.tests\calculator.tests.csproj', 'reference', '.\calculator\calculator.csproj') -Description 'Adding calculator project reference to tests' | Out-Null
+            $ProgramFile = Join-Path -Path $CalculatorProjectDir -ChildPath 'Program.cs'
+            $CalculatorFile = Join-Path -Path $CalculatorProjectDir -ChildPath 'Calculator.cs'
+            if ((Test-Path -Path $ProgramFile) -and -not (Test-Path -Path $CalculatorFile)) {
+                Rename-Item -Path $ProgramFile -NewName 'Calculator.cs'
+                Write-Status 'Renamed Program.cs to Calculator.cs.' 'Success'
+            }
+            elseif (Test-Path -Path $CalculatorFile) {
+                Write-Status 'Calculator.cs already exists.' 'Info'
+            }
 
-            Invoke-DotnetCommand -Arguments @('build', '.\calculator.slnx') -Description 'Verifying solution build' | Out-Null
-            Invoke-DotnetCommand -Arguments @('test', '.\calculator.slnx', '--list-tests') -Description 'Verifying xUnit test discovery' | Out-Null
-            New-VerificationReport -ReportPath $VerificationReport -SolutionFile $SolutionFile -CalculatorProject $CalculatorProject -TestProject $TestProject
+            $UnitTestFile = Join-Path -Path $CalculatorTestProjectDir -ChildPath 'UnitTest1.cs'
+            $CalculatorTestFile = Join-Path -Path $CalculatorTestProjectDir -ChildPath 'CalculatorTest.cs'
+            if ((Test-Path -Path $UnitTestFile) -and -not (Test-Path -Path $CalculatorTestFile)) {
+                Rename-Item -Path $UnitTestFile -NewName 'CalculatorTest.cs'
+                Write-Status 'Renamed UnitTest1.cs to CalculatorTest.cs.' 'Success'
+            }
+            elseif (Test-Path -Path $CalculatorTestFile) {
+                Write-Status 'CalculatorTest.cs already exists.' 'Info'
+            }
 
-            Write-Status -Message 'Solution setup complete' -Level 'Success'
-            Write-Host "Created or verified:"
-            Write-Host "  $SolutionFile"
-            Write-Host "  $CalculatorProject"
-            Write-Host "  $TestProject"
-            Write-Host "  $VerificationReport"
-            Write-Host 'Next step: implement calculator logic and tests.'
+            Add-ProjectToSolution -SolutionFile $SolutionFile -ProjectPath 'calculator/calculator.csproj'
+            Add-ProjectToSolution -SolutionFile $SolutionFile -ProjectPath 'calculator.tests/calculator.tests.csproj'
+
+            $ProjectReferenceOutput = Invoke-DotNetCommand -Arguments @('add', $CalculatorTestProjectFile, 'reference', $CalculatorProjectFile) -FailureMessage 'Failed to add test project reference to calculator project.'
+            Write-Status ($ProjectReferenceOutput -join ' ') 'Success'
+
+            Invoke-DotNetCommand -Arguments @('build', $SolutionFile) -FailureMessage 'Build verification failed.' | Out-Null
+            Write-Status 'Build verification succeeded.' 'Success'
+
+            Invoke-DotNetCommand -Arguments @('test', $SolutionFile, '--list-tests', '--no-build') -FailureMessage 'Test discovery verification failed.' | Out-Null
+            Write-Status 'Test discovery verification succeeded.' 'Success'
+
+            $ReportContent = @(
+                '# Solution Setup Verification',
+                '',
+                "Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')",
+                '',
+                '## Created Assets',
+                '',
+                '- `calculator.slnx`',
+                '- `calculator/calculator.csproj` targeting `net8.0`',
+                '- `calculator/Calculator.cs`',
+                '- `calculator.tests/calculator.tests.csproj` targeting `net8.0`',
+                '- `calculator.tests/CalculatorTest.cs`',
+                '',
+                '## Package Versions',
+                '',
+                '- `xunit` 2.6.2',
+                '- `xunit.runner.visualstudio` 2.5.1',
+                '- `Microsoft.NET.Test.Sdk` 17.5.0',
+                '- `coverlet.collector` 6.0.0',
+                '',
+                '## Verification',
+                '',
+                '- `dotnet build calculator.slnx` succeeded.',
+                '- `dotnet test calculator.slnx --list-tests --no-build` succeeded.'
+            )
+            Set-Content -Path $VerificationReport -Value $ReportContent -Encoding UTF8
+            Write-Status "Verification report written: $VerificationReport" 'Success'
+
+            Write-Status 'Solution setup complete.' 'Success'
         }
         finally {
             Pop-Location
         }
-
-        exit 0
     }
     catch {
-        Write-Status -Message "Setup failed: $($_.Exception.Message)" -Level 'Error'
+        Write-Status "Setup failed: $($_.Exception.Message)" 'Error'
         exit 1
     }
 }

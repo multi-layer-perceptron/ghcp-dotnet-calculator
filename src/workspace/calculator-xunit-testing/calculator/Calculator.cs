@@ -101,6 +101,11 @@ static bool PromptToContinue(string prompt)
 
 static void TryClearConsole()
 {
+	if (Console.IsInputRedirected || Console.IsOutputRedirected)
+	{
+		return;
+	}
+
 	try
 	{
 		Console.Clear();
@@ -108,5 +113,9 @@ static void TryClearConsole()
 	catch (IOException)
 	{
 		// Some redirected or hosted consoles cannot be cleared.
+	}
+	catch (PlatformNotSupportedException)
+	{
+		// Some platforms do not support clearing the console.
 	}
 }

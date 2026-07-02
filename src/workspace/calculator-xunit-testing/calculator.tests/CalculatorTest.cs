@@ -174,8 +174,7 @@ public class CalculatorTest
         private static PostgreSqlContainer StartAndSeedContainer()
         {
             string suffix = Guid.NewGuid().ToString("N")[..12];
-            var testContainer = new PostgreSqlBuilder()
-                .WithImage("postgres:16-alpine")
+            var testContainer = new PostgreSqlBuilder("postgres:16-alpine")
                 .WithDatabase($"calc_tests_{suffix}")
                 .WithUsername($"calc_user_{suffix}")
                 .WithPassword(GeneratePassword())

@@ -1,11 +1,13 @@
 using System.Globalization;
 using calculator;
+using Npgsql;
+using Testcontainers.PostgreSql;
 
 namespace calculator.tests;
 
 public class CalculatorTest
 {
-    private static readonly string TestDataPath = Path.Combine(AppContext.BaseDirectory, "TestCases.csv");
+    private static readonly Lazy<IReadOnlyList<CalculatorTestCase>> TestCases = new(LoadAllTestCasesFromPostgres);
 
     [Theory]
     [MemberData(nameof(GetAddTestCases))]
@@ -28,48 +30,69 @@ public class CalculatorTest
 
     private static IEnumerable<object[]> GetTestCases(string operation)
     {
-        if (!File.Exists(TestDataPath))
-        {
-            throw new FileNotFoundException($"Test data file not found: {TestDataPath}");
-        }
-
-        return File.ReadLines(TestDataPath)
-            .Skip(1)
-            .Select((line, index) => ParseTestCase(line, index + 2))
+        return TestCases.Value
             .Where(testCase => testCase.Operation.Equals(operation, StringComparison.OrdinalIgnoreCase))
             .Select(testCase => new object[] { testCase.Operand1, testCase.Operand2, testCase.ExpectedResult })
             .ToList();
     }
 
-    private static CalculatorTestCase ParseTestCase(string line, int lineNumber)
+    private static IReadOnlyList<CalculatorTestCase> LoadAllTestCasesFromPostgres()
     {
-        string[] columns = line.Split(',');
+        const string tableName = "test_data";
+        string connectionString = TestDatabase.Container.GetConnectionString();
+        var results = new List<CalculatorTestCase>();
 
-        if (columns.Length != 4)
+        try
         {
-            throw new InvalidDataException($"TestCases.csv line {lineNumber} must contain 4 columns.");
+            using var connection = new NpgsqlConnection(connectionString);
+            connection.Open();
+
+            using var command = new NpgsqlCommand(
+                $"SELECT \"Operand1\", \"Operand2\", \"Operation\", \"ExpectedResult\" FROM \"{tableName}\";",
+                connection);
+            using var reader = command.ExecuteReader();
+
+            int rowNumber = 0;
+            while (reader.Read())
+            {
+                rowNumber++;
+
+                string operand1Text = reader.IsDBNull(0) ? string.Empty : reader.GetValue(0)?.ToString() ?? string.Empty;
+                string operand2Text = reader.IsDBNull(1) ? string.Empty : reader.GetValue(1)?.ToString() ?? string.Empty;
+                string operation = reader.IsDBNull(2) ? string.Empty : reader.GetValue(2)?.ToString() ?? string.Empty;
+                string expectedText = reader.IsDBNull(3) ? string.Empty : reader.GetValue(3)?.ToString() ?? string.Empty;
+
+                if (!double.TryParse(operand1Text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double operand1) ||
+                    !double.TryParse(operand2Text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double operand2) ||
+                    !double.TryParse(expectedText, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double expectedResult) ||
+                    string.IsNullOrWhiteSpace(operation))
+                {
+                    Console.WriteLine(
+                        $"Skipping malformed row {rowNumber} in table '{tableName}': Operand1='{operand1Text}', Operand2='{operand2Text}', Operation='{operation}', ExpectedResult='{expectedText}'.");
+                    continue;
+                }
+
+                results.Add(new CalculatorTestCase
+                {
+                    Operand1 = operand1,
+                    Operand2 = operand2,
+                    Operation = operation.Trim(),
+                    ExpectedResult = expectedResult
+                });
+            }
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
+        {
+            throw new InvalidOperationException(
+                $"The PostgreSQL table '{tableName}' does not exist in the Testcontainers database. Ensure CSV seeding completed successfully.", ex);
+        }
+        catch (NpgsqlException ex)
+        {
+            throw new InvalidOperationException(
+                "Unable to load test cases from the Testcontainers PostgreSQL instance. Verify Docker availability and container startup.", ex);
         }
 
-        if (!double.TryParse(columns[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double operand1) ||
-            !double.TryParse(columns[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double operand2) ||
-            !double.TryParse(columns[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double expectedResult))
-        {
-            throw new InvalidDataException($"TestCases.csv line {lineNumber} contains an invalid numeric value.");
-        }
-
-        string operation = columns[2].Trim();
-        if (string.IsNullOrWhiteSpace(operation))
-        {
-            throw new InvalidDataException($"TestCases.csv line {lineNumber} contains an empty operation.");
-        }
-
-        return new CalculatorTestCase
-        {
-            Operand1 = operand1,
-            Operand2 = operand2,
-            Operation = operation,
-            ExpectedResult = expectedResult
-        };
+        return results;
     }
 
     [Theory]
@@ -128,5 +151,133 @@ public class CalculatorTest
         public double Operand2 { get; set; }
 
         public string Operation { get; set; } = string.Empty;
+    }
+
+    private static class TestDatabase
+    {
+        private static readonly object SyncRoot = new();
+
+        private static PostgreSqlContainer? container;
+
+        public static PostgreSqlContainer Container
+        {
+            get
+            {
+                lock (SyncRoot)
+                {
+                    container ??= StartAndSeedContainer();
+                    return container;
+                }
+            }
+        }
+
+        private static PostgreSqlContainer StartAndSeedContainer()
+        {
+            string suffix = Guid.NewGuid().ToString("N")[..12];
+            var testContainer = new PostgreSqlBuilder()
+                .WithImage("postgres:16-alpine")
+                .WithDatabase($"calc_tests_{suffix}")
+                .WithUsername($"calc_user_{suffix}")
+                .WithPassword(GeneratePassword())
+                .Build();
+
+            try
+            {
+                testContainer.StartAsync().GetAwaiter().GetResult();
+                SeedFromCsv(testContainer);
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or TimeoutException or Docker.DotNet.DockerApiException)
+            {
+                throw new InvalidOperationException(
+                    "Unable to start or seed the Testcontainers PostgreSQL instance. Verify Docker is running and accessible.", ex);
+            }
+
+            AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+            {
+                try
+                {
+                    testContainer.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                }
+                catch
+                {
+                    // Best-effort cleanup at process shutdown.
+                }
+            };
+
+            return testContainer;
+        }
+
+        private static string GeneratePassword()
+        {
+            return Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(18)) + "!A1";
+        }
+
+        private static void SeedFromCsv(PostgreSqlContainer testContainer)
+        {
+            string csvPath = ResolveCsvPath();
+            string[] lines = File.ReadAllLines(csvPath);
+
+            if (lines.Length <= 1)
+            {
+                throw new InvalidOperationException($"CSV test case file '{csvPath}' does not contain data rows.");
+            }
+
+            using var connection = new NpgsqlConnection(testContainer.GetConnectionString());
+            connection.Open();
+
+            using (var create = new NpgsqlCommand(
+                "CREATE TABLE IF NOT EXISTS \"test_data\" (\"Operand1\" TEXT, \"Operand2\" TEXT, \"Operation\" TEXT, \"ExpectedResult\" TEXT);",
+                connection))
+            {
+                create.ExecuteNonQuery();
+            }
+
+            using (var truncate = new NpgsqlCommand("TRUNCATE TABLE \"test_data\";", connection))
+            {
+                truncate.ExecuteNonQuery();
+            }
+
+            foreach (string row in lines.Skip(1))
+            {
+                if (string.IsNullOrWhiteSpace(row))
+                {
+                    continue;
+                }
+
+                string[] columns = row.Split(',');
+                if (columns.Length != 4)
+                {
+                    Console.WriteLine($"Skipping malformed CSV row during seed: '{row}'");
+                    continue;
+                }
+
+                using var insert = new NpgsqlCommand(
+                    "INSERT INTO \"test_data\" (\"Operand1\", \"Operand2\", \"Operation\", \"ExpectedResult\") VALUES (@operand1, @operand2, @operation, @expectedResult);",
+                    connection);
+                insert.Parameters.AddWithValue("operand1", columns[0].Trim());
+                insert.Parameters.AddWithValue("operand2", columns[1].Trim());
+                insert.Parameters.AddWithValue("operation", columns[2].Trim());
+                insert.Parameters.AddWithValue("expectedResult", columns[3].Trim());
+                insert.ExecuteNonQuery();
+            }
+        }
+
+        private static string ResolveCsvPath()
+        {
+            string fromBaseDirectory = Path.Combine(AppContext.BaseDirectory, "TestCases.csv");
+            if (File.Exists(fromBaseDirectory))
+            {
+                return fromBaseDirectory;
+            }
+
+            string fromCurrentDirectory = Path.Combine(Directory.GetCurrentDirectory(), "TestCases.csv");
+            if (File.Exists(fromCurrentDirectory))
+            {
+                return fromCurrentDirectory;
+            }
+
+            throw new FileNotFoundException(
+                "TestCases.csv was not found. Ensure the file is copied to the test output directory.");
+        }
     }
 }

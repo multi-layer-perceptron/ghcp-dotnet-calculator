@@ -43,6 +43,44 @@ custom Copilot prompt and skill authoring.
 | GitHub Actions practice | GitHub CLI is optional, but useful for creating issues, branches, and pull requests from the terminal. |
 | Copilot workshop flows | A Copilot-enabled GitHub account and access to Copilot Chat in VS Code. |
 
+### Hide The Completed Solution
+
+Before starting the lab exercises, hide the `src/completed/` folder from your
+working context. That folder contains the finished reference solution, and if
+it stays visible, GitHub Copilot can draw on it while you work, which
+inadvertently interferes with the integrity and the learning process of
+building the same solution yourself through the lab exercises.
+
+Use one of the following approaches:
+
+* **.gitignore (any Copilot SKU):** in your fork, delete or move the
+  `src/completed/` folder out of the repository and add an entry to
+  [.gitignore](.gitignore) so it is never re-committed:
+
+  ```gitignore
+  # Hide the completed reference solution during lab exercises
+  src/completed/
+  ```
+
+  Note that `.gitignore` only affects untracked files. If `src/completed/` is
+  already tracked in your fork, remove it from the index first with
+  `git rm -r --cached src/completed`, commit, and keep a copy outside the
+  repository for later comparison.
+
+* **Content Exclusion (GitHub Copilot Enterprise SKU):** if your organization
+  has Copilot Enterprise, an administrator can configure the
+  [Content Exclusion](https://docs.github.com/en/copilot/managing-copilot/configuring-and-auditing-content-exclusion)
+  feature for the repository so Copilot never reads the folder, without
+  changing the repository contents. Add a repository-level exclusion such as:
+
+  ```yaml
+  "*":
+    - "src/completed/**"
+  ```
+
+Either way, the completed solution stays available to facilitators for
+reference while participants build their own solution from a clean slate.
+
 ### Local Setup Preflight
 
 When running locally, first open the repository in VS Code and confirm the .NET
@@ -224,6 +262,45 @@ the staged calculator workflow:
 3.01-upgrade-dotnet-from-8-to-10.prompt.md
 ```
 
+## Lab Exercises
+
+The [lab-exercises/](lab-exercises/) folder contains guided exercises that
+translate the staged prompt workflows into a progressive lab. The exercises
+are re-indexed with a hierarchical dotted-decimal scheme (`module.exercise`)
+based on the progression logic of the prompts: build first, then modernize,
+then validate quality and security. Each exercise references its associated
+prompt and summarizes the learning objectives and how the prompt is used.
+
+Complete the [Hide The Completed Solution](#hide-the-completed-solution)
+prerequisite before starting Module 01.
+
+### Module 01 - Build The Calculator Solution
+
+| Exercise | Title | Associated prompt |
+| -------- | ----- | ----------------- |
+| [01.01](lab-exercises/01.01-solution-setup.md) | Solution Setup | `1.12.1-solution-setup` |
+| [01.02](lab-exercises/01.02-calculator-implementation.md) | Calculator Implementation | `1.12.2-calculator-implementation` |
+| [01.03](lab-exercises/01.03-refactoring-steps.md) | Refactoring Steps | `1.12.3-refactor-steps` |
+| [01.04](lab-exercises/01.04-testing-strategy.md) | Testing Strategy | `1.12.4-testing-strategy` |
+| [01.05](lab-exercises/01.05-full-solution-walkthrough.md) | Full Solution Walkthrough | `1.12-implement-full-calculator-solution` |
+
+### Module 02 - Modernize And Migrate
+
+| Exercise | Title | Associated prompt |
+| -------- | ----- | ----------------- |
+| [02.01](lab-exercises/02.01-upgrade-dotnet-8-to-10.md) | Upgrade .NET 8 To .NET 10 | `3.01-upgrade-dotnet-from-8-to-10` |
+| [02.02](lab-exercises/02.02-refactor-to-blazor.md) | Refactor To A Blazor Web App | `3.01.1-refactor-calculator-blazor-app` |
+| [02.03](lab-exercises/02.03-azure-migration-assessment.md) | Azure Migration Assessment | `3.02-migrate-to-azure` |
+| [02.04](lab-exercises/02.04-reset-environments.md) | Reset Azure And Local Environments | `3.03-reset-azure-environment`, `3.04-reset-local-docker-pg` |
+
+### Module 03 - Quality, Security, And Wrap-Up
+
+| Exercise | Title | Associated prompt |
+| -------- | ----- | ----------------- |
+| [03.01](lab-exercises/03.01-security-assessment.md) | Security Assessment | `7.01-conduct-security-assessment` |
+| [03.02](lab-exercises/03.02-comprehensive-quality-gate.md) | Comprehensive Quality Gate | `12.00.test-for-quality` |
+| [03.03](lab-exercises/03.03-cleanup-and-reset.md) | Cleanup And Reset | `1.13-cleanup-solution` |
+
 ## Calculator Tutorial
 
 The console calculator is the workshop's main hands-on surface. It walks
@@ -345,6 +422,8 @@ ghcp-dotnet-calculator/
   docs/
     prd-csharp-basic-calculator-solution.md      Calculator product requirements
     azure-migration-assessment-3.02.md           Azure migration assessment notes
+  lab-exercises/
+    01.01-solution-setup.md                      Module 01-03 guided lab exercises
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace

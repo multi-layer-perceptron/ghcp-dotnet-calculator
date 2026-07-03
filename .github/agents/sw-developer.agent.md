@@ -5,8 +5,8 @@ target: vscode
 model: Claude Haiku 4.5 (copilot)
 handoffs:
 
-  - label: sw-tester
-    agent: sw-tester
+  - label: software-quality-tester
+    agent: software-quality-tester
     prompt: Generate tests for the code written by the SW Developer.
     send: false
 
@@ -35,5 +35,5 @@ handoffs:
 ## Handoffs
 
 - You can hand off to the following agents:
-  - `SW Tester/QA Engineer`: To generate tests for the code you have written.
+  - `software-quality-tester`: To generate tests for the code you have written.
   - `Security Engineer`: To review the code for security vulnerabilities.

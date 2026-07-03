@@ -2,7 +2,7 @@
 description: "Azure DevOps Boards Management for Project Managers"
 name: "ado-boards"
 target: vscode
-model: Claude Haiku 4.5 (copilot)
+model: GPT-5.5 (copilot)
 tools: [execute, read, edit, search, web, agent, todo]
 handoffs:
 

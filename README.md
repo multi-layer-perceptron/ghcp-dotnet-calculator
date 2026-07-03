@@ -282,7 +282,7 @@ prerequisite before starting Module 01.
 | [01.02](lab-exercises/01.02-calculator-implementation.md) | Calculator Implementation | `1.12.2-calculator-implementation` |
 | [01.03](lab-exercises/01.03-refactoring-steps.md) | Refactoring Steps | `1.12.3-refactor-steps` |
 | [01.04](lab-exercises/01.04-testing-strategy.md) | Testing Strategy | `1.12.4-testing-strategy` |
-| [01.05](lab-exercises/01.05-full-solution-walkthrough.md) | Full Solution Walkthrough | `1.12-implement-full-calculator-solution` |
+| [01.05](lab-exercises/01.05-full-solution-walkthrough.md) | Optional Full Baseline Walkthrough | `1.12-implement-full-calculator-solution` |
 
 ### Module 02 - Modernize And Migrate
 

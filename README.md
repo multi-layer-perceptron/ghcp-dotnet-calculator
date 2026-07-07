@@ -280,7 +280,6 @@ short tour of the Copilot configuration files that drive the lab sequence.
 | Exercise | Title | Associated prompt |
 | -------- | ----- | ----------------- |
 | [00.01](lab-exercises/00.01.explore-copilot-config-files.md) | Explore Copilot Configuration Files | None |
-| [00.02](lab-exercises/00.02.custom-instructions-and-agents.md) | Custom Instructions And Agents | None |
 
 ### Module 01 - Build The Calculator Solution
 
@@ -308,6 +307,16 @@ short tour of the Copilot configuration files that drive the lab sequence.
 | [03.01](lab-exercises/03.01-security-assessment.md) | Security Assessment | `7.01-conduct-security-assessment` |
 | [03.02](lab-exercises/03.02-comprehensive-quality-gate.md) | Comprehensive Quality Gate | `12.00.test-for-quality` |
 | [03.03](lab-exercises/03.03-cleanup-and-reset.md) | Cleanup And Reset | `1.13-cleanup-solution` |
+
+### Module 99 - Finished Project Customization
+
+Use these exercises only after completing the current exercise set from `00.01`
+through `03.03` and confirming the completed project exists under
+`src/workspace/calculator-xunit-testing/`.
+
+| Exercise | Title | Associated prompt |
+| -------- | ----- | ----------------- |
+| [99.01](lab-exercises/99.01.custom-instructions-and-agents.md) | Custom Instructions And Agents | None |
 
 ## Calculator Tutorial
 
@@ -432,8 +441,8 @@ ghcp-dotnet-calculator/
     azure-migration-assessment-3.02.md           Azure migration assessment notes
   lab-exercises/
     00.01.explore-copilot-config-files.md        Copilot configuration orientation exercise
-    00.02.custom-instructions-and-agents.md      Custom instructions and agents orientation exercise
     01.01-solution-setup.md                      Module 01-03 guided lab exercises
+    99.01.custom-instructions-and-agents.md      Finished project customization exercise
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace

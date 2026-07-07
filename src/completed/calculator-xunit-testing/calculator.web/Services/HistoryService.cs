@@ -1,37 +1,34 @@
 namespace calculator.web.Services;
 
 /// <summary>
-/// Stores recent calculator results for replay.
+/// Maintains session-scoped calculator history.
 /// </summary>
 public sealed class HistoryService
 {
-    private const int MaxItems = 50;
+    private const int MaxRecords = 50;
     private readonly List<CalculationRecord> records = [];
 
     /// <summary>
-    /// Occurs when the history list changes.
-    /// </summary>
-    public event Action? OnHistoryChanged;
-
-    /// <summary>
-    /// Gets the newest-first calculation history.
+    /// Gets newest-first calculation history.
     /// </summary>
     public IReadOnlyList<CalculationRecord> Records => records;
 
     /// <summary>
-    /// Adds a new calculation record and trims old entries.
+    /// Adds a calculation record to history.
     /// </summary>
-    /// <param name="record">The calculation to store.</param>
+    /// <param name="record">The completed calculation record.</param>
     public void Add(CalculationRecord record)
     {
-        ArgumentNullException.ThrowIfNull(record);
         records.Insert(0, record);
 
-        if (records.Count > MaxItems)
+        if (records.Count > MaxRecords)
         {
-            records.RemoveRange(MaxItems, records.Count - MaxItems);
+            records.RemoveRange(MaxRecords, records.Count - MaxRecords);
         }
-
-        OnHistoryChanged?.Invoke();
     }
+
+    /// <summary>
+    /// Clears all history records.
+    /// </summary>
+    public void Clear() => records.Clear();
 }

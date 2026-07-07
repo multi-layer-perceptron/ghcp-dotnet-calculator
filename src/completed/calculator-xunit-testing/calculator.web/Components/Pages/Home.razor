@@ -1,84 +1,45 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@using calculator.web.Services
 @implements IAsyncDisposable
-@inject CalculatorService CalculatorService
-@inject HistoryService HistoryService
-@inject IJSRuntime JSRuntime
-@inject ThemeService ThemeService
+@inject CalculatorService Calculator
+@inject HistoryService History
+@inject ThemeService Theme
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Calculator</PageTitle>
 
-<div class="calculator-shell @ThemeService.CssClass">
-	<section class="calculator-workspace" aria-label="Calculator">
-		<header class="calculator-header">
-			<div>
-				<p class="eyebrow">.NET Calculator</p>
-				<h1>Calculator</h1>
+<div class="calculator-shell @Theme.ThemeClass">
+	<header class="app-header">
+		<div>
+			<p class="eyebrow">Blazor Calculator</p>
+			<h1>Calculator</h1>
+		</div>
+		<ThemeToggle Theme="Theme" OnThemeChanged="Refresh" />
+	</header>
+
+	<main class="calculator-workspace">
+		<section class="calculator-panel" aria-labelledby="calculator-heading">
+			<div class="display-card">
+				<h2 id="calculator-heading">Current Calculation</h2>
+				<p class="expression" aria-live="polite">@Calculator.Expression</p>
+				<output class="display" aria-live="polite">@Calculator.Display</output>
+				@if (!string.IsNullOrWhiteSpace(Calculator.ErrorMessage))
+				{
+					<p class="error-text" role="alert">@Calculator.ErrorMessage</p>
+				}
 			</div>
-			<ThemeToggle />
-		</header>
 
-		<output class="calculator-display" aria-live="polite">@CalculatorService.Display</output>
+			<CalculatorKeypad OnKeyPressed="HandleKey" />
+		</section>
 
-		@if (!string.IsNullOrWhiteSpace(CalculatorService.ErrorMessage))
-		{
-			<p class="calculator-error" role="alert">@CalculatorService.ErrorMessage</p>
-		}
-
-		<CalculatorKeypad OnKeyPressed="HandleInput" />
-	</section>
-
-	<HistoryPanel Items="HistoryService.Records" OnReplay="ReplayCalculation" />
+		<HistoryPanel History="History" OnReplay="Replay" OnClearHistory="ClearHistory" />
+	</main>
 </div>
 
 @code {
-	private DotNetObjectReference<Home>? dotNetReference;
 	private IJSObjectReference? keyboardModule;
+	private DotNetObjectReference<Home>? dotNetReference;
 
-	/// <inheritdoc />
-	public async ValueTask DisposeAsync()
-	{
-		CalculatorService.OnCalculationCompleted -= AddHistoryRecord;
-		CalculatorService.OnDisplayChanged -= Refresh;
-		HistoryService.OnHistoryChanged -= Refresh;
-		ThemeService.OnThemeChanged -= Refresh;
-
-		if (keyboardModule is not null)
-		{
-			try
-			{
-				await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
-				await keyboardModule.DisposeAsync();
-			}
-			catch (JSDisconnectedException)
-			{
-			}
-		}
-
-		dotNetReference?.Dispose();
-	}
-
-	/// <summary>
-	/// Handles keyboard input from JavaScript interop.
-	/// </summary>
-	/// <param name="key">The key pressed by the user.</param>
-	[JSInvokable]
-	public void HandleKeyboardInput(string key)
-	{
-		HandleInput(key);
-	}
-
-	/// <inheritdoc />
-	protected override void OnInitialized()
-	{
-		CalculatorService.OnCalculationCompleted += AddHistoryRecord;
-		CalculatorService.OnDisplayChanged += Refresh;
-		HistoryService.OnHistoryChanged += Refresh;
-		ThemeService.OnThemeChanged += Refresh;
-	}
-
-	/// <inheritdoc />
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (!firstRender)
@@ -87,35 +48,49 @@
 		}
 
 		dotNetReference = DotNetObjectReference.Create(this);
-		keyboardModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/js/calculatorKeyboard.js");
+		keyboardModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/calculatorKeyboard.js");
 		await keyboardModule.InvokeVoidAsync("attachCalculatorKeyboard", dotNetReference);
 	}
 
-	private void AddHistoryRecord(CalculationRecord record) => HistoryService.Add(record);
-
-	private void HandleInput(string value)
+	[JSInvokable]
+	public Task HandleKeyboardInput(string key)
 	{
-		switch (value)
+		HandleKey(key);
+		StateHasChanged();
+		return Task.CompletedTask;
+	}
+
+	private void HandleKey(string key)
+	{
+		var completedRecord = Calculator.HandleKey(key);
+		if (completedRecord is not null)
 		{
-			case "0" or "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9":
-				CalculatorService.EnterDigit(value);
-				break;
-			case ".":
-				CalculatorService.EnterDecimal();
-				break;
-			case "+" or "-" or "−" or "*" or "×" or "/" or "÷" or "%" or "^":
-				CalculatorService.EnterOperator(value);
-				break;
-			case "=" or "Enter":
-				CalculatorService.Calculate();
-				break;
-			case "C" or "c" or "Backspace" or "Delete":
-				CalculatorService.Clear();
-				break;
+			History.Add(completedRecord);
 		}
 	}
 
-	private void Refresh() => InvokeAsync(StateHasChanged);
+	private void Replay(CalculationRecord record) => Calculator.ReplayResult(record.Result);
 
-	private void ReplayCalculation(CalculationRecord record) => CalculatorService.Replay(record);
+	private void ClearHistory() => History.Clear();
+
+	private void Refresh() => StateHasChanged();
+
+	public async ValueTask DisposeAsync()
+	{
+		try
+		{
+			if (keyboardModule is not null)
+			{
+				await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
+				await keyboardModule.DisposeAsync();
+			}
+		}
+		catch (JSDisconnectedException)
+		{
+		}
+		finally
+		{
+			dotNetReference?.Dispose();
+		}
+	}
 }

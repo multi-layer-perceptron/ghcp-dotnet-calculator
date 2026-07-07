@@ -1,31 +1,56 @@
-let keyHandler;
+const calculatorKeys = new Set([
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  ".",
+  "+",
+  "-",
+  "*",
+  "/",
+  "%",
+  "^",
+]);
+
+let keyboardHandler;
 
 export function attachCalculatorKeyboard(dotNetReference) {
-    detachCalculatorKeyboard();
+  detachCalculatorKeyboard();
 
-    keyHandler = (event) => {
-        const supportedKeys = new Set([
-            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-            ".", "+", "-", "*", "/", "%", "^", "=", "Enter",
-            "Backspace", "Delete", "C", "c"
-        ]);
+  keyboardHandler = (event) => {
+    let key = event.key;
 
-        if (!supportedKeys.has(event.key)) {
-            return;
-        }
+    if (calculatorKeys.has(key)) {
+      event.preventDefault();
+    } else if (key === "Enter") {
+      key = "=";
+      event.preventDefault();
+    } else if (
+      key === "Escape" ||
+      key === "Backspace" ||
+      key.toLowerCase() === "c"
+    ) {
+      key = "clear";
+      event.preventDefault();
+    } else {
+      return;
+    }
 
-        event.preventDefault();
-        dotNetReference.invokeMethodAsync("HandleKeyboardInput", event.key);
-    };
+    dotNetReference.invokeMethodAsync("HandleKeyboardInput", key);
+  };
 
-    window.addEventListener("keydown", keyHandler);
+  window.addEventListener("keydown", keyboardHandler);
 }
 
 export function detachCalculatorKeyboard() {
-    if (!keyHandler) {
-        return;
-    }
-
-    window.removeEventListener("keydown", keyHandler);
-    keyHandler = undefined;
+  if (keyboardHandler) {
+    window.removeEventListener("keydown", keyboardHandler);
+    keyboardHandler = undefined;
+  }
 }

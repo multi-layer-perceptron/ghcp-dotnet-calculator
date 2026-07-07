@@ -1,265 +1,220 @@
+namespace calculator.tests;
+
+using calculator.library;
 using System.Globalization;
-using calculator;
+using System.Security.Cryptography;
 using Npgsql;
 using Testcontainers.PostgreSql;
 
-namespace calculator.tests;
-
-public class TestCase
-{
-    public double Operand1 { get; set; }
-    public double Operand2 { get; set; }
-    public string Operation { get; set; } = string.Empty;
-    public double ExpectedResult { get; set; }
-}
-
 public class CalculatorTest
 {
-    private static readonly Lazy<IReadOnlyList<TestCase>> TestCases = new(LoadAllTestCasesFromPostgres);
-
-    private static IEnumerable<object[]> GetTestCases(string operation)
-    {
-        return TestCases.Value
-            .Where(testCase => testCase.Operation.Equals(operation, StringComparison.OrdinalIgnoreCase))
-            .Select(testCase => new object[] { testCase.Operand1, testCase.Operand2, testCase.ExpectedResult })
-            .ToList();
-    }
-
-    private static IReadOnlyList<TestCase> LoadAllTestCasesFromPostgres()
-    {
-        var table = "test_data";
-        var connectionString = TestDatabase.Container.GetConnectionString();
-
-        var results = new List<TestCase>();
-
-        try
-        {
-            using var connection = new NpgsqlConnection(connectionString);
-            connection.Open();
-
-            var sql = $"SELECT \"Operand1\", \"Operand2\", \"Operation\", \"ExpectedResult\" FROM \"{table}\";";
-            using var command = new NpgsqlCommand(sql, connection);
-            using var reader = command.ExecuteReader();
-
-            var rowNumber = 0;
-            while (reader.Read())
-            {
-                rowNumber++;
-
-                var operand1Text = reader.IsDBNull(0) ? string.Empty : reader.GetValue(0)?.ToString() ?? string.Empty;
-                var operand2Text = reader.IsDBNull(1) ? string.Empty : reader.GetValue(1)?.ToString() ?? string.Empty;
-                var operation = reader.IsDBNull(2) ? string.Empty : reader.GetValue(2)?.ToString() ?? string.Empty;
-                var expectedText = reader.IsDBNull(3) ? string.Empty : reader.GetValue(3)?.ToString() ?? string.Empty;
-
-                if (!double.TryParse(operand1Text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var operand1) ||
-                    !double.TryParse(operand2Text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var operand2) ||
-                    !double.TryParse(expectedText, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var expectedResult) ||
-                    string.IsNullOrWhiteSpace(operation))
-                {
-                    Console.WriteLine(
-                        $"Skipping malformed row {rowNumber} in table '{table}': Operand1='{operand1Text}', Operand2='{operand2Text}', Operation='{operation}', ExpectedResult='{expectedText}'.");
-                    continue;
-                }
-
-                results.Add(new TestCase
-                {
-                    Operand1 = operand1,
-                    Operand2 = operand2,
-                    Operation = operation.Trim(),
-                    ExpectedResult = expectedResult
-                });
-            }
-        }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
-        {
-            throw new InvalidOperationException(
-                $"The PostgreSQL table '{table}' does not exist in the Testcontainers database. Ensure CSV seeding completed successfully.", ex);
-        }
-        catch (NpgsqlException ex)
-        {
-            throw new InvalidOperationException(
-                "Unable to load test cases from the Testcontainers PostgreSQL instance. Verify Docker availability and container startup.", ex);
-        }
-
-        return results;
-    }
-
     [Theory]
     [MemberData(nameof(GetAddTestCases))]
-    public void Add_ReturnsExpectedResult(double left, double right, double expected)
+    public void Add_WithTwoOperands_ReturnsSum(double firstOperand, double secondOperand, double expectedResult)
     {
-        Assert.Equal(expected, CalculatorOperations.Add(left, right));
-    }
+        var actualResult = CalculatorOperations.Add(firstOperand, secondOperand);
 
-    public static IEnumerable<object[]> GetAddTestCases() => GetTestCases("Add");
+        Assert.Equal(expectedResult, actualResult, precision: 10);
+    }
 
     [Theory]
     [MemberData(nameof(GetSubtractTestCases))]
-    public void Subtract_ReturnsExpectedResult(double left, double right, double expected)
+    public void Subtract_WithTwoOperands_ReturnsDifference(double firstOperand, double secondOperand, double expectedResult)
     {
-        Assert.Equal(expected, CalculatorOperations.Subtract(left, right));
-    }
+        var actualResult = CalculatorOperations.Subtract(firstOperand, secondOperand);
 
-    public static IEnumerable<object[]> GetSubtractTestCases() => GetTestCases("Subtract");
+        Assert.Equal(expectedResult, actualResult, precision: 10);
+    }
 
     [Theory]
     [MemberData(nameof(GetMultiplyTestCases))]
-    public void Multiply_ReturnsExpectedResult(double left, double right, double expected)
+    public void Multiply_WithTwoOperands_ReturnsProduct(double firstOperand, double secondOperand, double expectedResult)
     {
-        Assert.Equal(expected, CalculatorOperations.Multiply(left, right));
-    }
+        var actualResult = CalculatorOperations.Multiply(firstOperand, secondOperand);
 
-    public static IEnumerable<object[]> GetMultiplyTestCases() => GetTestCases("Multiply");
+        Assert.Equal(expectedResult, actualResult, precision: 10);
+    }
 
     [Theory]
     [MemberData(nameof(GetDivideTestCases))]
-    public void Divide_ReturnsExpectedResult(double left, double right, double expected)
+    public void Divide_WithNonZeroDivisor_ReturnsQuotient(double firstOperand, double secondOperand, double expectedResult)
     {
-        Assert.Equal(expected, CalculatorOperations.Divide(left, right));
+        var actualResult = CalculatorOperations.Divide(firstOperand, secondOperand);
+
+        Assert.Equal(expectedResult, actualResult, precision: 10);
     }
 
-    public static IEnumerable<object[]> GetDivideTestCases() => GetTestCases("Divide");
-
     [Fact]
-    public void Divide_ByZero_Throws()
+    public void Divide_WithZeroDivisor_ThrowsDivideByZeroException()
     {
-        Assert.Throws<DivideByZeroException>(() => CalculatorOperations.Divide(5, 0));
+        Assert.Throws<DivideByZeroException>(() => CalculatorOperations.Divide(10, 0));
     }
 
     [Theory]
     [MemberData(nameof(GetModuloTestCases))]
-    public void Modulo_ReturnsExpectedResult(double left, double right, double expected)
+    public void Modulo_WithNonZeroDivisor_ReturnsRemainder(double firstOperand, double secondOperand, double expectedResult)
     {
-        Assert.Equal(expected, CalculatorOperations.Modulo(left, right));
+        var actualResult = CalculatorOperations.Modulo(firstOperand, secondOperand);
+
+        Assert.Equal(expectedResult, actualResult, precision: 10);
     }
 
-    public static IEnumerable<object[]> GetModuloTestCases() => GetTestCases("Modulo");
-
     [Fact]
-    public void Modulo_ByZero_Throws()
+    public void Modulo_WithZeroDivisor_ThrowsDivideByZeroException()
     {
-        Assert.Throws<DivideByZeroException>(() => CalculatorOperations.Modulo(5, 0));
+        Assert.Throws<DivideByZeroException>(() => CalculatorOperations.Modulo(10, 0));
     }
 
     [Theory]
-    [MemberData(nameof(GetExponentTestCases))]
-    public void Exponent_ReturnsExpectedResult(double left, double right, double expected)
+    [MemberData(nameof(GetPowerTestCases))]
+    public void Power_WithTwoOperands_ReturnsPower(double firstOperand, double secondOperand, double expectedResult)
     {
-        Assert.Equal(expected, CalculatorOperations.Exponent(left, right));
+        var actualResult = CalculatorOperations.Power(firstOperand, secondOperand);
+
+        Assert.Equal(expectedResult, actualResult, precision: 10);
     }
 
-    public static IEnumerable<object[]> GetExponentTestCases() => GetTestCases("Exponent");
+    public static IEnumerable<object[]> GetAddTestCases() => GetTestCases("Add");
 
-    private static class TestDatabase
+    public static IEnumerable<object[]> GetSubtractTestCases() => GetTestCases("Subtract");
+
+    public static IEnumerable<object[]> GetMultiplyTestCases() => GetTestCases("Multiply");
+
+    public static IEnumerable<object[]> GetDivideTestCases() => GetTestCases("Divide");
+
+    public static IEnumerable<object[]> GetModuloTestCases() => GetTestCases("Modulo");
+
+    public static IEnumerable<object[]> GetPowerTestCases() => GetTestCases("Exponent");
+
+    private static IEnumerable<object[]> GetTestCases(string operation) => PostgreSqlTestData.GetTestCases(operation)
+        .Select(testCase => new object[] { testCase.Operand1, testCase.Operand2, testCase.ExpectedResult });
+}
+
+internal sealed class CalculatorTestCase
+{
+    public double Operand1 { get; set; }
+
+    public double Operand2 { get; set; }
+
+    public string Operation { get; set; } = string.Empty;
+
+    public double ExpectedResult { get; set; }
+}
+
+internal static class PostgreSqlTestData
+{
+    private static readonly string TestDataPath = Path.Combine(AppContext.BaseDirectory, "TestCases.csv");
+
+    private static readonly Lazy<Task<IReadOnlyList<CalculatorTestCase>>> TestCases = new(LoadTestCasesAsync);
+
+    public static IEnumerable<CalculatorTestCase> GetTestCases(string operation) => TestCases.Value
+        .GetAwaiter()
+        .GetResult()
+        .Where(testCase => string.Equals(testCase.Operation, operation, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+    private static async Task<IReadOnlyList<CalculatorTestCase>> LoadTestCasesAsync()
     {
-        private static readonly object SyncRoot = new();
-        private static PostgreSqlContainer? container;
-
-        public static PostgreSqlContainer Container
+        if (!File.Exists(TestDataPath))
         {
-            get
-            {
-                lock (SyncRoot)
-                {
-                    container ??= StartAndSeedContainer();
-                    return container;
-                }
-            }
+            throw new FileNotFoundException($"Test data file not found: {TestDataPath}");
         }
 
-        private static PostgreSqlContainer StartAndSeedContainer()
+        var userName = $"calc_user_{Guid.NewGuid():N}";
+        var databaseName = $"calc_db_{Guid.NewGuid():N}";
+        var password = Convert.ToHexString(RandomNumberGenerator.GetBytes(24));
+
+        var container = new PostgreSqlBuilder("postgres:15.1")
+            .WithUsername(userName)
+            .WithPassword(password)
+            .WithDatabase(databaseName)
+            .Build();
+
+        await container.StartAsync();
+
+        await SeedTestCasesAsync(container.GetConnectionString());
+
+        return await QueryTestCasesAsync(container.GetConnectionString());
+    }
+
+    private static CalculatorTestCase ParseTestCase(string line)
+    {
+        var columns = line.Split(',');
+
+        if (columns.Length != 4)
         {
-            var suffix = Guid.NewGuid().ToString("N")[..12];
-            var testContainer = new PostgreSqlBuilder()
-                .WithImage("postgres:16-alpine")
-                .WithDatabase($"calc_tests_{suffix}")
-                .WithUsername($"calc_user_{suffix}")
-                .WithPassword($"pg_pwd_{Guid.NewGuid():N}!A1")
-                .Build();
-
-            testContainer.StartAsync().GetAwaiter().GetResult();
-            SeedFromCsv(testContainer);
-
-            AppDomain.CurrentDomain.ProcessExit += (_, _) =>
-            {
-                try
-                {
-                    testContainer.DisposeAsync().AsTask().GetAwaiter().GetResult();
-                }
-                catch
-                {
-                    // Best-effort cleanup at process shutdown.
-                }
-            };
-
-            return testContainer;
+            throw new FormatException($"Invalid test case row: {line}");
         }
 
-        private static void SeedFromCsv(PostgreSqlContainer testContainer)
+        return new CalculatorTestCase
         {
-            var csvPath = ResolveCsvPath();
-            var lines = File.ReadAllLines(csvPath);
-            if (lines.Length <= 1)
-            {
-                throw new InvalidOperationException($"CSV test case file '{csvPath}' does not contain data rows.");
-            }
+            Operand1 = double.Parse(columns[0], CultureInfo.InvariantCulture),
+            Operand2 = double.Parse(columns[1], CultureInfo.InvariantCulture),
+            Operation = columns[2].Trim(),
+            ExpectedResult = double.Parse(columns[3], CultureInfo.InvariantCulture)
+        };
+    }
 
-            using var connection = new NpgsqlConnection(testContainer.GetConnectionString());
-            connection.Open();
+    private static async Task SeedTestCasesAsync(string connectionString)
+    {
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync();
 
-            using (var create = new NpgsqlCommand(
-                "CREATE TABLE IF NOT EXISTS \"test_data\" (\"Operand1\" TEXT, \"Operand2\" TEXT, \"Operation\" TEXT, \"ExpectedResult\" TEXT);",
-                connection))
-            {
-                create.ExecuteNonQuery();
-            }
-
-            using (var truncate = new NpgsqlCommand("TRUNCATE TABLE \"test_data\";", connection))
-            {
-                truncate.ExecuteNonQuery();
-            }
-
-            foreach (var row in lines.Skip(1))
-            {
-                if (string.IsNullOrWhiteSpace(row))
-                {
-                    continue;
-                }
-
-                var parts = row.Split(',');
-                if (parts.Length != 4)
-                {
-                    Console.WriteLine($"Skipping malformed CSV row during seed: '{row}'");
-                    continue;
-                }
-
-                using var insert = new NpgsqlCommand(
-                    "INSERT INTO \"test_data\" (\"Operand1\", \"Operand2\", \"Operation\", \"ExpectedResult\") VALUES (@operand1, @operand2, @operation, @expectedResult);",
-                    connection);
-                insert.Parameters.AddWithValue("operand1", parts[0].Trim());
-                insert.Parameters.AddWithValue("operand2", parts[1].Trim());
-                insert.Parameters.AddWithValue("operation", parts[2].Trim());
-                insert.Parameters.AddWithValue("expectedResult", parts[3].Trim());
-                insert.ExecuteNonQuery();
-            }
+        await using (var createTableCommand = connection.CreateCommand())
+        {
+            createTableCommand.CommandText = """
+                CREATE TABLE test_data (
+                    id integer GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+                    operand1 double precision NOT NULL,
+                    operand2 double precision NOT NULL,
+                    operation text NOT NULL,
+                    expected_result double precision NOT NULL
+                );
+                """;
+            await createTableCommand.ExecuteNonQueryAsync();
         }
 
-        private static string ResolveCsvPath()
+        foreach (var testCase in File.ReadLines(TestDataPath).Skip(1).Select(ParseTestCase))
         {
-            var fromBaseDirectory = Path.Combine(AppContext.BaseDirectory, "TestCases.csv");
-            if (File.Exists(fromBaseDirectory))
-            {
-                return fromBaseDirectory;
-            }
-
-            var fromCurrentDirectory = Path.Combine(Directory.GetCurrentDirectory(), "TestCases.csv");
-            if (File.Exists(fromCurrentDirectory))
-            {
-                return fromCurrentDirectory;
-            }
-
-            throw new FileNotFoundException(
-                "TestCases.csv was not found. Ensure the file is copied to the test output directory.");
+            await using var insertCommand = connection.CreateCommand();
+            insertCommand.CommandText = """
+                INSERT INTO test_data (operand1, operand2, operation, expected_result)
+                VALUES (@operand1, @operand2, @operation, @expectedResult);
+                """;
+            insertCommand.Parameters.AddWithValue("operand1", testCase.Operand1);
+            insertCommand.Parameters.AddWithValue("operand2", testCase.Operand2);
+            insertCommand.Parameters.AddWithValue("operation", testCase.Operation);
+            insertCommand.Parameters.AddWithValue("expectedResult", testCase.ExpectedResult);
+            await insertCommand.ExecuteNonQueryAsync();
         }
+    }
+
+    private static async Task<IReadOnlyList<CalculatorTestCase>> QueryTestCasesAsync(string connectionString)
+    {
+        var testCases = new List<CalculatorTestCase>();
+
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT operand1, operand2, operation, expected_result
+            FROM test_data
+            ORDER BY id;
+            """;
+
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            testCases.Add(new CalculatorTestCase
+            {
+                Operand1 = reader.GetDouble(0),
+                Operand2 = reader.GetDouble(1),
+                Operation = reader.GetString(2),
+                ExpectedResult = reader.GetDouble(3)
+            });
+        }
+
+        return testCases;
     }
 }

@@ -1,73 +1,77 @@
-namespace calculator;
+namespace calculator.library;
 
 /// <summary>
-/// Provides pure arithmetic operations for calculator clients.
+/// Provides arithmetic operations for calculator clients.
 /// </summary>
 public static class CalculatorOperations
 {
     /// <summary>
     /// Adds two operands.
     /// </summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The sum of both operands.</returns>
-    public static double Add(double left, double right) => left + right;
+    /// <param name="firstOperand">The first operand.</param>
+    /// <param name="secondOperand">The second operand.</param>
+    /// <returns>The sum of the operands.</returns>
+    public static double Add(double firstOperand, double secondOperand) => firstOperand + secondOperand;
 
     /// <summary>
-    /// Subtracts the right operand from the left operand.
+    /// Subtracts the second operand from the first operand.
     /// </summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The subtraction result.</returns>
-    public static double Subtract(double left, double right) => left - right;
+    /// <param name="firstOperand">The first operand.</param>
+    /// <param name="secondOperand">The second operand.</param>
+    /// <returns>The difference between the operands.</returns>
+    public static double Subtract(double firstOperand, double secondOperand) => firstOperand - secondOperand;
 
     /// <summary>
     /// Multiplies two operands.
     /// </summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The product of both operands.</returns>
-    public static double Multiply(double left, double right) => left * right;
+    /// <param name="firstOperand">The first operand.</param>
+    /// <param name="secondOperand">The second operand.</param>
+    /// <returns>The product of the operands.</returns>
+    public static double Multiply(double firstOperand, double secondOperand) => firstOperand * secondOperand;
 
     /// <summary>
-    /// Divides the left operand by the right operand.
+    /// Divides the first operand by the second operand.
     /// </summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The division result.</returns>
-    /// <exception cref="DivideByZeroException">Thrown when <paramref name="right"/> is zero.</exception>
-    public static double Divide(double left, double right)
+    /// <param name="firstOperand">The first operand.</param>
+    /// <param name="secondOperand">The second operand.</param>
+    /// <returns>The quotient of the operands.</returns>
+    /// <exception cref="DivideByZeroException">
+    /// Thrown when <paramref name="secondOperand"/> is zero.
+    /// </exception>
+    public static double Divide(double firstOperand, double secondOperand)
     {
-        if (right == 0)
+        if (secondOperand == 0)
         {
             throw new DivideByZeroException("Cannot divide by zero.");
         }
 
-        return left / right;
+        return firstOperand / secondOperand;
     }
 
     /// <summary>
-    /// Calculates the remainder after dividing the left operand by the right operand.
+    /// Returns the remainder after dividing the first operand by the second operand.
     /// </summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The modulo result.</returns>
-    /// <exception cref="DivideByZeroException">Thrown when <paramref name="right"/> is zero.</exception>
-    public static double Modulo(double left, double right)
+    /// <param name="firstOperand">The first operand.</param>
+    /// <param name="secondOperand">The second operand.</param>
+    /// <returns>The remainder after division.</returns>
+    /// <exception cref="DivideByZeroException">
+    /// Thrown when <paramref name="secondOperand"/> is zero.
+    /// </exception>
+    public static double Modulo(double firstOperand, double secondOperand)
     {
-        if (right == 0)
+        if (secondOperand == 0)
         {
-            throw new DivideByZeroException("Cannot modulo by zero.");
+            throw new DivideByZeroException("Cannot calculate modulo with zero.");
         }
 
-        return left % right;
+        return firstOperand % secondOperand;
     }
 
     /// <summary>
-    /// Raises the left operand to the power of the right operand.
+    /// Raises the first operand to the power of the second operand.
     /// </summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The exponent.</param>
-    /// <returns>The exponentiation result.</returns>
-    public static double Exponent(double left, double right) => Math.Pow(left, right);
+    /// <param name="firstOperand">The base value.</param>
+    /// <param name="secondOperand">The exponent value.</param>
+    /// <returns>The power result.</returns>
+    public static double Power(double firstOperand, double secondOperand) => Math.Pow(firstOperand, secondOperand);
 }

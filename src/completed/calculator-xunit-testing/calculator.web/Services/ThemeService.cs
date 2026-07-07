@@ -1,31 +1,22 @@
 namespace calculator.web.Services;
 
 /// <summary>
-/// Tracks the active calculator theme for the current Blazor circuit.
+/// Maintains session-scoped visual theme state.
 /// </summary>
 public sealed class ThemeService
 {
     /// <summary>
-    /// Occurs when the theme changes.
-    /// </summary>
-    public event Action? OnThemeChanged;
-
-    /// <summary>
-    /// Gets the CSS class for the active theme.
-    /// </summary>
-    public string CssClass => IsDarkMode ? "theme-dark" : "theme-light";
-
-    /// <summary>
-    /// Gets a value indicating whether dark mode is active.
+    /// Gets a value indicating whether the dark theme is active.
     /// </summary>
     public bool IsDarkMode { get; private set; }
 
     /// <summary>
+    /// Gets the CSS class for the current theme.
+    /// </summary>
+    public string ThemeClass => IsDarkMode ? "theme-dark" : "theme-light";
+
+    /// <summary>
     /// Toggles between light and dark themes.
     /// </summary>
-    public void ToggleTheme()
-    {
-        IsDarkMode = !IsDarkMode;
-        OnThemeChanged?.Invoke();
-    }
+    public void Toggle() => IsDarkMode = !IsDarkMode;
 }

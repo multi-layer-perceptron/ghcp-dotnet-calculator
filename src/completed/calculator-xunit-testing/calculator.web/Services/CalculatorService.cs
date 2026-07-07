@@ -1,212 +1,177 @@
-using System.Globalization;
-using calculator;
-
 namespace calculator.web.Services;
 
+using System.Globalization;
+using calculator.library;
+
 /// <summary>
-/// Maintains calculator input state and executes arithmetic operations.
+/// Maintains calculator entry state and delegates arithmetic to the shared library.
 /// </summary>
 public sealed class CalculatorService
 {
-    private bool shouldReplaceDisplay = true;
-    private double? pendingOperand;
+    private double? storedOperand;
     private string? pendingOperator;
+    private bool resetDisplayOnNextEntry;
 
     /// <summary>
-    /// Occurs when a calculation completes.
-    /// </summary>
-    public event Action<CalculationRecord>? OnCalculationCompleted;
-
-    /// <summary>
-    /// Occurs when display state changes.
-    /// </summary>
-    public event Action? OnDisplayChanged;
-
-    /// <summary>
-    /// Gets the calculator display value.
+    /// Gets the current calculator display value.
     /// </summary>
     public string Display { get; private set; } = "0";
 
     /// <summary>
-    /// Gets the latest user-facing error message, if any.
+    /// Gets the current expression label shown above the display.
+    /// </summary>
+    public string Expression { get; private set; } = "Ready";
+
+    /// <summary>
+    /// Gets the current error text, when the last operation failed.
     /// </summary>
     public string? ErrorMessage { get; private set; }
 
     /// <summary>
-    /// Clears calculator state.
+    /// Handles a keypad or keyboard key.
     /// </summary>
-    public void Clear()
+    /// <param name="key">The normalized calculator key.</param>
+    /// <returns>A completed calculation record when equals completes an operation; otherwise, null.</returns>
+    public CalculationRecord? HandleKey(string key)
     {
-        Display = "0";
         ErrorMessage = null;
-        pendingOperand = null;
+
+        if (key.Length == 1 && char.IsDigit(key[0]))
+        {
+            EnterDigit(key);
+            return null;
+        }
+
+        return key switch
+        {
+            "." => EnterDecimal(),
+            "+" or "-" or "*" or "/" or "%" or "^" => SetOperator(key),
+            "=" => Calculate(),
+            "clear" => Clear(),
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// Clears the current calculation state.
+    /// </summary>
+    public CalculationRecord? Clear()
+    {
+        storedOperand = null;
         pendingOperator = null;
-        shouldReplaceDisplay = true;
-        NotifyDisplayChanged();
-    }
-
-    /// <summary>
-    /// Executes the pending calculation if possible.
-    /// </summary>
-    public void Calculate()
-    {
-        if (pendingOperand is null || pendingOperator is null)
-        {
-            return;
-        }
-
-        if (!TryGetDisplayValue(out var rightOperand))
-        {
-            return;
-        }
-
-        ExecutePendingOperation(pendingOperand.Value, pendingOperator, rightOperand);
-    }
-
-    /// <summary>
-    /// Enters a decimal separator.
-    /// </summary>
-    public void EnterDecimal()
-    {
+        resetDisplayOnNextEntry = false;
+        Display = "0";
+        Expression = "Ready";
         ErrorMessage = null;
+        return null;
+    }
 
-        if (shouldReplaceDisplay)
+    /// <summary>
+    /// Replays a result value from history into the current display.
+    /// </summary>
+    /// <param name="result">The result to replay.</param>
+    public void ReplayResult(double result)
+    {
+        storedOperand = null;
+        pendingOperator = null;
+        resetDisplayOnNextEntry = true;
+        ErrorMessage = null;
+        Display = CalculatorFormatter.FormatNumber(result);
+        Expression = "Replayed result";
+    }
+
+    private CalculationRecord? EnterDecimal()
+    {
+        if (resetDisplayOnNextEntry)
         {
-            Display = "0.";
-            shouldReplaceDisplay = false;
+            Display = "0";
+            resetDisplayOnNextEntry = false;
         }
-        else if (!Display.Contains('.', StringComparison.Ordinal))
+
+        if (!Display.Contains('.', StringComparison.Ordinal))
         {
             Display += ".";
         }
 
-        NotifyDisplayChanged();
+        return null;
     }
 
-    /// <summary>
-    /// Enters a digit.
-    /// </summary>
-    /// <param name="digit">The digit text.</param>
-    public void EnterDigit(string digit)
+    private void EnterDigit(string digit)
     {
-        if (digit.Length != 1 || !char.IsDigit(digit[0]))
-        {
-            return;
-        }
-
-        ErrorMessage = null;
-        if (shouldReplaceDisplay || Display == "0")
+        if (resetDisplayOnNextEntry || Display == "0")
         {
             Display = digit;
-            shouldReplaceDisplay = false;
-        }
-        else
-        {
-            Display += digit;
-        }
-
-        NotifyDisplayChanged();
-    }
-
-    /// <summary>
-    /// Stores or executes an operator for chained calculations.
-    /// </summary>
-    /// <param name="operation">The operation symbol.</param>
-    public void EnterOperator(string operation)
-    {
-        var normalizedOperation = NormalizeOperator(operation);
-        if (normalizedOperation is null || !TryGetDisplayValue(out var currentValue))
-        {
+            resetDisplayOnNextEntry = false;
             return;
         }
 
-        if (pendingOperand is not null && pendingOperator is not null && !shouldReplaceDisplay)
+        Display += digit;
+    }
+
+    private CalculationRecord? SetOperator(string calculatorOperator)
+    {
+        if (storedOperand.HasValue && pendingOperator is not null && !resetDisplayOnNextEntry)
         {
-            ExecutePendingOperation(pendingOperand.Value, pendingOperator, currentValue);
-            if (!TryGetDisplayValue(out currentValue))
-            {
-                return;
-            }
+            CalculateIntermediate();
         }
 
-        pendingOperand = currentValue;
-        pendingOperator = normalizedOperation;
-        shouldReplaceDisplay = true;
-        ErrorMessage = null;
-        NotifyDisplayChanged();
+        storedOperand = ParseDisplay();
+        pendingOperator = calculatorOperator;
+        resetDisplayOnNextEntry = true;
+        Expression = $"{Display} {calculatorOperator}";
+        return null;
     }
 
-    /// <summary>
-    /// Replays a historical result into the current display.
-    /// </summary>
-    /// <param name="record">The record to replay.</param>
-    public void Replay(CalculationRecord record)
+    private CalculationRecord? Calculate()
     {
-        ArgumentNullException.ThrowIfNull(record);
-        Display = FormatNumber(record.Result);
-        ErrorMessage = null;
-        pendingOperand = null;
-        pendingOperator = null;
-        shouldReplaceDisplay = true;
-        NotifyDisplayChanged();
-    }
+        if (!storedOperand.HasValue || pendingOperator is null)
+        {
+            return null;
+        }
 
-    private static string FormatNumber(double value) => value.ToString("G15", CultureInfo.InvariantCulture);
+        var firstOperand = storedOperand.Value;
+        var secondOperand = ParseDisplay();
+        var expression = $"{CalculatorFormatter.FormatNumber(firstOperand)} {pendingOperator} {CalculatorFormatter.FormatNumber(secondOperand)}";
 
-    private static string? NormalizeOperator(string operation) => operation switch
-    {
-        "+" => "+",
-        "-" or "−" => "−",
-        "*" or "×" => "×",
-        "/" or "÷" => "÷",
-        "%" => "%",
-        "^" => "^",
-        _ => null
-    };
-
-    private static double RunOperation(double leftOperand, string operation, double rightOperand) => operation switch
-    {
-        "+" => CalculatorOperations.Add(leftOperand, rightOperand),
-        "−" => CalculatorOperations.Subtract(leftOperand, rightOperand),
-        "×" => CalculatorOperations.Multiply(leftOperand, rightOperand),
-        "÷" => CalculatorOperations.Divide(leftOperand, rightOperand),
-        "%" => CalculatorOperations.Modulo(leftOperand, rightOperand),
-        "^" => CalculatorOperations.Exponent(leftOperand, rightOperand),
-        _ => throw new InvalidOperationException($"Unsupported operation '{operation}'.")
-    };
-
-    private void ExecutePendingOperation(double leftOperand, string operation, double rightOperand)
-    {
         try
         {
-            var result = RunOperation(leftOperand, operation, rightOperand);
-            Display = FormatNumber(result);
-            ErrorMessage = null;
-            pendingOperand = null;
+            var result = ExecuteOperation(firstOperand, secondOperand, pendingOperator);
+            Display = CalculatorFormatter.FormatNumber(result);
+            Expression = expression;
+            storedOperand = null;
             pendingOperator = null;
-            shouldReplaceDisplay = true;
-            OnCalculationCompleted?.Invoke(new CalculationRecord(leftOperand, operation, rightOperand, result, DateTimeOffset.Now));
+            resetDisplayOnNextEntry = true;
+            return new CalculationRecord(expression, result, DateTimeOffset.Now);
         }
         catch (DivideByZeroException ex)
         {
             ErrorMessage = ex.Message;
-            shouldReplaceDisplay = true;
+            resetDisplayOnNextEntry = true;
+            return null;
         }
-
-        NotifyDisplayChanged();
     }
 
-    private void NotifyDisplayChanged() => OnDisplayChanged?.Invoke();
-
-    private bool TryGetDisplayValue(out double value)
+    private void CalculateIntermediate()
     {
-        if (double.TryParse(Display, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+        if (!storedOperand.HasValue || pendingOperator is null)
         {
-            return true;
+            return;
         }
 
-        ErrorMessage = "Current display value is not a valid number.";
-        NotifyDisplayChanged();
-        return false;
+        var result = ExecuteOperation(storedOperand.Value, ParseDisplay(), pendingOperator);
+        Display = CalculatorFormatter.FormatNumber(result);
     }
+
+    private double ParseDisplay() => double.Parse(Display, CultureInfo.InvariantCulture);
+
+    private static double ExecuteOperation(double firstOperand, double secondOperand, string calculatorOperator) => calculatorOperator switch
+    {
+        "+" => CalculatorOperations.Add(firstOperand, secondOperand),
+        "-" => CalculatorOperations.Subtract(firstOperand, secondOperand),
+        "*" => CalculatorOperations.Multiply(firstOperand, secondOperand),
+        "/" => CalculatorOperations.Divide(firstOperand, secondOperand),
+        "%" => CalculatorOperations.Modulo(firstOperand, secondOperand),
+        "^" => CalculatorOperations.Power(firstOperand, secondOperand),
+        _ => throw new InvalidOperationException($"Unsupported operator: {calculatorOperator}")
+    };
 }

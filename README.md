@@ -280,6 +280,7 @@ short tour of the Copilot configuration files that drive the lab sequence.
 | Exercise | Title | Associated prompt |
 | -------- | ----- | ----------------- |
 | [00.01](lab-exercises/00.01.explore-copilot-config-files.md) | Explore Copilot Configuration Files | None |
+| [00.02](lab-exercises/00.02.custom-instructions-and-agents.md) | Custom Instructions And Agents | None |
 
 ### Module 01 - Build The Calculator Solution
 
@@ -431,6 +432,7 @@ ghcp-dotnet-calculator/
     azure-migration-assessment-3.02.md           Azure migration assessment notes
   lab-exercises/
     00.01.explore-copilot-config-files.md        Copilot configuration orientation exercise
+    00.02.custom-instructions-and-agents.md      Custom instructions and agents orientation exercise
     01.01-solution-setup.md                      Module 01-03 guided lab exercises
   src/
     workspace/

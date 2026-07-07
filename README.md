@@ -318,6 +318,7 @@ through `03.03` and confirming the completed project exists under
 | Exercise | Title | Associated prompt |
 | -------- | ----- | ----------------- |
 | [99.01](lab-exercises/99.01.custom-instructions-and-agents.md) | Custom Instructions And Agents | None |
+| [99.02](lab-exercises/99.02.skills-and-prompts.md) | Skills And Prompts | None |
 
 ## Calculator Tutorial
 
@@ -445,6 +446,7 @@ ghcp-dotnet-calculator/
     00.02.create-dotnet-dev-agent.md             Custom .NET development agent exercise
     01.01-solution-setup.md                      Module 01-03 guided lab exercises
     99.01.custom-instructions-and-agents.md      Finished project customization exercise
+    99.02.skills-and-prompts.md                  Finished project skills and prompts exercise
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace

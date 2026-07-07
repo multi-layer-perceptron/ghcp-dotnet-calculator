@@ -1,0 +1,88 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject CalculatorService Calculator
+@inject HistoryService History
+@inject ThemeService Theme
+@inject IJSRuntime JsRuntime
+
+<PageTitle>Calculator</PageTitle>
+
+<div class="calculator-shell @Theme.ThemeClass">
+	<header class="app-header">
+		<div>
+			<p class="eyebrow">Blazor Calculator</p>
+			<h1>Calculator</h1>
+		</div>
+		<ThemeToggle Theme="Theme" OnThemeChanged="Refresh" />
+	</header>
+
+	<main class="calculator-workspace">
+		<section class="calculator-panel" aria-labelledby="calculator-heading">
+			<div class="display-card">
+				<h2 id="calculator-heading">Current Calculation</h2>
+				<p class="expression" aria-live="polite">@Calculator.Expression</p>
+				<output class="display" aria-live="polite">@Calculator.Display</output>
+				@if (!string.IsNullOrWhiteSpace(Calculator.ErrorMessage))
+				{
+					<p class="error-text" role="alert">@Calculator.ErrorMessage</p>
+				}
+			</div>
+
+			<CalculatorKeypad OnKeyPressed="HandleKey" />
+		</section>
+
+		<HistoryPanel History="History" OnReplay="Replay" OnClearHistory="ClearHistory" />
+	</main>
+</div>
+
+@code {
+	private IJSObjectReference? keyboardModule;
+	private DotNetObjectReference<Home>? dotNetReference;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender)
+		{
+			return;
+		}
+
+		dotNetReference = DotNetObjectReference.Create(this);
+		keyboardModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/calculatorKeyboard.js");
+		await keyboardModule.InvokeVoidAsync("attachCalculatorKeyboard", dotNetReference);
+	}
+
+	[JSInvokable]
+	public Task HandleKeyboardInput(string key)
+	{
+		HandleKey(key);
+		StateHasChanged();
+		return Task.CompletedTask;
+	}
+
+	private void HandleKey(string key)
+	{
+		var completedRecord = Calculator.HandleKey(key);
+		if (completedRecord is not null)
+		{
+			History.Add(completedRecord);
+		}
+	}
+
+	private void Replay(CalculationRecord record) => Calculator.ReplayResult(record.Result);
+
+	private void ClearHistory() => History.Clear();
+
+	private void Refresh() => StateHasChanged();
+
+	public async ValueTask DisposeAsync()
+	{
+		if (keyboardModule is not null)
+		{
+			await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
+			await keyboardModule.DisposeAsync();
+		}
+
+		dotNetReference?.Dispose();
+	}
+}

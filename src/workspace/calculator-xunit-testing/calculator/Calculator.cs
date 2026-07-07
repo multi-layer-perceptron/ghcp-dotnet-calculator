@@ -1,4 +1,4 @@
-﻿using calculator;
+﻿using calculator.library;
 
 Console.WriteLine("Basic Calculator");
 

@@ -1,7 +1,7 @@
-namespace calculator;
+namespace calculator.library;
 
 /// <summary>
-/// Provides arithmetic operations for the calculator application.
+/// Provides arithmetic operations for calculator clients.
 /// </summary>
 public static class CalculatorOperations
 {
@@ -30,6 +30,25 @@ public static class CalculatorOperations
     public static double Multiply(double firstOperand, double secondOperand) => firstOperand * secondOperand;
 
     /// <summary>
+    /// Divides the first operand by the second operand.
+    /// </summary>
+    /// <param name="firstOperand">The first operand.</param>
+    /// <param name="secondOperand">The second operand.</param>
+    /// <returns>The quotient of the operands.</returns>
+    /// <exception cref="DivideByZeroException">
+    /// Thrown when <paramref name="secondOperand"/> is zero.
+    /// </exception>
+    public static double Divide(double firstOperand, double secondOperand)
+    {
+        if (secondOperand == 0)
+        {
+            throw new DivideByZeroException("Cannot divide by zero.");
+        }
+
+        return firstOperand / secondOperand;
+    }
+
+    /// <summary>
     /// Returns the remainder after dividing the first operand by the second operand.
     /// </summary>
     /// <param name="firstOperand">The first operand.</param>
@@ -55,23 +74,4 @@ public static class CalculatorOperations
     /// <param name="secondOperand">The exponent value.</param>
     /// <returns>The power result.</returns>
     public static double Power(double firstOperand, double secondOperand) => Math.Pow(firstOperand, secondOperand);
-
-    /// <summary>
-    /// Divides the first operand by the second operand.
-    /// </summary>
-    /// <param name="firstOperand">The first operand.</param>
-    /// <param name="secondOperand">The second operand.</param>
-    /// <returns>The quotient of the operands.</returns>
-    /// <exception cref="DivideByZeroException">
-    /// Thrown when <paramref name="secondOperand"/> is zero.
-    /// </exception>
-    public static double Divide(double firstOperand, double secondOperand)
-    {
-        if (secondOperand == 0)
-        {
-            throw new DivideByZeroException("Cannot divide by zero.");
-        }
-
-        return firstOperand / secondOperand;
-    }
 }

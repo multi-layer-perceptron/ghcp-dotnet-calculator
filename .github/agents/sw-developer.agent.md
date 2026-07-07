@@ -2,7 +2,7 @@
 name: sw-developer
 description: Assists with common software development tasks for .NET and Angular.
 target: vscode
-model: Claude Haiku 4.5 (copilot)
+model: GPT-5.5 (copilot)
 handoffs:
 
   - label: software-quality-tester

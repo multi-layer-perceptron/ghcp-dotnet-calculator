@@ -2,7 +2,7 @@
 name: devops-engineer
 description: Assists with DevOps and platform engineering tasks for .NET and Angular applications.
 target: vscode
-model: Claude Haiku 4.5 (copilot)
+model: GPT-5.5 (copilot)
 tools: ['read/readFile', 'edit', 'search', 'web/fetch', 'azure-mcp/search', 'azuredevops/*', 'github/*', 'ms-azuretools.vscode-azure-github-copilot/azure_recommend_custom_modes', 'ms-azuretools.vscode-azure-github-copilot/azure_query_azure_resource_graph', 'ms-azuretools.vscode-azure-github-copilot/azure_get_auth_context', 'ms-azuretools.vscode-azure-github-copilot/azure_set_auth_context', 'ms-azuretools.vscode-azure-github-copilot/azure_get_dotnet_template_tags', 'ms-azuretools.vscode-azure-github-copilot/azure_get_dotnet_templates_for_tag']
 handoffs:
 

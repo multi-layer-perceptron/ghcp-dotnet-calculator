@@ -2,7 +2,7 @@
 name: security-engineer
 description: Assists with security-related tasks for .NET and Angular applications.
 target: vscode
-model: Claude Haiku 4.5 (copilot)
+model: GPT-5.5 (copilot)
 handoffs:
 
   - label: project-manager

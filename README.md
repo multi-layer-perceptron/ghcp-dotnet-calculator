@@ -272,7 +272,14 @@ then validate quality and security. Each exercise references its associated
 prompt and summarizes the learning objectives and how the prompt is used.
 
 Complete the [Hide The Completed Solution](#hide-the-completed-solution)
-prerequisite before starting Module 01.
+prerequisite before starting Module 01. Start with Module 00 if you want a
+short tour of the Copilot configuration files that drive the lab sequence.
+
+### Module 00 - Explore The Copilot Workspace
+
+| Exercise | Title | Associated prompt |
+| -------- | ----- | ----------------- |
+| [00.01](lab-exercises/00.01.explore-copilot-config-files.md) | Explore Copilot Configuration Files | None |
 
 ### Module 01 - Build The Calculator Solution
 
@@ -423,6 +430,7 @@ ghcp-dotnet-calculator/
     prd-csharp-basic-calculator-solution.md      Calculator product requirements
     azure-migration-assessment-3.02.md           Azure migration assessment notes
   lab-exercises/
+    00.01.explore-copilot-config-files.md        Copilot configuration orientation exercise
     01.01-solution-setup.md                      Module 01-03 guided lab exercises
   src/
     workspace/

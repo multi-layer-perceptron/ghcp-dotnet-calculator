@@ -7,8 +7,8 @@ ms.topic: how-to
 
 ## Assessment Status
 
-* Overall status: Assessment completed successfully with validated local baseline; Phase A Blazor disposal blocker fixed and smoke-tested; Phase B deployment-preparation artifacts now include PostgreSQL runtime infrastructure
-* Scope: Assessment and deployment preparation. No new Azure resources were deployed and no migration execution command was run during the Phase B artifact update
+* Overall status: Assessment completed successfully with validated local baseline; Phase A Blazor disposal blocker fixed and smoke-tested; Phase B deployment-preparation artifacts now include PostgreSQL runtime infrastructure; initial Azure provisioning and deployment completed
+* Scope: Assessment, deployment preparation, Azure provisioning, and Azure App Service deployment for the `dev` environment
 * App Modernization precheck: Completed
 * AppCAT preparation: Updated .NET AppCAT from `1.0.878.50543` to `1.0.1127.58951` after precheck reported the installed version was below the minimum `1.0.1127`
 * App Modernization assessment action ID: `20260707082945`
@@ -67,6 +67,12 @@ ms.topic: how-to
 * `Get-NetTCPConnection -LocalPort 5297,5097,7084,5432,55432 -ErrorAction SilentlyContinue`
 * `Get-Command dotnet,docker,az,azd -ErrorAction SilentlyContinue`
 * `az bicep build --file .\infra\main.bicep`
+* `azd provision --preview --no-prompt`
+* `azd provision --no-prompt`
+* `azd deploy web --no-prompt`
+* `azd up --no-prompt`
+* `Invoke-WebRequest -Uri https://calc-dev-4p4xdqmfkhxpg-web.azurewebsites.net/health -UseBasicParsing`
+* `Invoke-WebRequest -Uri https://calc-dev-4p4xdqmfkhxpg-web.azurewebsites.net/ -UseBasicParsing`
 * App Modernization precheck assessment tool with workspace path `src/workspace/calculator-xunit-testing`
 * AppCAT setup tool after precheck identified the older AppCAT version
 * .NET AppCAT assessment tool with workspace path `src/workspace/calculator-xunit-testing`
@@ -90,6 +96,10 @@ ms.topic: how-to
   * Response content contained `Calculator`
   * Stopping the local server no longer produced `Microsoft.JSInterop.JSDisconnectedException`
   * The HTTP-only local run still logged the expected HTTPS redirection port warning
+* Azure smoke baseline: Pass
+  * `https://calc-dev-4p4xdqmfkhxpg-web.azurewebsites.net/health` returned HTTP 200 with `Healthy`
+  * `https://calc-dev-4p4xdqmfkhxpg-web.azurewebsites.net/` returned HTTP 200
+  * The deployed home page contained `Calculator`
 * Current application surfaces:
   * Console host in `calculator`
   * Shared arithmetic library in `calculator.library`
@@ -182,7 +192,7 @@ ms.topic: how-to
 
 ## Migration Readiness Summary
 
-* Readiness level: Moderate for migration planning, with deployment-preparation artifacts ready for Azure preview validation
+* Readiness level: Moderate for migration planning, with initial Azure deployment validated in the `dev` environment
 * What is ready now:
   * .NET 10 runtime baseline
   * Passing solution build
@@ -195,11 +205,12 @@ ms.topic: how-to
   * Azure App Service Linux, Application Insights, Log Analytics, Key Vault, managed identity, and PostgreSQL Flexible Server Bicep artifacts
   * Azure Database for PostgreSQL Flexible Server availability checked in `eastus2`
   * `/health` endpoint aligned with App Service health-check configuration
+  * `azd provision`, `azd deploy web`, and `azd up` completed successfully
+  * Deployed endpoint validated at `https://calc-dev-4p4xdqmfkhxpg-web.azurewebsites.net/`
 * What must be completed before production cutover:
-  * Run Azure preview validation against the updated Bicep artifacts
   * Produce PostgreSQL schema migration, seed, rollback, and validation artifacts before application code writes runtime data to Azure PostgreSQL
   * Review and modernize the test toolchain for .NET 10 CI reliability
-  * Create deployment-preparation artifacts in a separate step, with preview or what-if validation before provisioning
+  * Add repeatable Azure smoke tests to CI or release validation
 
 ## Phase-Based Next Steps
 
@@ -216,6 +227,8 @@ ms.topic: how-to
 * Completed: Added Azure Developer CLI and Bicep artifacts for App Service Linux, observability, Key Vault, managed identity, and PostgreSQL Flexible Server
 * Completed: Added PostgreSQL runtime configuration through `ConnectionStrings__CalculatorPostgreSql` as a Key Vault-backed App Service setting
 * Completed: Selected `eastus2`, resource prefix `calc`, database name `calculator`, PostgreSQL version `17`, and Burstable `Standard_B1ms` for the initial data tier
+* Completed: Provisioned the `dev` environment in `rg-dev`
+* Completed: Removed stale `azd-service-name=web` tag from the older `calc-dev-hhmzuztbik52y-web` App Service so AZD could target `calc-dev-4p4xdqmfkhxpg-web`
 * Add an environment mapping matrix for local, CI, and Azure App Service settings
 * Define PostgreSQL schema migration, seed promotion, rollback, and validation steps before application runtime data is written to Azure PostgreSQL
 * Review `Microsoft.NET.Test.Sdk`, xUnit, and runner package versions against current .NET 10 support baselines
@@ -224,7 +237,9 @@ ms.topic: how-to
 
 ### Phase C: Validate pre-deployment readiness
 
-* Validate generated deployment changes with `azd provision --preview` or Azure deployment what-if before provisioning resources
+* Completed: Validated generated deployment changes with `azd provision --preview --no-prompt`
+* Completed: Ran `azd provision --no-prompt`, `azd deploy web --no-prompt`, and `azd up --no-prompt`
+* Completed: Smoke-tested deployed startup through `/health` and `/`
 * Add Azure-targeted smoke tests for app startup and calculator workflow behavior
 * Validate Linux parity for build, test, and runtime configuration
 * Finalize cutover and rollback guidance for any PostgreSQL schema changes
@@ -233,6 +248,5 @@ ms.topic: how-to
 
 * No missing AppCAT report artifact remains for this run. The raw report was generated at `src/workspace/calculator-xunit-testing/.github/modernize/assessment/reports/report-20260707082945/report.json`
 * No raw terminal log files were written for the local baseline commands; command summaries are captured in this document
-* No Azure deployment preview, what-if output, or new resource deployment exists yet for the PostgreSQL-inclusive artifacts
 * No PostgreSQL migration script, seed promotion artifact, rollback script, or environment mapping artifact exists yet
-* Key Vault, managed identity, and RBAC artifacts now exist in `infra/main.bicep`, but they have not been previewed or provisioned in Azure during this update
+* Azure deployment preview and deployment command summaries are captured in this document and `.azure/deployment-plan.md`, but no separate raw Azure terminal log artifact was written

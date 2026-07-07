@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<CalculatorService>();
 builder.Services.AddScoped<HistoryService>();
 builder.Services.AddScoped<ThemeService>();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -25,6 +26,7 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapHealthChecks("/health");
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

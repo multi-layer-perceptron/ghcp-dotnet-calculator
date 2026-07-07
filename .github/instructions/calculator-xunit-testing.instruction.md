@@ -1,4 +1,5 @@
 ---
+name: calculator-xunit-testing
 description: "Guidance for the active .NET calculator console, library, Blazor, and xUnit solution"
 applyTo: "src/workspace/calculator-xunit-testing/**"
 ---

@@ -77,12 +77,20 @@
 
 	public async ValueTask DisposeAsync()
 	{
-		if (keyboardModule is not null)
+		try
 		{
-			await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
-			await keyboardModule.DisposeAsync();
+			if (keyboardModule is not null)
+			{
+				await keyboardModule.InvokeVoidAsync("detachCalculatorKeyboard");
+				await keyboardModule.DisposeAsync();
+			}
 		}
-
-		dotNetReference?.Dispose();
+		catch (JSDisconnectedException)
+		{
+		}
+		finally
+		{
+			dotNetReference?.Dispose();
+		}
 	}
 }

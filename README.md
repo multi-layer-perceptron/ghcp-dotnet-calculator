@@ -322,6 +322,7 @@ through `03.03` and confirming the completed project exists under
 | [99.03](lab-exercises/99.03.mcp-server-configuration.md) | MCP Server Configuration | None |
 | [99.04](lab-exercises/99.04.create-hooks.md) | Create Hooks | None |
 | [99.05](lab-exercises/99.05.multi-agent-orchestration.md) | Multi-Agent Orchestration | None |
+| [99.06](lab-exercises/99.06.github-agentic-workflows.md) | GitHub Agentic Workflows | None |
 
 ## Calculator Tutorial
 

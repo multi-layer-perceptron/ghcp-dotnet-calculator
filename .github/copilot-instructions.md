@@ -238,6 +238,48 @@ For Copilot CLI sessions, use `/skills reload`, `/skills list`, and `/skills inf
 
 ## Pull Request Guidelines
 
+### Industry Standard Practices
+
+- Keep pull requests small, focused, and limited to a single logical change.
+- Use a clear title that summarizes the intent and scope of the change.
+- Explain what changed, why it changed, how it was tested, and any risks or trade-offs.
+- Link related issues, work items, design notes, or incident references.
+- Include screenshots, logs, API examples, or before/after output for user-facing or behavioral changes.
+- Ensure code builds locally and all relevant tests pass before requesting review.
+- Add or update tests for new functionality, bug fixes, and meaningful edge cases.
+- Update documentation, configuration examples, and migration notes when behavior changes.
+- Keep commits meaningful and avoid unrelated formatting, refactoring, or generated-file noise.
+- Highlight breaking changes, database migrations, feature flags, rollout steps, and rollback plans.
+- Request reviewers with relevant domain ownership and keep review discussions respectful and actionable.
+- Address reviewer feedback with follow-up commits or clear explanations; do not resolve comments without action or agreement.
+- Rebase or merge the target branch as needed to resolve conflicts before approval.
+- Do not include secrets, credentials, sensitive data, debug artifacts, or temporary code.
+
+## CI/CD Workflows and Pipelines
+
+- Keep workflows small, composable, and named for their purpose; split build, test, security, package, and deploy stages when it improves clarity.
+- Trigger pipelines intentionally with `pull_request`, protected-branch `push`, scheduled, and manual `workflow_dispatch` events as appropriate; avoid overly broad triggers.
+- Use branch protection and required status checks so code cannot merge unless the expected validation jobs pass.
+- Pin third-party actions to a full commit SHA or trusted version, and review action source before adoption or upgrade.
+- Grant the minimum required `permissions` for each workflow or job; default to read-only and elevate only where needed.
+- Store secrets in GitHub Secrets, environment secrets, or an approved vault; never echo secrets or write them to artifacts, logs, or caches.
+- Use protected environments with reviewers, deployment gates, and environment-specific secrets for production releases.
+- Make builds deterministic with lock files, explicit SDK/runtime versions, and reproducible package restore steps.
+- Cache dependencies and build outputs only when cache keys are accurate and safe; never cache secrets or mutable deployment credentials.
+- Run fast feedback checks first, including formatting, linting, compilation, and targeted unit tests before slower integration or end-to-end suites.
+- Use matrix builds for supported operating systems, runtimes, frameworks, or configurations, but keep the matrix limited to meaningful coverage.
+- Publish test results, coverage, logs, and build artifacts with clear retention settings so failures are easy to diagnose.
+- Add security checks such as dependency review, secret scanning, static analysis, and container/image scanning where applicable.
+- Build artifacts once and promote the same immutable artifact through environments instead of rebuilding per environment.
+- Prefer automated deployment strategies with rollback support, such as blue/green, canary, staged rollout, or feature-flagged releases.
+- Keep deployment jobs idempotent and safe to rerun; include health checks and fail fast on unsuccessful validation.
+- Use concurrency groups to prevent overlapping deployments or duplicate runs on the same branch, pull request, or environment.
+- Avoid long-lived credentials by using OIDC federation to cloud providers when supported.
+- Document required variables, secrets, permissions, environments, and manual approval steps near the workflow or in project docs.
+- Review workflow changes with the same rigor as application code because pipelines can affect supply chain security and production stability.
+- Use this format for workflow elements naming conventions, job names, and step names: lowercase, hyphenated, and descriptive of the action being performed.
+
+
 ### PR Description Structure
 
 ```markdown

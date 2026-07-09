@@ -480,12 +480,16 @@ ghcp-dotnet-calculator/
           calculator.tests.csproj                .NET 10 xUnit test project
   .github/
     copilot-instructions.md                      Repository-specific Copilot guidance
+    hooks/                                       Copilot lifecycle hook configuration (default.json)
     prompts/                                     Reusable Copilot prompt files
     skills/                                      Reusable Copilot skill packages
+      continuous-learning-v2/                    Instinct-based learning skill with background observer
     workflows/                                   GitHub Actions workflow examples
       99.06.workflow-failure-doctor.md           GitHub Agentic Workflow diagnostic example
       99.06.workflow-failure-doctor.lock.yml      Compiled GitHub Actions workflow for 99.06
       shared/                                    Shared agentic workflow components imported at compile time
+  scripts/
+    hooks/                                       Lifecycle hook scripts (observation, secret scan, .NET build check)
 ```
 
 ## Control Flow

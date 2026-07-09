@@ -324,6 +324,7 @@ through `03.03` and confirming the completed project exists under
 | [99.05](lab-exercises/99.05.multi-agent-orchestration.md) | Multi-Agent Orchestration | None |
 | [99.06](lab-exercises/99.06.github-agentic-workflows.md) | GitHub Agentic Workflow Diagnostics | None |
 | [99.07](lab-exercises/99.07.copilot-coding-agent-code-review.md) | Copilot Coding Agent And Code Review | None |
+| [99.08](lab-exercises/99.08.capstone-exercises.md) | Capstone Exercises | None |
 
 ## Calculator Tutorial
 
@@ -462,6 +463,7 @@ ghcp-dotnet-calculator/
     99.05.multi-agent-orchestration.md           Finished project multi-agent orchestration exercise
     99.06.github-agentic-workflows.md            Finished project agentic workflow diagnostics exercise
     99.07.copilot-coding-agent-code-review.md    Finished project Copilot coding agent repair exercise
+    99.08.capstone-exercises.md                  Finished project capstone: indexing, memory, and advanced features
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace

@@ -481,6 +481,7 @@ ghcp-dotnet-calculator/
     workflows/                                   GitHub Actions workflow examples
       99.06.workflow-failure-doctor.md           GitHub Agentic Workflow diagnostic example
       99.06.workflow-failure-doctor.lock.yml      Compiled GitHub Actions workflow for 99.06
+      shared/                                    Shared agentic workflow components imported at compile time
 ```
 
 ## Control Flow

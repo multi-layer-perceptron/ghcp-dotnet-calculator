@@ -322,7 +322,7 @@ through `03.03` and confirming the completed project exists under
 | [99.03](lab-exercises/99.03.mcp-server-configuration.md) | MCP Server Configuration | None |
 | [99.04](lab-exercises/99.04.create-hooks.md) | Create Hooks | None |
 | [99.05](lab-exercises/99.05.multi-agent-orchestration.md) | Multi-Agent Orchestration | None |
-| [99.06](lab-exercises/99.06.github-agentic-workflows.md) | GitHub Agentic Workflows | None |
+| [99.06.01](lab-exercises/99.06.01.github-agentic-workflows.md) | GitHub Agentic Workflow Setup And Run | None |
 
 ## Calculator Tutorial
 
@@ -453,6 +453,8 @@ ghcp-dotnet-calculator/
     99.02.skills-and-prompts.md                  Finished project skills and prompts exercise
     99.03.mcp-server-configuration.md            Finished project MCP configuration exercise
     99.04.create-hooks.md                        Finished project .NET build hook exercise
+    99.05.multi-agent-orchestration.md           Finished project multi-agent orchestration exercise
+    99.06.01.github-agentic-workflows.md         Finished project agentic workflow setup and run exercise
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace
@@ -472,6 +474,7 @@ ghcp-dotnet-calculator/
     prompts/                                     Reusable Copilot prompt files
     skills/                                      Reusable Copilot skill packages
     workflows/                                   GitHub Actions workflow examples
+      99.06.workflow-failure-doctor.md           GitHub Agentic Workflow diagnostic example
 ```
 
 ## Control Flow

@@ -322,7 +322,7 @@ through `03.03` and confirming the completed project exists under
 | [99.03](lab-exercises/99.03.mcp-server-configuration.md) | MCP Server Configuration | None |
 | [99.04](lab-exercises/99.04.create-hooks.md) | Create Hooks | None |
 | [99.05](lab-exercises/99.05.multi-agent-orchestration.md) | Multi-Agent Orchestration | None |
-| [99.06.01](lab-exercises/99.06.01.github-agentic-workflows.md) | GitHub Agentic Workflow Setup And Run | None |
+| [99.06](lab-exercises/99.06.github-agentic-workflows.md) | GitHub Agentic Workflow Diagnostics | None |
 
 ## Calculator Tutorial
 
@@ -433,6 +433,11 @@ domain complexity.
 | Run console app | `dotnet run --project src/workspace/calculator-xunit-testing/calculator/calculator.csproj` |
 | Recreate workspace | `pwsh -NoProfile -ExecutionPolicy Bypass -File src/workspace/Set-DotnetSlnForCalculator.ps1` |
 | Remove generated workspace | `pwsh -NoProfile -ExecutionPolicy Bypass -File src/workspace/Remove-DotnetSlnForCalculator.ps1` |
+| Install GitHub Agentic Workflows CLI | `gh extension install github/gh-aw` |
+| Upgrade GitHub Agentic Workflows CLI | `gh extension upgrade github/gh-aw` |
+| Compile 99.06 agentic workflow | `gh aw compile --strict .github/workflows/99.06.workflow-failure-doctor.md` |
+| Check 99.06 agentic workflow status | `gh aw status 99.06.workflow-failure-doctor` |
+| Run 99.06 agentic workflow | `gh aw run 99.06.workflow-failure-doctor` |
 | Check repository status | `git status --short --branch` |
 
 ## Project Layout
@@ -454,7 +459,7 @@ ghcp-dotnet-calculator/
     99.03.mcp-server-configuration.md            Finished project MCP configuration exercise
     99.04.create-hooks.md                        Finished project .NET build hook exercise
     99.05.multi-agent-orchestration.md           Finished project multi-agent orchestration exercise
-    99.06.01.github-agentic-workflows.md         Finished project agentic workflow setup and run exercise
+    99.06.github-agentic-workflows.md            Finished project agentic workflow diagnostics exercise
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace
@@ -475,6 +480,7 @@ ghcp-dotnet-calculator/
     skills/                                      Reusable Copilot skill packages
     workflows/                                   GitHub Actions workflow examples
       99.06.workflow-failure-doctor.md           GitHub Agentic Workflow diagnostic example
+      99.06.workflow-failure-doctor.lock.yml      Compiled GitHub Actions workflow for 99.06
 ```
 
 ## Control Flow
@@ -518,6 +524,7 @@ flowchart LR
 8. Upgrade the active calculator workspace from .NET 8 to .NET 10.
 9. Run build and test validation after each staged prompt.
 10. Capture reusable workflows as prompts and skills.
+11. Configure and compile the 99.06 GitHub Agentic Workflow diagnostic example.
 
 ## Key Documentation
 

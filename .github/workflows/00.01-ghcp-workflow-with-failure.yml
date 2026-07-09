@@ -6,6 +6,9 @@ on:
 permissions:
   contents: read
 
+env:
+  DEMO_FAILURE: "true"
+
 jobs:
   list-contents:
     name: list-repository-contents
@@ -95,13 +98,11 @@ jobs:
         shell: pwsh
 
       - name: intentional-failure-for-exercise-99-06
-        env:
-          DEMO_FAILURE: "true"
         run: |
           Write-Host "This workflow fails intentionally for Exercise 99.06." -ForegroundColor Yellow
 
           if ($env:DEMO_FAILURE -eq 'true') {
-            Write-Error "Intentional failure: set DEMO_FAILURE to 'false' or remove this step after observing the CI Failure Doctor workflow."
+            Write-Error "Intentional failure: set DEMO_FAILURE to 'false' or remove this step after observing the workflow-failure-doctor workflow."
             exit 1
           }
 

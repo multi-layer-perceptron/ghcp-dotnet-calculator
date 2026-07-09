@@ -279,6 +279,9 @@ For Copilot CLI sessions, use `/skills reload`, `/skills list`, and `/skills inf
 - Review workflow changes with the same rigor as application code because pipelines can affect supply chain security and production stability.
 - Use this format for workflow elements naming conventions, job names, and step names: lowercase, hyphenated, and descriptive of the action being performed.
 
+## GitHub Agentic Workflows
+
+When creating GitHub Agentic workflows, use the standards as defined at https://github.com/github/gh-aw for the schema, example templates, and workflow best practices. For example, use the `workflow-doctor` agent persona for diagnosing failed runs, and ensure that the workflow is idempotent, safe to rerun, and provides actionable feedback for developers. Leverage the definitions of other workflows in this repository as examples for structuring your own agentic workflows, while maintaining local repository workflow naming standards.
 
 ### PR Description Structure
 

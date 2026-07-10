@@ -315,6 +315,11 @@ Use these exercises only after completing the current exercise set from `00.01`
 through `03.03` and confirming the completed project exists under
 `src/workspace/calculator-xunit-testing/`.
 
+Exercise 99.03 uses the `configure-mcp-servers` skill to configure Azure
+DevOps, GitHub, Microsoft Learn, and Playwright. Its Azure DevOps example uses
+`autocloudarc-mcaps`; learners substitute their own organization value in the
+`https://mcp.dev.azure.com/{organization}` endpoint pattern.
+
 | Exercise | Title | Associated prompt |
 | -------- | ----- | ----------------- |
 | [99.01](lab-exercises/99.01.custom-instructions-and-agents.md) | Custom Instructions And Agents | None |

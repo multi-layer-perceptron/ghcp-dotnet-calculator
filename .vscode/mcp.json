@@ -1,8 +1,8 @@
 {
   "servers": {
-    "azureDevops": {
+    "azureDevOps": {
       "type": "http",
-      "url": "https://dev.azure.com/autocloudarc-mcaps"
+      "url": "https://mcp.dev.azure.com/autocloudarc-mcaps"
     },
     "github": {
       "type": "http",

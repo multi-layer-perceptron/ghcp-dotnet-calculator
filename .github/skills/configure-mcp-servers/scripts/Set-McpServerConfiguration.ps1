@@ -12,21 +12,21 @@
     top-level servers object. Generic Copilot-style clients receive
     .copilot/mcp-config.json with a top-level mcpServers object.
 
-    The default server set is github (http), microsoftLearn (http),
-    playwright (stdio via npx), and fetch (stdio via npx). Stdio servers are
+    The default server set is azureDevOps (http), github (http),
+    microsoftLearn (http), and playwright (stdio via npx). Playwright is
     skipped with a warning when no Node.js and npx launcher is available.
 .PARAMETER Editor
     Target editor or client shape. Use Auto, VSCode, or CopilotGeneric.
 .PARAMETER RepoRoot
     Workspace root where the MCP configuration file is written.
-.PARAMETER SkipFetch
-    Omits the local fetch MCP server from the generated configuration.
+.PARAMETER AzureDevOpsOrganization
+    Azure DevOps organization used by the remote Azure DevOps MCP endpoint.
 .PARAMETER PassThru
     Emits the written configuration path as pipeline output.
 .EXAMPLE
     ./Set-McpServerConfiguration.ps1
 .EXAMPLE
-    ./Set-McpServerConfiguration.ps1 -Editor VSCode -SkipFetch
+    ./Set-McpServerConfiguration.ps1 -Editor VSCode -AzureDevOpsOrganization autocloudarc-mcaps
 .NOTES
     Run from the repository root or pass -RepoRoot explicitly.
 #>
@@ -40,7 +40,8 @@ param(
     [string]$RepoRoot,
 
     [Parameter(Mandatory = $false)]
-    [switch]$SkipFetch,
+    [ValidateNotNullOrEmpty()]
+    [string]$AzureDevOpsOrganization = 'autocloudarc-mcaps',
 
     [Parameter(Mandatory = $false)]
     [switch]$PassThru
@@ -131,14 +132,19 @@ function New-VSCodeMcpConfiguration {
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory = $false)]
-        [switch]$SkipFetchServer,
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Organization,
 
         [Parameter(Mandatory = $false)]
         [hashtable]$NpxLauncher
     )
 
     $Servers = [ordered]@{
+        'azureDevOps'    = [ordered]@{
+            type = 'http'
+            url  = "https://mcp.dev.azure.com/$Organization"
+        }
         'github'         = [ordered]@{
             type = 'http'
             url  = 'https://api.githubcopilot.com/mcp/'
@@ -156,13 +162,6 @@ function New-VSCodeMcpConfiguration {
             args    = @($NpxLauncher.argsPrefix) + @('@playwright/mcp@latest')
         }
 
-        if (-not $SkipFetchServer) {
-            $Servers['fetch'] = [ordered]@{
-                type    = 'stdio'
-                command = $NpxLauncher.command
-                args    = @($NpxLauncher.argsPrefix) + @('@modelcontextprotocol/server-fetch')
-            }
-        }
     }
 
     return [ordered]@{
@@ -174,14 +173,20 @@ function New-CopilotGenericMcpConfiguration {
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory = $false)]
-        [switch]$SkipFetchServer,
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Organization,
 
         [Parameter(Mandatory = $false)]
         [hashtable]$NpxLauncher
     )
 
     $Servers = [ordered]@{
+        'azureDevOps'    = [ordered]@{
+            type  = 'http'
+            url   = "https://mcp.dev.azure.com/$Organization"
+            tools = @('*')
+        }
         'github'         = [ordered]@{
             type  = 'http'
             url   = 'https://api.githubcopilot.com/mcp/'
@@ -202,14 +207,6 @@ function New-CopilotGenericMcpConfiguration {
             tools   = @('*')
         }
 
-        if (-not $SkipFetchServer) {
-            $Servers['fetch'] = [ordered]@{
-                type    = 'local'
-                command = $NpxLauncher.command
-                args    = @($NpxLauncher.argsPrefix) + @('@modelcontextprotocol/server-fetch')
-                tools   = @('*')
-            }
-        }
     }
 
     return [ordered]@{
@@ -228,8 +225,9 @@ function Set-McpConfigurationFile {
         [ValidateSet('VSCode', 'CopilotGeneric')]
         [string]$TargetEditor,
 
-        [Parameter(Mandatory = $false)]
-        [switch]$SkipFetchServer,
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Organization,
 
         [Parameter(Mandatory = $false)]
         [hashtable]$NpxLauncher
@@ -238,12 +236,12 @@ function Set-McpConfigurationFile {
     if ($TargetEditor -eq 'VSCode') {
         $DirectoryPath = Join-Path -Path $WorkspaceRoot -ChildPath '.vscode'
         $FilePath = Join-Path -Path $DirectoryPath -ChildPath 'mcp.json'
-        $Configuration = New-VSCodeMcpConfiguration -SkipFetchServer:$SkipFetchServer -NpxLauncher $NpxLauncher
+        $Configuration = New-VSCodeMcpConfiguration -Organization $Organization -NpxLauncher $NpxLauncher
     }
     else {
         $DirectoryPath = Join-Path -Path $WorkspaceRoot -ChildPath '.copilot'
         $FilePath = Join-Path -Path $DirectoryPath -ChildPath 'mcp-config.json'
-        $Configuration = New-CopilotGenericMcpConfiguration -SkipFetchServer:$SkipFetchServer -NpxLauncher $NpxLauncher
+        $Configuration = New-CopilotGenericMcpConfiguration -Organization $Organization -NpxLauncher $NpxLauncher
     }
 
     New-Item -ItemType Directory -Path $DirectoryPath -Force | Out-Null
@@ -258,15 +256,13 @@ if ($MyInvocation.InvocationName -ne '.') {
     try {
         $WorkspaceRoot = Get-WorkspaceRoot -RequestedRoot $RepoRoot
         $TargetEditor = if ($Editor -eq 'Auto') { Get-DetectedEditor } else { $Editor }
-        $ShouldSkipFetch = $SkipFetch.IsPresent
         $NpxLauncher = Get-NpxLauncher
 
         if ($null -eq $NpxLauncher) {
-            Write-Warning 'Skipping stdio MCP servers (playwright, fetch) because no Node.js and npx launcher was found. Install Node.js to a PATH location such as C:\tools\nodejs.'
-            $ShouldSkipFetch = $true
+            Write-Warning 'Skipping the Playwright MCP server because no Node.js and npx launcher was found. Install Node.js to a PATH location such as C:\tools\nodejs.'
         }
 
-        $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -SkipFetchServer:$ShouldSkipFetch -NpxLauncher $NpxLauncher
+        $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -Organization $AzureDevOpsOrganization -NpxLauncher $NpxLauncher
 
         Write-Host "MCP configuration written for ${TargetEditor}: $WrittenPath" -ForegroundColor Green
 

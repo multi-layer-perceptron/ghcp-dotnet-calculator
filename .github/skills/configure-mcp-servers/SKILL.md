@@ -1,21 +1,21 @@
 ---
 name: configure-mcp-servers
-description: "Configure GitHub, Microsoft Learn, Playwright, and fetch MCP servers for a workspace. Use when: setup MCP servers, activate MCP, add github mcp server, add playwright mcp server, configure mcp.json, configure mcp-config.json, MCP server configuration."
+description: "Configure Azure DevOps, GitHub, Microsoft Learn, and Playwright MCP servers for a workspace. Use when: setup MCP servers, activate MCP, add Azure DevOps MCP, add GitHub MCP, add Playwright MCP, configure mcp.json, configure mcp-config.json, MCP server configuration."
 ---
 
 # Configure MCP Servers Skill
 
 Use this skill to create or refresh MCP server configuration for a workspace.
-The default server set supports GitHub repository tools, documentation lookup
-through Microsoft Learn, browser automation through Playwright, and public web
-retrieval through the Model Context Protocol fetch server.
+The default server set supports Azure DevOps project tools, GitHub repository
+tools, documentation lookup through Microsoft Learn, and browser automation
+through Playwright.
 
 ## When To Use
 
 Use this skill when the user asks to:
 
 * Configure MCP servers for the calculator workspace
-* Add the GitHub, Microsoft Learn, Playwright, or fetch MCP server
+* Add the Azure DevOps, GitHub, Microsoft Learn, or Playwright MCP server
 * Create `.vscode/mcp.json` for VS Code
 * Create `.copilot/mcp-config.json` for clients that use `mcpServers`
 * Compare GitHub Copilot IDE MCP support with other MCP-capable clients
@@ -24,8 +24,8 @@ Use this skill when the user asks to:
 ## Prerequisites
 
 * PowerShell 7 or later available through `pwsh`
-* Node.js and `npx` available when enabling the local `playwright` or `fetch`
-  MCP servers
+* An Azure DevOps organization connected to Microsoft Entra ID
+* Node.js and `npx` available when enabling the local `playwright` MCP server
 * Write access to the workspace root
 * Trust in the configured MCP server commands and endpoints
 
@@ -36,8 +36,8 @@ Get-Command node -ErrorAction SilentlyContinue
 Get-Command npx -ErrorAction SilentlyContinue
 ```
 
-Both commands must return a result for the `playwright` and `fetch` servers to
-start. A common Windows failure mode is a broken Node install where `npx`
+Both commands must return a result for the `playwright` server to start. A
+common Windows failure mode is a broken Node install where `npx`
 shims exist on PATH but `node.exe` does not; VS Code then reports
 `"node" is not recognized` when starting the server. Fix it by installing
 Node.js to a neutral path such as `C:\tools\nodejs` (a portable ZIP install
@@ -46,8 +46,20 @@ variable, and restarting VS Code.
 
 When `node` and `npx` do not resolve on PATH, the setup script also checks
 `C:\tools\nodejs` and `%LOCALAPPDATA%\Programs\nodejs-portable` for a working
-install and writes stdio servers with an explicit `node.exe` launcher. If no
+install and writes Playwright with an explicit `node.exe` launcher. If no
 launcher is found, the script writes only the hosted `http` servers.
+
+The script defaults to the `autocloudarc-mcaps` Azure DevOps organization for
+this repository. For another organization, pass its URL segment (not the full
+URL) through `-AzureDevOpsOrganization`:
+
+```powershell
+pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -AzureDevOpsOrganization your-organization
+```
+
+This produces `https://mcp.dev.azure.com/your-organization`. Do not use the
+Azure DevOps portal URL `https://dev.azure.com/your-organization` as the MCP
+endpoint.
 
 ## Quick Start
 
@@ -79,7 +91,7 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 |----------------|---------|-------------|
 | `Editor`       | `Auto`  | `Auto`, `VSCode`, or `CopilotGeneric` |
 | `RepoRoot`     | Git root or current directory | Workspace root where configuration is written |
-| `SkipFetch`    | `false` | Omit the local fetch MCP server when `npx` is unavailable or not desired |
+| `AzureDevOpsOrganization` | `autocloudarc-mcaps` | Azure DevOps organization URL segment |
 | `PassThru`     | `false` | Return the written file path as pipeline output |
 
 ## Script Reference
@@ -90,11 +102,10 @@ Create the appropriate configuration for the detected editor:
 pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 ```
 
-Create the hosted `http` servers plus `playwright` for VS Code, omitting
-`fetch`:
+Create the configuration for a different Azure DevOps organization:
 
 ```powershell
-pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor VSCode -SkipFetch
+pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor VSCode -AzureDevOpsOrganization your-organization
 ```
 
 Create the generic `mcpServers` configuration shape:
@@ -108,8 +119,8 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 ### VS Code
 
 1. Run `MCP: List Servers` from the Command Palette.
-2. Select a server such as `github`, `microsoftLearn`, `playwright`, or
-   `fetch`.
+2. Select a server such as `azureDevOps`, `github`, `microsoftLearn`, or
+  `playwright`.
 3. Choose `Start`, `Enable`, or `Show Output` as needed.
 4. Accept the trust prompt if VS Code asks whether you trust the workspace MCP
    configuration.
@@ -148,7 +159,7 @@ When a user asks for one of those clients, use this workflow:
    Codex CLI, or Gemini CLI.
 2. Check that client's current MCP documentation.
 3. Confirm the expected config file path, top-level key, and transport support.
-4. Adapt the `github`, `microsoftLearn`, `playwright`, and `fetch` server
+4. Adapt the `azureDevOps`, `github`, `microsoftLearn`, and `playwright` server
    definitions only after the client-specific wrapper format is known.
 5. Avoid writing secrets, tokens, or credential headers into committed files.
 
@@ -179,20 +190,19 @@ instead of copying `.vscode/mcp.json` into an assumed path.
 
 The skill configures these servers:
 
+* `azureDevOps`: remote `http` server at
+  `https://mcp.dev.azure.com/{organization}` for Azure DevOps projects, work
+  items, repositories, pull requests, and pipelines
 * `github`: remote `http` server at `https://api.githubcopilot.com/mcp/` for
   repository, issue, and pull request tools
 * `microsoftLearn`: remote `http` server at
   `https://learn.microsoft.com/api/mcp`
 * `playwright`: local server started with `npx -y @playwright/mcp@latest` for
   browser automation and UI validation
-* `fetch`: local server started with
-  `npx -y @modelcontextprotocol/server-fetch`
 
-For Azure DevOps tooling, do not point an `http` server at an organization URL
-such as `https://dev.azure.com/{organization}`. That is a web portal URL, not
-an MCP endpoint. Use the official local server as a `stdio` entry instead, for
-example `npx -y @azure-devops/mcp {organization}`, and verify the package name
-and arguments against the current Azure DevOps MCP documentation before use.
+The remote Azure DevOps MCP server is in public preview and authenticates with
+Microsoft Entra ID. Learners must replace `{organization}` with their own
+Azure DevOps organization value.
 
 ## Troubleshooting
 
@@ -202,7 +212,7 @@ Verify that the file is `.vscode/mcp.json`, not `.copilot/mcp-config.json`, and
 that it uses the top-level `servers` object. Run `MCP: List Servers` and check
 whether the servers are disabled, untrusted, or reporting output errors.
 
-### Playwright Or Fetch Server Does Not Start
+### Playwright Server Does Not Start
 
 Run `Get-Command node -ErrorAction SilentlyContinue` and
 `Get-Command npx -ErrorAction SilentlyContinue`. If either command is missing,

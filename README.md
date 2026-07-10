@@ -543,6 +543,7 @@ flowchart LR
 * [Calculator setup skill](.github/skills/calculator-setup/SKILL.md)
 * [CSV test dataset skill](.github/skills/create-csv-test-dataset/SKILL.md)
 * [PostgreSQL container skill](.github/skills/convert-csv-test-data-to-postgresql-container/SKILL.md)
+* [Configure MCP servers skill](.github/skills/configure-mcp-servers/SKILL.md)
 
 ## Notes For Workshop Facilitators
 

@@ -1,20 +1,21 @@
 ---
 name: configure-mcp-servers
-description: "Configure Microsoft Learn and fetch MCP servers for a workspace. Use when: setup MCP servers, activate MCP, configure mcp.json, configure mcp-config.json, MCP server configuration."
+description: "Configure GitHub, Microsoft Learn, Playwright, and fetch MCP servers for a workspace. Use when: setup MCP servers, activate MCP, add github mcp server, add playwright mcp server, configure mcp.json, configure mcp-config.json, MCP server configuration."
 ---
 
 # Configure MCP Servers Skill
 
 Use this skill to create or refresh MCP server configuration for a workspace.
-The default server set supports documentation lookup through Microsoft Learn and
-public web retrieval through the Model Context Protocol fetch server.
+The default server set supports GitHub repository tools, documentation lookup
+through Microsoft Learn, browser automation through Playwright, and public web
+retrieval through the Model Context Protocol fetch server.
 
 ## When To Use
 
 Use this skill when the user asks to:
 
 * Configure MCP servers for the calculator workspace
-* Activate Microsoft Learn MCP or fetch MCP
+* Add the GitHub, Microsoft Learn, Playwright, or fetch MCP server
 * Create `.vscode/mcp.json` for VS Code
 * Create `.copilot/mcp-config.json` for clients that use `mcpServers`
 * Compare GitHub Copilot IDE MCP support with other MCP-capable clients
@@ -23,25 +24,30 @@ Use this skill when the user asks to:
 ## Prerequisites
 
 * PowerShell 7 or later available through `pwsh`
-* Node.js and `npx` available when enabling the local `fetch` MCP server
+* Node.js and `npx` available when enabling the local `playwright` or `fetch`
+  MCP servers
 * Write access to the workspace root
 * Trust in the configured MCP server commands and endpoints
 
-Check the local `fetch` prerequisites with:
+Check the local stdio server prerequisites with:
 
 ```powershell
 Get-Command node -ErrorAction SilentlyContinue
 Get-Command npx -ErrorAction SilentlyContinue
 ```
 
-Both commands must return a result for the `fetch` server to start. If Node.js
-is missing or `npx` cannot run, the setup script skips `fetch` and writes the
-Microsoft Learn server only.
+Both commands must return a result for the `playwright` and `fetch` servers to
+start. A common Windows failure mode is a broken Node install where `npx`
+shims exist on PATH but `node.exe` does not; VS Code then reports
+`"node" is not recognized` when starting the server. Fix it by installing
+Node.js to a neutral path such as `C:\tools\nodejs` (a portable ZIP install
+works without admin rights), adding that folder to the PATH environment
+variable, and restarting VS Code.
 
-On Windows, the setup script also checks for a portable Node.js install under
-`%LOCALAPPDATA%\Programs\nodejs-portable`. When found, it writes the `fetch`
-server with an explicit `node.exe` path so VS Code does not depend on a refreshed
-PATH value.
+When `node` and `npx` do not resolve on PATH, the setup script also checks
+`C:\tools\nodejs` and `%LOCALAPPDATA%\Programs\nodejs-portable` for a working
+install and writes stdio servers with an explicit `node.exe` launcher. If no
+launcher is found, the script writes only the hosted `http` servers.
 
 ## Quick Start
 
@@ -84,7 +90,8 @@ Create the appropriate configuration for the detected editor:
 pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 ```
 
-Create only the Microsoft Learn server for VS Code:
+Create the hosted `http` servers plus `playwright` for VS Code, omitting
+`fetch`:
 
 ```powershell
 pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor VSCode -SkipFetch
@@ -101,7 +108,8 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 ### VS Code
 
 1. Run `MCP: List Servers` from the Command Palette.
-2. Select `microsoft-learn` or `fetch`.
+2. Select a server such as `github`, `microsoftLearn`, `playwright`, or
+   `fetch`.
 3. Choose `Start`, `Enable`, or `Show Output` as needed.
 4. Accept the trust prompt if VS Code asks whether you trust the workspace MCP
    configuration.
@@ -140,8 +148,8 @@ When a user asks for one of those clients, use this workflow:
    Codex CLI, or Gemini CLI.
 2. Check that client's current MCP documentation.
 3. Confirm the expected config file path, top-level key, and transport support.
-4. Adapt the `microsoft-learn` and `fetch` server definitions only after the
-   client-specific wrapper format is known.
+4. Adapt the `github`, `microsoftLearn`, `playwright`, and `fetch` server
+   definitions only after the client-specific wrapper format is known.
 5. Avoid writing secrets, tokens, or credential headers into committed files.
 
 ## GitHub Copilot IDE Coverage
@@ -171,10 +179,20 @@ instead of copying `.vscode/mcp.json` into an assumed path.
 
 The skill configures these servers:
 
-* `microsoft-learn`: remote `http` server at
+* `github`: remote `http` server at `https://api.githubcopilot.com/mcp/` for
+  repository, issue, and pull request tools
+* `microsoftLearn`: remote `http` server at
   `https://learn.microsoft.com/api/mcp`
+* `playwright`: local server started with `npx -y @playwright/mcp@latest` for
+  browser automation and UI validation
 * `fetch`: local server started with
   `npx -y @modelcontextprotocol/server-fetch`
+
+For Azure DevOps tooling, do not point an `http` server at an organization URL
+such as `https://dev.azure.com/{organization}`. That is a web portal URL, not
+an MCP endpoint. Use the official local server as a `stdio` entry instead, for
+example `npx -y @azure-devops/mcp {organization}`, and verify the package name
+and arguments against the current Azure DevOps MCP documentation before use.
 
 ## Troubleshooting
 
@@ -184,13 +202,13 @@ Verify that the file is `.vscode/mcp.json`, not `.copilot/mcp-config.json`, and
 that it uses the top-level `servers` object. Run `MCP: List Servers` and check
 whether the servers are disabled, untrusted, or reporting output errors.
 
-### Fetch Server Does Not Start
+### Playwright Or Fetch Server Does Not Start
 
 Run `Get-Command node -ErrorAction SilentlyContinue` and
 `Get-Command npx -ErrorAction SilentlyContinue`. If either command is missing,
-install Node.js, install portable Node.js under
-`%LOCALAPPDATA%\Programs\nodejs-portable`, or rerun the script with
-`-SkipFetch`.
+install Node.js to a PATH location such as `C:\tools\nodejs`, restart VS Code
+so new processes pick up the PATH change, or rerun the script so it writes an
+explicit `node.exe` launcher from a detected local install.
 
 ### Microsoft Learn Server Does Not Work In Another Client
 

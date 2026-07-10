@@ -31,6 +31,7 @@ custom Copilot prompt and skill authoring.
 | VS Code | Recommended editor for the workspace, reusable prompt files, and Copilot Chat. |
 | .NET 10 SDK | Required to restore, build, test, and run the calculator locally. |
 | Docker Desktop | Required for the Testcontainers PostgreSQL-backed test data workflow. |
+| Node.js LTS | Required for MCP-related exercises that use `npx` to run local MCP server configurations. |
 | GitHub Copilot | Recommended for the workshop exercises; the calculator can build and run without Copilot. |
 
 ### Additional Tools By Path
@@ -38,7 +39,7 @@ custom Copilot prompt and skill authoring.
 | Path | Additional tools |
 | ---- | ---------------- |
 | GitHub Codespaces | Browser or VS Code access. Confirm the image includes .NET 10 and Docker support before running Testcontainers tests. |
-| Local Windows, macOS, or Linux setup | .NET 10 SDK, Git, VS Code, and Docker Desktop. |
+| Local Windows, macOS, or Linux setup | .NET 10 SDK, Git, VS Code, Docker Desktop, and Node.js LTS for MCP `npx` workflows. |
 | Manual PowerShell validation | PowerShell 7, .NET 10 SDK, Docker Desktop, and repository write access. |
 | GitHub Actions practice | GitHub CLI is optional, but useful for creating issues, branches, and pull requests from the terminal. |
 | Copilot workshop flows | A Copilot-enabled GitHub account and access to Copilot Chat in VS Code. |

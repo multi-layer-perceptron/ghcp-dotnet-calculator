@@ -70,6 +70,3 @@ TestResult.xml
 nunit-*.xml
 
 .fake
-
-# Custom GitHub Copilot artifacts
-.github/hooks

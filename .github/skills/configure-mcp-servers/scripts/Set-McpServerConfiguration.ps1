@@ -88,13 +88,55 @@ function Get-DetectedEditor
     return 'CopilotGeneric'
 }
 
+function Get-FetchLauncher
+{
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param()
+
+    $NodeCommand = Get-Command node -ErrorAction SilentlyContinue
+    $NpxCommand = Get-Command npx -ErrorAction SilentlyContinue
+
+    if ($null -ne $NodeCommand -and $null -ne $NpxCommand)
+    {
+        return [ordered]@{
+            command = 'npx'
+            args = @('-y', '@modelcontextprotocol/server-fetch')
+        }
+    }
+
+    $PortableNodeRoot = Join-Path -Path $env:LOCALAPPDATA -ChildPath 'Programs/nodejs-portable'
+    $PortableNodeHome = Get-ChildItem -Path $PortableNodeRoot -Directory -Filter 'node-v*-win-x64' -ErrorAction SilentlyContinue |
+        Sort-Object -Property Name -Descending |
+        Select-Object -First 1
+
+    if ($null -ne $PortableNodeHome)
+    {
+        $NodePath = Join-Path -Path $PortableNodeHome.FullName -ChildPath 'node.exe'
+        $NpxCliPath = Join-Path -Path $PortableNodeHome.FullName -ChildPath 'node_modules/npm/bin/npx-cli.js'
+
+        if ((Test-Path -Path $NodePath) -and (Test-Path -Path $NpxCliPath))
+        {
+            return [ordered]@{
+                command = $NodePath
+                args = @($NpxCliPath, '-y', '@modelcontextprotocol/server-fetch')
+            }
+        }
+    }
+
+    return $null
+}
+
 function New-VSCodeMcpConfiguration
 {
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
         [Parameter(Mandatory = $false)]
-        [switch]$SkipFetchServer
+        [switch]$SkipFetchServer,
+
+        [Parameter(Mandatory = $false)]
+        [hashtable]$FetchLauncher
     )
 
     $Servers = [ordered]@{
@@ -104,12 +146,12 @@ function New-VSCodeMcpConfiguration
         }
     }
 
-    if (-not $SkipFetchServer)
+    if (-not $SkipFetchServer -and $null -ne $FetchLauncher)
     {
         $Servers['fetch'] = [ordered]@{
             type = 'stdio'
-            command = 'npx'
-            args = @('-y', '@modelcontextprotocol/server-fetch')
+            command = $FetchLauncher.command
+            args = $FetchLauncher.args
         }
     }
 
@@ -124,7 +166,10 @@ function New-CopilotGenericMcpConfiguration
     [OutputType([hashtable])]
     param(
         [Parameter(Mandatory = $false)]
-        [switch]$SkipFetchServer
+        [switch]$SkipFetchServer,
+
+        [Parameter(Mandatory = $false)]
+        [hashtable]$FetchLauncher
     )
 
     $Servers = [ordered]@{
@@ -135,12 +180,12 @@ function New-CopilotGenericMcpConfiguration
         }
     }
 
-    if (-not $SkipFetchServer)
+    if (-not $SkipFetchServer -and $null -ne $FetchLauncher)
     {
         $Servers['fetch'] = [ordered]@{
             type = 'local'
-            command = 'npx'
-            args = @('-y', '@modelcontextprotocol/server-fetch')
+            command = $FetchLauncher.command
+            args = $FetchLauncher.args
             tools = @('*')
         }
     }
@@ -163,20 +208,23 @@ function Set-McpConfigurationFile
         [string]$TargetEditor,
 
         [Parameter(Mandatory = $false)]
-        [switch]$SkipFetchServer
+        [switch]$SkipFetchServer,
+
+        [Parameter(Mandatory = $false)]
+        [hashtable]$FetchLauncher
     )
 
     if ($TargetEditor -eq 'VSCode')
     {
         $DirectoryPath = Join-Path -Path $WorkspaceRoot -ChildPath '.vscode'
         $FilePath = Join-Path -Path $DirectoryPath -ChildPath 'mcp.json'
-        $Configuration = New-VSCodeMcpConfiguration -SkipFetchServer:$SkipFetchServer
+        $Configuration = New-VSCodeMcpConfiguration -SkipFetchServer:$SkipFetchServer -FetchLauncher $FetchLauncher
     }
     else
     {
         $DirectoryPath = Join-Path -Path $WorkspaceRoot -ChildPath '.copilot'
         $FilePath = Join-Path -Path $DirectoryPath -ChildPath 'mcp-config.json'
-        $Configuration = New-CopilotGenericMcpConfiguration -SkipFetchServer:$SkipFetchServer
+        $Configuration = New-CopilotGenericMcpConfiguration -SkipFetchServer:$SkipFetchServer -FetchLauncher $FetchLauncher
     }
 
     New-Item -ItemType Directory -Path $DirectoryPath -Force | Out-Null
@@ -193,7 +241,16 @@ if ($MyInvocation.InvocationName -ne '.')
     {
         $WorkspaceRoot = Get-WorkspaceRoot -RequestedRoot $RepoRoot
         $TargetEditor = if ($Editor -eq 'Auto') { Get-DetectedEditor } else { $Editor }
-        $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -SkipFetchServer:$SkipFetch
+        $ShouldSkipFetch = $SkipFetch.IsPresent
+        $FetchLauncher = if ($ShouldSkipFetch) { $null } else { Get-FetchLauncher }
+
+        if (-not $ShouldSkipFetch -and $null -eq $FetchLauncher)
+        {
+            Write-Warning 'Skipping fetch MCP server because node and npx must both be available on PATH.'
+            $ShouldSkipFetch = $true
+        }
+
+        $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -SkipFetchServer:$ShouldSkipFetch -FetchLauncher $FetchLauncher
 
         Write-Host "MCP configuration written for ${TargetEditor}: $WrittenPath" -ForegroundColor Green
 

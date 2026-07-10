@@ -27,11 +27,21 @@ Use this skill when the user asks to:
 * Write access to the workspace root
 * Trust in the configured MCP server commands and endpoints
 
-Check the local `fetch` prerequisite with:
+Check the local `fetch` prerequisites with:
 
 ```powershell
+Get-Command node -ErrorAction SilentlyContinue
 Get-Command npx -ErrorAction SilentlyContinue
 ```
+
+Both commands must return a result for the `fetch` server to start. If Node.js
+is missing or `npx` cannot run, the setup script skips `fetch` and writes the
+Microsoft Learn server only.
+
+On Windows, the setup script also checks for a portable Node.js install under
+`%LOCALAPPDATA%\Programs\nodejs-portable`. When found, it writes the `fetch`
+server with an explicit `node.exe` path so VS Code does not depend on a refreshed
+PATH value.
 
 ## Quick Start
 
@@ -176,8 +186,11 @@ whether the servers are disabled, untrusted, or reporting output errors.
 
 ### Fetch Server Does Not Start
 
-Run `Get-Command npx -ErrorAction SilentlyContinue`. If no command is returned,
-install Node.js or rerun the script with `-SkipFetch`.
+Run `Get-Command node -ErrorAction SilentlyContinue` and
+`Get-Command npx -ErrorAction SilentlyContinue`. If either command is missing,
+install Node.js, install portable Node.js under
+`%LOCALAPPDATA%\Programs\nodejs-portable`, or rerun the script with
+`-SkipFetch`.
 
 ### Microsoft Learn Server Does Not Work In Another Client
 

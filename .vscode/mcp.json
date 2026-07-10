@@ -1,16 +1,24 @@
 {
-    "servers": {
-        "microsoft-learn": {
-            "type": "http",
-            "url": "https://learn.microsoft.com/api/mcp"
-        },
-        "fetch": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@modelcontextprotocol/server-fetch"
-            ]
-        }
+  "servers": {
+    "azureDevops": {
+      "type": "http",
+      "url": "https://dev.azure.com/autocloudarc-mcaps"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "microsoftLearn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
     }
+  }
 }

@@ -267,6 +267,33 @@ Example structure:
 
 For Copilot CLI sessions, use `/skills reload`, `/skills list`, and `/skills info <skill-name>` after adding or changing a skill. When using GitHub CLI skill management, inspect third-party skills before installing them with `gh skill preview`, then use `gh skill install`, `gh skill update`, or `gh skill publish --dry-run` as appropriate.
 
+### GitHub Copilot CLI MCP Migration Note
+
+When practicing GitHub Copilot CLI exercises that need the same MCP servers as
+VS Code, keep the VS Code workspace configuration in `.vscode/mcp.json` and add
+a separate `.mcp.json` for Copilot CLI. VS Code uses a top-level `servers` key;
+Copilot CLI uses a top-level `mcpServers` key. Migrating the file for CLI use
+must not remove or replace `.vscode/mcp.json`, because that file remains the
+workspace MCP source for the VS Code GitHub Copilot Chat experience.
+
+Prefer the bundled setup script for this repository because it writes the CLI
+`mcpServers` shape with explicit `tools` filters:
+
+```powershell
+pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor CopilotGeneric
+```
+
+The GitHub Docs migration pattern remaps the VS Code shape into the CLI shape:
+
+```powershell
+pwsh -NoProfile -Command "`$json = Get-Content '.vscode/mcp.json' -Raw | ConvertFrom-Json; `$content = ([pscustomobject]@{ mcpServers = `$json.servers } | ConvertTo-Json -Depth 100); [System.IO.File]::WriteAllText('.mcp.json', `$content, (New-Object System.Text.UTF8Encoding `$false))"
+```
+
+After creating or updating `.mcp.json`, use Copilot CLI MCP commands such as
+`/mcp show`, `/mcp reload`, or `copilot mcp list` to verify CLI visibility. For
+the VS Code interface, reload VS Code or use the VS Code MCP server reload flow
+after editing `.vscode/mcp.json`.
+
 ---
 
 ## Pull Request Guidelines

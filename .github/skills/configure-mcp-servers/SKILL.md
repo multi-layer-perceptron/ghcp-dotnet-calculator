@@ -17,7 +17,7 @@ Use this skill when the user asks to:
 * Configure MCP servers for the calculator workspace
 * Add the Azure DevOps, GitHub, Microsoft Learn, or Playwright MCP server
 * Create `.vscode/mcp.json` for VS Code
-* Create `.copilot/mcp-config.json` for clients that use `mcpServers`
+* Create `.mcp.json` for GitHub Copilot CLI
 * Compare GitHub Copilot IDE MCP support with other MCP-capable clients
 * Troubleshoot why configured MCP servers do not appear in the active editor
 
@@ -72,8 +72,7 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 The script detects the active editor when possible:
 
 * VS Code writes `.vscode/mcp.json` with a top-level `servers` object.
-* Generic Copilot-style clients write `.copilot/mcp-config.json` with a
-  top-level `mcpServers` object.
+* GitHub Copilot CLI writes `.mcp.json` with a top-level `mcpServers` object.
 
 If detection is ambiguous, pass the target explicitly:
 
@@ -108,7 +107,7 @@ Create the configuration for a different Azure DevOps organization:
 pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor VSCode -AzureDevOpsOrganization your-organization
 ```
 
-Create the generic `mcpServers` configuration shape:
+Create the GitHub Copilot CLI `mcpServers` configuration shape:
 
 ```powershell
 pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor CopilotGeneric
@@ -129,6 +128,22 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 6. If the servers do not appear, run `Developer: Reload Window`, then check
    `MCP: List Servers` again.
 
+### GitHub Copilot CLI
+
+For GitHub Copilot CLI, create or refresh the root `.mcp.json` file:
+
+```powershell
+pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor CopilotGeneric
+```
+
+Then verify the CLI can see the servers:
+
+```powershell
+copilot mcp list
+```
+
+Inside an interactive Copilot CLI session, use `/mcp show` or `/mcp reload`.
+
 ### Other MCP Clients
 
 MCP is portable, but configuration files are client-specific. Confirm the
@@ -142,9 +157,8 @@ This skill writes only configurations whose location and schema are intentionall
 scoped for the lab:
 
 * `VSCode` writes `.vscode/mcp.json` with top-level `servers`.
-* `CopilotGeneric` writes `.copilot/mcp-config.json` with top-level
-  `mcpServers` as a portable reference shape for clients that document that
-  convention.
+* `CopilotGeneric` writes `.mcp.json` with top-level `mcpServers` for GitHub
+  Copilot CLI.
 
 Do not add automatic writes for Claude, Codex, Gemini, or another harness until
 you have verified the current client documentation for that exact product and
@@ -208,7 +222,7 @@ Azure DevOps organization value.
 
 ### Servers Do Not Appear In VS Code
 
-Verify that the file is `.vscode/mcp.json`, not `.copilot/mcp-config.json`, and
+Verify that the file is `.vscode/mcp.json`, not `.mcp.json`, and
 that it uses the top-level `servers` object. Run `MCP: List Servers` and check
 whether the servers are disabled, untrusted, or reporting output errors.
 
@@ -228,7 +242,7 @@ omit the Microsoft Learn endpoint.
 
 ### Claude, Codex, Or Gemini Config Does Not Load
 
-Do not assume `.vscode/mcp.json` or `.copilot/mcp-config.json` applies. Confirm
+Do not assume `.vscode/mcp.json` or `.mcp.json` applies. Confirm
 the current client-specific file path and schema, then copy only the server
 definition pieces that the client supports.
 

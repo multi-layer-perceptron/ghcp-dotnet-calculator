@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "azureDevOps": {
+      "type": "http",
+      "url": "https://mcp.dev.azure.com/autocloudarc-mcaps",
+      "tools": [
+        "*"
+      ]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "tools": [
+        "*"
+      ]
+    },
+    "microsoftLearn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "tools": [
+        "*"
+      ]
+    },
+    "playwright": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
+      "tools": [
+        "*"
+      ]
+    }
+  }
+}

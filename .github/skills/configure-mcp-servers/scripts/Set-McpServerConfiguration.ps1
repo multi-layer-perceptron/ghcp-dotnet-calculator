@@ -9,8 +9,8 @@
 .DESCRIPTION
     Detects the active editor when possible and writes the MCP configuration
     shape expected by that client. VS Code receives .vscode/mcp.json with a
-    top-level servers object. Generic Copilot-style clients receive
-    .copilot/mcp-config.json with a top-level mcpServers object.
+    top-level servers object. GitHub Copilot CLI receives .mcp.json with a
+    top-level mcpServers object.
 
     The default server set is azureDevOps (http), github (http),
     microsoftLearn (http), and playwright (stdio via npx). Playwright is
@@ -239,8 +239,8 @@ function Set-McpConfigurationFile {
         $Configuration = New-VSCodeMcpConfiguration -Organization $Organization -NpxLauncher $NpxLauncher
     }
     else {
-        $DirectoryPath = Join-Path -Path $WorkspaceRoot -ChildPath '.copilot'
-        $FilePath = Join-Path -Path $DirectoryPath -ChildPath 'mcp-config.json'
+        $DirectoryPath = $WorkspaceRoot
+        $FilePath = Join-Path -Path $DirectoryPath -ChildPath '.mcp.json'
         $Configuration = New-CopilotGenericMcpConfiguration -Organization $Organization -NpxLauncher $NpxLauncher
     }
 
@@ -270,7 +270,7 @@ if ($MyInvocation.InvocationName -ne '.') {
             Write-Host 'Next: run MCP: List Servers in VS Code, start the servers, and accept the trust prompt if shown.' -ForegroundColor Cyan
         }
         else {
-            Write-Host 'Next: verify this client supports the generated mcpServers shape and the configured transports.' -ForegroundColor Cyan
+            Write-Host 'Next: run copilot mcp list or /mcp show to verify the CLI can see the generated .mcp.json servers.' -ForegroundColor Cyan
         }
 
         if ($PassThru) {

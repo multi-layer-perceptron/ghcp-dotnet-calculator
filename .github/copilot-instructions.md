@@ -197,6 +197,39 @@ src/
 - **Accuracy**: Verify names and paths against live directory contents; older docs may lag behind
 - **Upgrade history**: Preserve intentional pre-upgrade `.NET 8` references in stage-specific prompts, PRDs, and reports. Normalize only current active workspace guidance to `.NET 10` after the 3.01 upgrade workflow.
 
+### AGENTS.md Pattern
+
+The root `AGENTS.md` uses a ten-section editorial pattern rather than an official standardized schema. Derive its content from recursive inspection of
+the live repository and use these exact level-two headings for the initial version:
+
+```markdown
+## Repository Overview
+## Repository Structure
+## Prerequisites And Setup
+## Build And Run
+## Testing
+## Architecture And Boundaries
+## Coding And Documentation Conventions
+## Security And Configuration
+## Automation And Deployment
+## Change Workflow And Completion Criteria
+```
+
+Apply the pattern as follows:
+
+* Use overview and structure to orient agents to the repository and distinguish
+    active implementation from historical, completed, generated, and reference
+    content.
+* Use prerequisites, build, and testing to capture executable setup and
+    validation commands supported by repository files.
+* Use architecture, conventions, and security to preserve component boundaries,
+    scoped instructions, secure defaults, and configuration rules.
+* Use automation and completion workflow to define CI/CD, infrastructure,
+    deployment approvals, safe editing, final validation, and reporting.
+* Tailor every section to repository evidence, link to detailed guidance instead
+    of duplicating it, and never invent commands or requirements to fill a
+    category.
+
 ### GitHub Copilot Agent Skills
 
 Use agent skills for repeatable, on-demand workflows that should load only when relevant. Prefer custom instructions for broad, always-on repository guidance, prompt files for single reusable task prompts, and custom agents when the workflow needs a distinct persona, context isolation, or tool restrictions.

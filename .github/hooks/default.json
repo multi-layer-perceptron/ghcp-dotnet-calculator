@@ -1,19 +1,20 @@
 {
-  "preToolUse": [
-    {
-      "type": "command",
-      "bash": "./scripts/hooks/pre-tool-use-secret-scan.sh",
-      "powershell": "./scripts/hooks/pre-tool-use-secret-scan.ps1",
-      "timeoutSec": 10,
-      "comment": "Block file writes containing hardcoded secrets or credentials"
-    }
-  ],
-  "postToolUse": [
-    {
-      "type": "command",
-      "powershell": "./scripts/hooks/post-tool-use-dotnet-build.ps1",
-      "timeoutSec": 30,
-      "comment": "Verify calculator solution build after editing C# files"
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "./scripts/hooks/pre-tool-use-secret-scan.sh",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\hooks\\pre-tool-use-secret-scan.ps1",
+        "timeout": 10
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "pwsh -NoProfile -File ./scripts/hooks/post-tool-use-dotnet-build.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\hooks\\post-tool-use-dotnet-build.ps1",
+        "timeout": 30
+      }
+    ]
+  }
 }

@@ -1,27 +1,38 @@
 # pre-tool-use-secret-scan.ps1 - Block file writes containing hardcoded secrets
-# Input: JSON via stdin with { timestamp, cwd, toolName, toolArgs }
-# Output: JSON with permissionDecision to deny when a secret is detected
+# Input: JSON via stdin with { tool_name, tool_input }
+# Output: JSON with a PreToolUse permission decision when a secret is detected
 
 $ErrorActionPreference = 'Stop'
 $HookInput = $input | Out-String | ConvertFrom-Json
 
-$ToolName = if ($HookInput.toolName) { $HookInput.toolName } else { '' }
-$ToolArgs = if ($HookInput.toolArgs) { $HookInput.toolArgs } else { '' }
+$ToolName = if ($HookInput.tool_name) { $HookInput.tool_name } elseif ($HookInput.toolName) { $HookInput.toolName } else { '' }
+$ToolInput = if ($HookInput.tool_input) { $HookInput.tool_input } elseif ($HookInput.toolArgs) { $HookInput.toolArgs } else { '' }
 
 # Only check file write/create operations
-if ($ToolName -ne "create" -and $ToolName -ne "edit" -and $ToolName -ne "write") {
+if ($ToolName -notmatch '(?i)(create|edit|write|apply_patch|replace_string_in_file)') {
     exit 0
 }
 
 try {
-    $ArgsObject = if ($ToolArgs -is [string]) {
-        $ToolArgs | ConvertFrom-Json
+    $Content = if ($ToolInput -is [string]) {
+        $ToolInput
     }
     else {
-        $ToolArgs
-    }
+        $TextFields = @('content', 'new_string', 'newString', 'replacement', 'text', 'input')
+        $ExtractedContent = foreach ($TextField in $TextFields) {
+            $Value = $ToolInput.$TextField
+            if ($Value -is [string]) {
+                $Value
+            }
+        }
 
-    $Content = if ($ArgsObject.content) { $ArgsObject.content } elseif ($ArgsObject.new_string) { $ArgsObject.new_string } else { '' }
+        if ($ExtractedContent) {
+            $ExtractedContent -join "`n"
+        }
+        else {
+            $ToolInput | ConvertTo-Json -Depth 100 -Compress
+        }
+    }
 } catch {
     exit 0
 }
@@ -40,7 +51,7 @@ $SecretPatterns = @(
 
 foreach ($SecretPattern in $SecretPatterns) {
     if ($Content -match $SecretPattern) {
-        Write-Output '{"permissionDecision":"deny","permissionDecisionReason":"Potential secret or credential detected in file content. Use environment variables instead of hardcoded secrets."}'
+        @{ hookSpecificOutput = @{ hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = 'Potential secret or credential detected in file content. Use environment variables instead of hardcoded secrets.' } } | ConvertTo-Json -Compress
         exit 0
     }
 }

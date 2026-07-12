@@ -21,3 +21,4 @@ Operand1,Operand2,Operation,ExpectedResult
 4,0,SquareRoot,2
 9,0,SquareRoot,3
 2,0,SquareRoot,1.4142135623730951
+16,0,SquareRoot,4

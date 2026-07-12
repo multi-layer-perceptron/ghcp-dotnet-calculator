@@ -17,7 +17,7 @@
     npx). Local servers are skipped with a warning when no Node.js and npx
     launcher is available.
 .PARAMETER Editor
-    Target editor or client shape. Use Auto, VSCode, or CopilotGeneric.
+    Target editor or client shape. Use Auto, All, VSCode, or CopilotGeneric.
 .PARAMETER RepoRoot
     Workspace root where the MCP configuration file is written.
 .PARAMETER AzureDevOpsOrganization
@@ -27,6 +27,8 @@
 .EXAMPLE
     ./Set-McpServerConfiguration.ps1
 .EXAMPLE
+    ./Set-McpServerConfiguration.ps1 -Editor All
+.EXAMPLE
     ./Set-McpServerConfiguration.ps1 -Editor VSCode -AzureDevOpsOrganization autocloudarc-mcaps
 .NOTES
     Run from the repository root or pass -RepoRoot explicitly.
@@ -34,7 +36,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false)]
-    [ValidateSet('Auto', 'VSCode', 'CopilotGeneric')]
+    [ValidateSet('Auto', 'All', 'VSCode', 'CopilotGeneric')]
     [string]$Editor = 'Auto',
 
     [Parameter(Mandatory = $false)]
@@ -267,26 +269,31 @@ function Set-McpConfigurationFile {
 if ($MyInvocation.InvocationName -ne '.') {
     try {
         $WorkspaceRoot = Get-WorkspaceRoot -RequestedRoot $RepoRoot
-        $TargetEditor = if ($Editor -eq 'Auto') { Get-DetectedEditor } else { $Editor }
+        $TargetEditors = if ($Editor -eq 'All') {
+            @('VSCode', 'CopilotGeneric')
+        }
+        elseif ($Editor -eq 'Auto') {
+            @(Get-DetectedEditor)
+        }
+        else {
+            @($Editor)
+        }
         $NpxLauncher = Get-NpxLauncher
 
         if ($null -eq $NpxLauncher) {
             Write-Warning 'Skipping the Playwright and memory MCP servers because no Node.js and npx launcher was found. Install Node.js to a PATH location such as C:\tools\nodejs.'
         }
 
-        $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -Organization $AzureDevOpsOrganization -NpxLauncher $NpxLauncher
-
-        Write-Host "MCP configuration written for ${TargetEditor}: $WrittenPath" -ForegroundColor Green
-
-        if ($TargetEditor -eq 'VSCode') {
-            Write-Host 'Next: run MCP: List Servers in VS Code, start the servers, and accept the trust prompt if shown.' -ForegroundColor Cyan
+        $WrittenPaths = foreach ($TargetEditor in $TargetEditors) {
+            $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -Organization $AzureDevOpsOrganization -NpxLauncher $NpxLauncher
+            Write-Host "MCP configuration written for ${TargetEditor}: $WrittenPath" -ForegroundColor Green
+            $WrittenPath
         }
-        else {
-            Write-Host 'Next: run copilot mcp list or /mcp show to verify the CLI can see the generated .mcp.json servers.' -ForegroundColor Cyan
-        }
+
+        Write-Host 'Next: use MCP: List Servers in VS Code or copilot mcp list for the CLI, then start and trust the configured servers.' -ForegroundColor Cyan
 
         if ($PassThru) {
-            $WrittenPath
+            $WrittenPaths
         }
 
         exit 0

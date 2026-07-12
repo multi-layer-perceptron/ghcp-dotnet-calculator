@@ -67,15 +67,16 @@ endpoint.
 From the repository root, run:
 
 ```powershell
-pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
+pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor All
 ```
 
-The script detects the active editor when possible:
+This workspace-wide command refreshes both supported client files:
 
 * VS Code writes `.vscode/mcp.json` with a top-level `servers` object.
 * GitHub Copilot CLI writes `.mcp.json` with a top-level `mcpServers` object.
 
-If detection is ambiguous, pass the target explicitly:
+To refresh only the detected active client, omit `-Editor All`. To select one
+client explicitly, run one of these commands:
 
 ```powershell
 pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor VSCode
@@ -89,17 +90,17 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 
 | Parameter      | Default | Description |
 |----------------|---------|-------------|
-| `Editor`       | `Auto`  | `Auto`, `VSCode`, or `CopilotGeneric` |
+| `Editor`       | `Auto`  | `Auto`, `All`, `VSCode`, or `CopilotGeneric` |
 | `RepoRoot`     | Git root or current directory | Workspace root where configuration is written |
 | `AzureDevOpsOrganization` | `autocloudarc-mcaps` | Azure DevOps organization URL segment |
 | `PassThru`     | `false` | Return the written file path as pipeline output |
 
 ## Script Reference
 
-Create the appropriate configuration for the detected editor:
+Create or refresh both workspace client configurations:
 
 ```powershell
-pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
+pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1 -Editor All
 ```
 
 Create the configuration for a different Azure DevOps organization:

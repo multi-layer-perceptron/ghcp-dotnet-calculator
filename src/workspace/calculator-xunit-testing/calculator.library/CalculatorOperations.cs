@@ -83,11 +83,11 @@ public static class CalculatorOperations
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the operand is negative.</exception>
     public static double SquareRoot(double operand)
     {
-    if (operand < 0)
-    {
-        throw new ArgumentOutOfRangeException(nameof(operand), "Cannot calculate the square root of a negative number.");
-    }
+        if (operand < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(operand), "Cannot calculate the square root of a negative number.");
+        }
 
-    return Math.Sqrt(operand);
+        return Math.Sqrt(operand);
     }
 }

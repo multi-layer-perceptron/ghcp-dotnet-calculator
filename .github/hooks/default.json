@@ -3,7 +3,7 @@
     "PreToolUse": [
       {
         "type": "command",
-        "command": "./scripts/hooks/pre-tool-use-secret-scan.sh",
+        "command": "pwsh -NoProfile -File ./scripts/hooks/pre-tool-use-secret-scan.ps1",
         "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\hooks\\pre-tool-use-secret-scan.ps1",
         "timeout": 10
       }

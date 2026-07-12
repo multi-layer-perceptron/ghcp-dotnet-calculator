@@ -81,10 +81,12 @@ public class CalculatorTest
         double ignoredSecondOperand,
         double expectedResult)
     {
+        // SquareRoot uses only one operand but shares the four-column CSV data shape.
         _ = ignoredSecondOperand;
 
         var actualResult = CalculatorOperations.SquareRoot(operand);
 
+        // Precision supports irrational square root values supplied by the CSV data.
         Assert.Equal(expectedResult, actualResult, precision: 10);
     }
 

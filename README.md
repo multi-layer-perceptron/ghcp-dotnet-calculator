@@ -265,16 +265,19 @@ the staged calculator workflow:
 
 ## Lab Exercises
 
-The [lab-exercises/](lab-exercises/) folder contains guided exercises that
-translate the staged prompt workflows into a progressive lab. The exercises
-are re-indexed with a hierarchical dotted-decimal scheme (`module.exercise`)
-based on the progression logic of the prompts: build first, then modernize,
-then validate quality and security. Each exercise references its associated
-prompt and summarizes the learning objectives and how the prompt is used.
+The [lab exercise guide](lab-exercises/README.md) explains how the guided
+exercises translate the staged prompt workflows into a progressive lab. The
+flat folder layout is intentional: modules are logical curriculum groups, not
+subdirectories. Exercise identifiers use a dotted-decimal
+`module.exercise` scheme based on the progression logic of the prompts: build
+first, then modernize, then validate quality and security. The catalog below
+lists each exercise, its associated prompt, and its place in that sequence.
 
 Complete the [Hide The Completed Solution](#hide-the-completed-solution)
-prerequisite before starting Module 01. Start with Module 00 if you want a
-short tour of the Copilot configuration files that drive the lab sequence.
+prerequisite before starting [Exercise 01.01](lab-exercises/01.01-solution-setup.md).
+Start with [Exercise 00.01](lab-exercises/00.01.explore-copilot-config-files.md)
+if you want a short tour of the Copilot configuration files that drive the lab
+sequence.
 
 ### Module 00 - Explore The Copilot Workspace
 

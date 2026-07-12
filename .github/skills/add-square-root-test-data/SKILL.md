@@ -1,43 +1,55 @@
----
 name: add-square-root-test-data
-description: "Add an idempotent SquareRoot theory tuple to CalculatorTest.cs for lab 99.04. Use when: add SquareRoot theory data, add calculator test tuple, add SquareRoot MemberData tuple, lab 99.04 minor test change."
+description: "Add an idempotent, parameterized SquareRoot test-data row to TestCases.csv for lab 99.04. Use when: add SquareRoot CSV data, add calculator test tuple, add SquareRoot test case, lab 99.04 minor test change."
 ---
 
 # Add SquareRoot Test Data
 
 ## Purpose
 
-Add one small SquareRoot theory tuple to the active calculator test project for
-lab 99.04. This C# edit provides a realistic, low-risk event that triggers the
-post-tool-use build hook while preserving the PostgreSQL-backed CSV data source.
+Add one parameterized SquareRoot test-data tuple to the active calculator test
+project for lab 99.04. The CSV is the source of truth for the PostgreSQL-backed
+test-data path.
+
+## Inputs
+
+* `operand`: Required non-negative number whose square root is tested
+* `expectedResult`: Required expected square root of `operand`
+
+For the lab demonstration, use `operand=16` and `expectedResult=4`. These
+values produce the CSV tuple `(16, 0, SquareRoot, 4)` and row
+`16,0,SquareRoot,4`.
 
 ## Target File
 
-* `src/workspace/calculator-xunit-testing/calculator.tests/CalculatorTest.cs`
+* `src/workspace/calculator-xunit-testing/calculator.tests/TestCases.csv`
 
 ## Required Steps
 
-1. Open `CalculatorTest.cs` and find `GetSquareRootTestCases`.
-2. If the method does not already append the canonical tuple, update it to:
+1. Confirm `operand` is non-negative and `expectedResult` is the intended square
+   root for that operand.
+2. Open `TestCases.csv` and preserve its four-column header:
 
-   ```csharp
-   public static IEnumerable<object[]> GetSquareRootTestCases() => GetTestCases("SquareRoot")
-       .Append(new object[] { 16d, 0d, 4d });
+   ```csv
+   Operand1,Operand2,Operation,ExpectedResult
    ```
 
-3. Preserve the `GetTestCases("SquareRoot")` call so the existing PostgreSQL-backed
-   CSV cases remain the primary data source.
-4. Do not change `TestCases.csv`. This tuple is intentionally a minor C# test
-   project change that exercises the build hook separately from CSV-backed data.
+3. Add one row using the supplied parameter values and the fixed SquareRoot
+   columns: `<operand>,0,SquareRoot,<expectedResult>`.
+4. For the lab values `operand=16 expectedResult=4`, add:
+
+   ```csv
+   16,0,SquareRoot,4
+   ```
+
+5. Do not modify `CalculatorTest.cs`; its existing `MemberData` provider loads
+   SquareRoot cases from the PostgreSQL-seeded CSV data.
 
 ## Idempotency Rules
 
-* Do not append the canonical tuple more than once.
-* If `GetSquareRootTestCases` already includes `new object[] { 16d, 0d, 4d }`,
-  make no code edits.
-* If a different appended SquareRoot tuple exists, preserve it and add only the
-  canonical tuple when it is missing.
-* Leave other test methods, data providers, and CSV rows unchanged.
+* Do not add the parameterized row more than once.
+* If the exact row for the supplied values already exists, make no changes.
+* Preserve all existing rows, the header, and the final newline.
+* Do not change test methods or data providers.
 
 ## Validation
 
@@ -47,16 +59,8 @@ Run the focused calculator test validation after editing:
 dotnet test src/workspace/calculator-xunit-testing/calculator.tests/calculator.tests.csproj --filter FullyQualifiedName~CalculatorTest --verbosity minimal --artifacts-path artifacts/test-runs/square-root-test-data
 ```
 
-Then simulate the C# post-tool-use event:
-
-```powershell
-$env:TOOL_NAME = 'edit'
-$env:FILE_PATH = 'src/workspace/calculator-xunit-testing/calculator.tests/CalculatorTest.cs'
-.\scripts\hooks\post-tool-use-dotnet-build.ps1
-```
-
 ## Expected Outcome
 
-`GetSquareRootTestCases` supplies the PostgreSQL-backed CSV cases plus one
-additional `16 -> 4` theory tuple. The edit targets a `.cs` file, so the build
-hook runs when it receives the `CalculatorTest.cs` path.
+`GetSquareRootTestCases` loads the existing PostgreSQL-backed CSV cases plus the
+parameterized SquareRoot row. For the lab values, the theory includes the
+additional `16 -> 4` case. A CSV edit does not trigger the C#-only build hook.

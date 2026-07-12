@@ -300,7 +300,6 @@ short tour of the Copilot configuration files that drive the lab sequence.
 | [02.01](lab-exercises/02.01-upgrade-dotnet-8-to-10.md) | Upgrade .NET 8 To .NET 10 | `3.01-upgrade-dotnet-from-8-to-10` |
 | [02.02](lab-exercises/02.02-refactor-to-blazor.md) | Refactor To A Blazor Web App | `3.01.1-refactor-calculator-blazor-app` |
 | [02.03](lab-exercises/02.03-azure-migration-assessment.md) | Azure Migration Assessment | `3.02-migrate-to-azure` |
-| [02.04](lab-exercises/02.04-reset-environments.md) | Reset Azure And Local Environments | `3.03-reset-azure-environment`, `3.04-reset-local-docker-pg` |
 
 ### Module 03 - Quality, Security, And Wrap-Up
 
@@ -308,7 +307,7 @@ short tour of the Copilot configuration files that drive the lab sequence.
 | -------- | ----- | ----------------- |
 | [03.01](lab-exercises/03.01-security-assessment.md) | Security Assessment | `7.01-conduct-security-assessment` |
 | [03.02](lab-exercises/03.02-comprehensive-quality-gate.md) | Comprehensive Quality Gate | `12.00.test-for-quality` |
-| [03.03](lab-exercises/03.03-cleanup-and-reset.md) | Cleanup And Reset | `1.13-cleanup-solution` |
+| [03.03](lab-exercises/03.03-final-validation-and-handoff.md) | Final Validation And Handoff | None |
 
 ### Module 99 - Finished Project Customization
 
@@ -331,6 +330,7 @@ DevOps, GitHub, Microsoft Learn, and Playwright. Its Azure DevOps example uses
 | [99.06](lab-exercises/99.06.github-agentic-workflows.md) | GitHub Agentic Workflow Diagnostics | None |
 | [99.07](lab-exercises/99.07.copilot-coding-agent-code-review.md) | Copilot Coding Agent And Code Review | None |
 | [99.08](lab-exercises/99.08.capstone-exercises.md) | Capstone Exercises | None |
+| [99.09](lab-exercises/99.09.reset-environments.md) | Reset Azure And Local Environments | `reset-calculator-lab` skill, `3.03-reset-azure-environment`, `3.04-reset-local-docker-pg` |
 
 ## Calculator Tutorial
 
@@ -440,7 +440,7 @@ domain complexity.
 | Run tests | `dotnet test src/workspace/calculator-xunit-testing/calculator.slnx` |
 | Run console app | `dotnet run --project src/workspace/calculator-xunit-testing/calculator/calculator.csproj` |
 | Recreate workspace | `pwsh -NoProfile -ExecutionPolicy Bypass -File src/workspace/Set-DotnetSlnForCalculator.ps1` |
-| Remove generated workspace | `pwsh -NoProfile -ExecutionPolicy Bypass -File src/workspace/Remove-DotnetSlnForCalculator.ps1` |
+| Preview generated-workspace reset | `pwsh .github/skills/reset-calculator-lab/scripts/Remove-DotnetSlnForCalculator.ps1 -WhatIf` |
 | Install GitHub Agentic Workflows CLI | `gh extension install github/gh-aw` |
 | Upgrade GitHub Agentic Workflows CLI | `gh extension upgrade github/gh-aw` |
 | Compile 99.06 agentic workflow | `gh aw compile --strict .github/workflows/99.06.workflow-failure-doctor.md` |
@@ -473,7 +473,6 @@ ghcp-dotnet-calculator/
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace
-      Remove-DotnetSlnForCalculator.ps1          Cleanup script for the active calculator workspace
       calculator-xunit-testing/
         calculator.slnx                          .NET solution
         calculator/
@@ -490,6 +489,7 @@ ghcp-dotnet-calculator/
     prompts/                                     Reusable Copilot prompt files
     skills/                                      Reusable Copilot skill packages
       continuous-learning-v2/                    Instinct-based learning skill with background observer
+      reset-calculator-lab/                      Final lab reset skill and bundled cleanup script
     workflows/                                   GitHub Actions workflow examples
       99.06.workflow-failure-doctor.md           GitHub Agentic Workflow diagnostic example
       99.06.workflow-failure-doctor.lock.yml      Compiled GitHub Actions workflow for 99.06

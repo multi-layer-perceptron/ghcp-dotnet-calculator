@@ -16,7 +16,7 @@ The Calculator xUnit Testing project is a .NET 10 solution demonstrating shared 
 * `src/workspace/calculator-xunit-testing/calculator.tests/`: xUnit test project
 * `src/workspace/calculator-xunit-testing/calculator.slnx`: Solution file
 * `src/workspace/Set-DotnetSlnForCalculator.ps1`: Script that creates the active solution structure
-* `src/workspace/Remove-DotnetSlnForCalculator.ps1`: Script that removes the generated solution structure
+* `.github/skills/reset-calculator-lab/`: Skill that preserves and removes the generated solution structure
 
 ## Libraries and Frameworks
 

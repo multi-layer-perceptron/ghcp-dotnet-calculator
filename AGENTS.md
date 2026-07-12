@@ -53,9 +53,9 @@ docker info
 dotnet restore src/workspace/calculator-xunit-testing/calculator.slnx
 ```
 
-Do not run `src/workspace/Remove-DotnetSlnForCalculator.ps1` unless the user
-explicitly asks to reset the active exercise. It deletes the generated solution
-workspace.
+Do not use the `reset-calculator-lab` skill or run its bundled removal script
+unless the user explicitly asks to reset the active exercise. Preview with
+`-WhatIf` and preserve the solution under `src/completed` before removal.
 
 ## Build And Run
 

@@ -45,7 +45,6 @@ When generating or modifying code, prefer patterns that already exist in the rep
 src/
 ├── workspace/
 │   ├── Set-DotnetSlnForCalculator.ps1
-│   ├── Remove-DotnetSlnForCalculator.ps1
 │   └── calculator-xunit-testing/
 │       ├── calculator.slnx
 │       ├── calculator/
@@ -153,7 +152,7 @@ src/
 - Aim for 80%+ coverage on critical paths
 - Extend existing test projects before introducing new frameworks
 - For calculator validation, run `dotnet test src/workspace/calculator-xunit-testing/calculator.slnx`
-- To recreate the exercise solution, run `pwsh src/workspace/Set-DotnetSlnForCalculator.ps1`; to reset it, run `pwsh src/workspace/Remove-DotnetSlnForCalculator.ps1`
+- To recreate the exercise solution, use the `calculator-setup` skill. To reset it after Exercise 99.08, use the `reset-calculator-lab` skill and preview its bundled script with `-WhatIf`.
 - Keep integration/E2E tests deterministic and isolated; prefer ephemeral resources such as Testcontainers when feasible
 
 ---

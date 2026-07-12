@@ -232,23 +232,30 @@ Implementation requirements:
 
 ## 1.13 Cleanup Solution
 
-Create a PowerShell script named `Remove-DotnetSlnForCalculator.ps1` in `$(git rev-parse --show-toplevel)\src\workspace` that performs these actions:
+Use the `reset-calculator-lab` skill and its bundled
+`.github/skills/reset-calculator-lab/scripts/Remove-DotnetSlnForCalculator.ps1`
+script to perform these actions:
 
 * Gets the repository root path using `git rev-parse --show-toplevel`.
 * Constructs the workspace path as `{RepoRoot}\src\workspace`.
 * Identifies the solution directory as `{Workspace}\calculator-xunit-testing`.
-* Removes the `calculator-xunit-testing` folder recursively using `Remove-Item -Recurse -Force`.
-* Provides status messages for successful removal or missing folders.
-* Suggests rerunning the setup script to recreate the solution when needed.
+* Requires the existing `{RepoRoot}\src\completed` folder to be empty.
+* Supports a `-WhatIf` preview and explicit confirmation.
+* Copies the solution to `{RepoRoot}\src\completed\calculator-xunit-testing`.
+* Verifies the preserved directory before removing the workspace copy.
+* Blocks removal when preservation prerequisites are not satisfied.
+* Provides status messages for successful removal, safe failures, and no-op runs.
 
 Execution from the repository root:
 
 ```powershell
-cd {RepoRoot}\src\workspace
-.\Remove-DotnetSlnForCalculator.ps1
+pwsh .github/skills/reset-calculator-lab/scripts/Remove-DotnetSlnForCalculator.ps1 -WhatIf
+pwsh .github/skills/reset-calculator-lab/scripts/Remove-DotnetSlnForCalculator.ps1 -Confirm
 ```
 
-The script completely removes the `calculator-xunit-testing` folder, allowing the workspace to be reset.
+The script preserves the completed solution before removing the generated
+workspace, allowing the exercise to be reset without discarding the final
+implementation.
 
 ## 1.14 Additional Learning Outcomes
 

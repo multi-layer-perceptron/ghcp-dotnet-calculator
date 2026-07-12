@@ -1,11 +1,12 @@
-# pre-tool-use-secret-scan.ps1 — Block commits containing hardcoded secrets
+# pre-tool-use-secret-scan.ps1 - Block file writes containing hardcoded secrets
 # Input: JSON via stdin with { timestamp, cwd, toolName, toolArgs }
+# Output: JSON with permissionDecision to deny when a secret is detected
 
-$ErrorActionPreference = "Stop"
-$Input = $input | Out-String | ConvertFrom-Json
+$ErrorActionPreference = 'Stop'
+$HookInput = $input | Out-String | ConvertFrom-Json
 
-$ToolName = if ($Input.toolName) { $Input.toolName } else { "" }
-$ToolArgs = if ($Input.toolArgs) { $Input.toolArgs } else { "" }
+$ToolName = if ($HookInput.toolName) { $HookInput.toolName } else { '' }
+$ToolArgs = if ($HookInput.toolArgs) { $HookInput.toolArgs } else { '' }
 
 # Only check file write/create operations
 if ($ToolName -ne "create" -and $ToolName -ne "edit" -and $ToolName -ne "write") {
@@ -13,8 +14,14 @@ if ($ToolName -ne "create" -and $ToolName -ne "edit" -and $ToolName -ne "write")
 }
 
 try {
-    $ArgsObj = $ToolArgs | ConvertFrom-Json
-    $Content = if ($ArgsObj.content) { $ArgsObj.content } elseif ($ArgsObj.new_string) { $ArgsObj.new_string } else { "" }
+    $ArgsObject = if ($ToolArgs -is [string]) {
+        $ToolArgs | ConvertFrom-Json
+    }
+    else {
+        $ToolArgs
+    }
+
+    $Content = if ($ArgsObject.content) { $ArgsObject.content } elseif ($ArgsObject.new_string) { $ArgsObject.new_string } else { '' }
 } catch {
     exit 0
 }
@@ -31,9 +38,9 @@ $SecretPatterns = @(
     'api[_-]?key\s*=\s*["\x27][^"\x27]{8,}'
 )
 
-foreach ($Pattern in $SecretPatterns) {
-    if ($Content -match $Pattern) {
-        Write-Output '{"permissionDecision":"deny","permissionDecisionReason":"Potential secret or credential detected. Use environment variables instead."}'
+foreach ($SecretPattern in $SecretPatterns) {
+    if ($Content -match $SecretPattern) {
+        Write-Output '{"permissionDecision":"deny","permissionDecisionReason":"Potential secret or credential detected in file content. Use environment variables instead of hardcoded secrets."}'
         exit 0
     }
 }

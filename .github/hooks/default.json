@@ -1,4 +1,13 @@
 {
+  "preToolUse": [
+    {
+      "type": "command",
+      "bash": "./scripts/hooks/pre-tool-use-secret-scan.sh",
+      "powershell": "./scripts/hooks/pre-tool-use-secret-scan.ps1",
+      "timeoutSec": 10,
+      "comment": "Block file writes containing hardcoded secrets or credentials"
+    }
+  ],
   "postToolUse": [
     {
       "type": "command",

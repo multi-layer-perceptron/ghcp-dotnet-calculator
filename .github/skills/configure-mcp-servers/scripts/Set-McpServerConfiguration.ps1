@@ -13,8 +13,9 @@
     top-level mcpServers object.
 
     The default server set is azureDevOps (http), github (http),
-    microsoftLearn (http), and playwright (stdio via npx). Playwright is
-    skipped with a warning when no Node.js and npx launcher is available.
+    microsoftLearn (http), playwright (stdio via npx), and memory (stdio via
+    npx). Local servers are skipped with a warning when no Node.js and npx
+    launcher is available.
 .PARAMETER Editor
     Target editor or client shape. Use Auto, VSCode, or CopilotGeneric.
 .PARAMETER RepoRoot
@@ -161,6 +162,11 @@ function New-VSCodeMcpConfiguration {
             command = $NpxLauncher.command
             args    = @($NpxLauncher.argsPrefix) + @('@playwright/mcp@latest')
         }
+        $Servers['memory'] = [ordered]@{
+            type    = 'stdio'
+            command = $NpxLauncher.command
+            args    = @($NpxLauncher.argsPrefix) + @('@modelcontextprotocol/server-memory')
+        }
 
     }
 
@@ -204,6 +210,12 @@ function New-CopilotGenericMcpConfiguration {
             type    = 'local'
             command = $NpxLauncher.command
             args    = @($NpxLauncher.argsPrefix) + @('@playwright/mcp@latest')
+            tools   = @('*')
+        }
+        $Servers['memory'] = [ordered]@{
+            type    = 'local'
+            command = $NpxLauncher.command
+            args    = @($NpxLauncher.argsPrefix) + @('@modelcontextprotocol/server-memory')
             tools   = @('*')
         }
 
@@ -259,7 +271,7 @@ if ($MyInvocation.InvocationName -ne '.') {
         $NpxLauncher = Get-NpxLauncher
 
         if ($null -eq $NpxLauncher) {
-            Write-Warning 'Skipping the Playwright MCP server because no Node.js and npx launcher was found. Install Node.js to a PATH location such as C:\tools\nodejs.'
+            Write-Warning 'Skipping the Playwright and memory MCP servers because no Node.js and npx launcher was found. Install Node.js to a PATH location such as C:\tools\nodejs.'
         }
 
         $WrittenPath = Set-McpConfigurationFile -WorkspaceRoot $WorkspaceRoot -TargetEditor $TargetEditor -Organization $AzureDevOpsOrganization -NpxLauncher $NpxLauncher

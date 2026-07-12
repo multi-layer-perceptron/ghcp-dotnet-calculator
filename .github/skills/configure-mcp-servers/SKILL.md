@@ -1,21 +1,21 @@
 ---
 name: configure-mcp-servers
-description: "Configure Azure DevOps, GitHub, Microsoft Learn, and Playwright MCP servers for a workspace. Use when: setup MCP servers, activate MCP, add Azure DevOps MCP, add GitHub MCP, add Playwright MCP, configure mcp.json, configure mcp-config.json, MCP server configuration."
+description: "Configure Azure DevOps, GitHub, Microsoft Learn, Playwright, and memory MCP servers for a workspace. Use when: setup MCP servers, activate MCP, add Azure DevOps MCP, add GitHub MCP, add Playwright MCP, add memory MCP, configure mcp.json, configure mcp-config.json, MCP server configuration."
 ---
 
 # Configure MCP Servers Skill
 
 Use this skill to create or refresh MCP server configuration for a workspace.
 The default server set supports Azure DevOps project tools, GitHub repository
-tools, documentation lookup through Microsoft Learn, and browser automation
-through Playwright.
+tools, documentation lookup through Microsoft Learn, browser automation
+through Playwright, and persistent knowledge-graph memory.
 
 ## When To Use
 
 Use this skill when the user asks to:
 
 * Configure MCP servers for the calculator workspace
-* Add the Azure DevOps, GitHub, Microsoft Learn, or Playwright MCP server
+* Add the Azure DevOps, GitHub, Microsoft Learn, Playwright, or memory MCP server
 * Create `.vscode/mcp.json` for VS Code
 * Create `.mcp.json` for GitHub Copilot CLI
 * Compare GitHub Copilot IDE MCP support with other MCP-capable clients
@@ -25,7 +25,8 @@ Use this skill when the user asks to:
 
 * PowerShell 7 or later available through `pwsh`
 * An Azure DevOps organization connected to Microsoft Entra ID
-* Node.js and `npx` available when enabling the local `playwright` MCP server
+* Node.js and `npx` available when enabling the local `playwright` and `memory`
+  MCP servers
 * Write access to the workspace root
 * Trust in the configured MCP server commands and endpoints
 
@@ -36,8 +37,8 @@ Get-Command node -ErrorAction SilentlyContinue
 Get-Command npx -ErrorAction SilentlyContinue
 ```
 
-Both commands must return a result for the `playwright` server to start. A
-common Windows failure mode is a broken Node install where `npx`
+Both commands must return a result for the `playwright` and `memory` servers to
+start. A common Windows failure mode is a broken Node install where `npx`
 shims exist on PATH but `node.exe` does not; VS Code then reports
 `"node" is not recognized` when starting the server. Fix it by installing
 Node.js to a neutral path such as `C:\tools\nodejs` (a portable ZIP install
@@ -118,8 +119,8 @@ pwsh .github/skills/configure-mcp-servers/scripts/Set-McpServerConfiguration.ps1
 ### VS Code
 
 1. Run `MCP: List Servers` from the Command Palette.
-2. Select a server such as `azureDevOps`, `github`, `microsoftLearn`, or
-  `playwright`.
+2. Select a server such as `azureDevOps`, `github`, `microsoftLearn`,
+  `playwright`, or `memory`.
 3. Choose `Start`, `Enable`, or `Show Output` as needed.
 4. Accept the trust prompt if VS Code asks whether you trust the workspace MCP
    configuration.
@@ -173,8 +174,9 @@ When a user asks for one of those clients, use this workflow:
    Codex CLI, or Gemini CLI.
 2. Check that client's current MCP documentation.
 3. Confirm the expected config file path, top-level key, and transport support.
-4. Adapt the `azureDevOps`, `github`, `microsoftLearn`, and `playwright` server
-   definitions only after the client-specific wrapper format is known.
+4. Adapt the `azureDevOps`, `github`, `microsoftLearn`, `playwright`, and
+  `memory` server definitions only after the client-specific wrapper format
+  is known.
 5. Avoid writing secrets, tokens, or credential headers into committed files.
 
 ## GitHub Copilot IDE Coverage
@@ -213,6 +215,9 @@ The skill configures these servers:
   `https://learn.microsoft.com/api/mcp`
 * `playwright`: local server started with `npx -y @playwright/mcp@latest` for
   browser automation and UI validation
+* `memory`: local server started with
+  `npx -y @modelcontextprotocol/server-memory` for persistent knowledge-graph
+  memory tools
 
 The remote Azure DevOps MCP server is in public preview and authenticates with
 Microsoft Entra ID. Learners must replace `{organization}` with their own
@@ -226,13 +231,14 @@ Verify that the file is `.vscode/mcp.json`, not `.mcp.json`, and
 that it uses the top-level `servers` object. Run `MCP: List Servers` and check
 whether the servers are disabled, untrusted, or reporting output errors.
 
-### Playwright Server Does Not Start
+### Local Servers Do Not Start
 
 Run `Get-Command node -ErrorAction SilentlyContinue` and
 `Get-Command npx -ErrorAction SilentlyContinue`. If either command is missing,
 install Node.js to a PATH location such as `C:\tools\nodejs`, restart VS Code
 so new processes pick up the PATH change, or rerun the script so it writes an
-explicit `node.exe` launcher from a detected local install.
+explicit `node.exe` launcher from a detected local install. This requirement
+applies to both the `playwright` and `memory` servers.
 
 ### Microsoft Learn Server Does Not Work In Another Client
 

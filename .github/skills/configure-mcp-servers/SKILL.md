@@ -74,6 +74,8 @@ This workspace-wide command refreshes both supported client files:
 
 * VS Code writes `.vscode/mcp.json` with a top-level `servers` object.
 * GitHub Copilot CLI writes `.mcp.json` with a top-level `mcpServers` object.
+* Memory MCP stores its knowledge graph in the ignored workspace file
+  `.memory/memory.json`.
 
 To refresh only the detected active client, omit `-Editor All`. To select one
 client explicitly, run one of these commands:
@@ -218,7 +220,9 @@ The skill configures these servers:
   browser automation and UI validation
 * `memory`: local server started with
   `npx -y @modelcontextprotocol/server-memory` for persistent knowledge-graph
-  memory tools
+  memory tools. The `MEMORY_FILE_PATH` environment variable points to
+  `${workspaceFolder}/.memory/memory.json`, and the setup script creates the
+  `.memory` directory before writing either client configuration.
 
 The remote Azure DevOps MCP server is in public preview and authenticates with
 Microsoft Entra ID. Learners must replace `{organization}` with their own
@@ -241,6 +245,15 @@ so new processes pick up the PATH change, or rerun the script so it writes an
 explicit `node.exe` launcher from a detected local install. This requirement
 applies to both the `playwright` and `memory` servers.
 
+### Memory Does Not Persist Or Appears Empty
+
+Confirm that the generated `memory` server definition contains
+`MEMORY_FILE_PATH` set to `${workspaceFolder}/.memory/memory.json`. The setup
+script creates `.memory`, and `.gitignore` excludes it so each clone keeps an
+independent local knowledge graph. Restart the Memory MCP server after changing
+the storage path. Existing data from the package's default storage location is
+not migrated automatically.
+
 ### Microsoft Learn Server Does Not Work In Another Client
 
 Check whether the client supports remote `http` MCP servers. If it only supports
@@ -259,3 +272,5 @@ definition pieces that the client supports.
 * Avoid storing secrets or credentials in MCP configuration.
 * Keep tool access limited to the servers needed for the current workflow.
 * Treat workspace MCP configuration as executable project configuration.
+* Keep `.memory/` ignored because the graph can contain user-specific or
+  sensitive observations.

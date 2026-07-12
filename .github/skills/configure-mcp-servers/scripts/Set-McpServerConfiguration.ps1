@@ -168,6 +168,9 @@ function New-VSCodeMcpConfiguration {
             type    = 'stdio'
             command = $NpxLauncher.command
             args    = @($NpxLauncher.argsPrefix) + @('@modelcontextprotocol/server-memory')
+            env     = [ordered]@{
+                MEMORY_FILE_PATH = '${workspaceFolder}/.memory/memory.json'
+            }
         }
 
     }
@@ -218,6 +221,9 @@ function New-CopilotGenericMcpConfiguration {
             type    = 'local'
             command = $NpxLauncher.command
             args    = @($NpxLauncher.argsPrefix) + @('@modelcontextprotocol/server-memory')
+            env     = [ordered]@{
+                MEMORY_FILE_PATH = '${workspaceFolder}/.memory/memory.json'
+            }
             tools   = @('*')
         }
 
@@ -269,6 +275,9 @@ function Set-McpConfigurationFile {
 if ($MyInvocation.InvocationName -ne '.') {
     try {
         $WorkspaceRoot = Get-WorkspaceRoot -RequestedRoot $RepoRoot
+        $MemoryDirectoryPath = Join-Path -Path $WorkspaceRoot -ChildPath '.memory'
+        New-Item -ItemType Directory -Path $MemoryDirectoryPath -Force | Out-Null
+
         $TargetEditors = if ($Editor -eq 'All') {
             @('VSCode', 'CopilotGeneric')
         }

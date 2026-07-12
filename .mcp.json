@@ -39,6 +39,9 @@
         "-y",
         "@modelcontextprotocol/server-memory"
       ],
+      "env": {
+        "MEMORY_FILE_PATH": "${workspaceFolder}/.memory/memory.json"
+      },
       "tools": [
         "*"
       ]

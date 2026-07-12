@@ -17,3 +17,7 @@ Operand1,Operand2,Operation,ExpectedResult
 2,3,Exponent,8
 5,0,Exponent,1
 9,0.5,Exponent,3
+0,0,SquareRoot,0
+4,0,SquareRoot,2
+9,0,SquareRoot,3
+2,0,SquareRoot,1.4142135623730951

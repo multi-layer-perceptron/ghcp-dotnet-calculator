@@ -74,4 +74,20 @@ public static class CalculatorOperations
     /// <param name="secondOperand">The exponent value.</param>
     /// <returns>The power result.</returns>
     public static double Power(double firstOperand, double secondOperand) => Math.Pow(firstOperand, secondOperand);
+
+    /// <summary>
+    /// Calculates the square root of the specified operand.
+    /// </summary>
+    /// <param name="operand">The operand value.</param>
+    /// <returns>The square root of the operand.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the operand is negative.</exception>
+    public static double SquareRoot(double operand)
+    {
+    if (operand < 0)
+    {
+        throw new ArgumentOutOfRangeException(nameof(operand), "Cannot calculate the square root of a negative number.");
+    }
+
+    return Math.Sqrt(operand);
+    }
 }

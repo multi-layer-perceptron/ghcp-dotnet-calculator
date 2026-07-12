@@ -74,6 +74,26 @@ public class CalculatorTest
         Assert.Equal(expectedResult, actualResult, precision: 10);
     }
 
+    [Theory]
+    [MemberData(nameof(GetSquareRootTestCases))]
+    public void SquareRoot_WithNonNegativeOperand_ReturnsSquareRoot(
+        double operand,
+        double ignoredSecondOperand,
+        double expectedResult)
+    {
+        _ = ignoredSecondOperand;
+
+        var actualResult = CalculatorOperations.SquareRoot(operand);
+
+        Assert.Equal(expectedResult, actualResult, precision: 10);
+    }
+
+    [Fact]
+    public void SquareRoot_WithNegativeOperand_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => CalculatorOperations.SquareRoot(-1));
+    }
+
     public static IEnumerable<object[]> GetAddTestCases() => GetTestCases("Add");
 
     public static IEnumerable<object[]> GetSubtractTestCases() => GetTestCases("Subtract");
@@ -85,6 +105,8 @@ public class CalculatorTest
     public static IEnumerable<object[]> GetModuloTestCases() => GetTestCases("Modulo");
 
     public static IEnumerable<object[]> GetPowerTestCases() => GetTestCases("Exponent");
+
+    public static IEnumerable<object[]> GetSquareRootTestCases() => GetTestCases("SquareRoot");
 
     private static IEnumerable<object[]> GetTestCases(string operation) => PostgreSqlTestData.GetTestCases(operation)
         .Select(testCase => new object[] { testCase.Operand1, testCase.Operand2, testCase.ExpectedResult });

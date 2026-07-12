@@ -13,6 +13,20 @@ if ($ToolName -notmatch '(?i)(create|edit|write|apply_patch|replace_string_in_fi
     exit 0
 }
 
+if ($ToolInput -is [string]) {
+    $SerializedToolInput = $ToolInput
+
+    try {
+        $ParsedToolInput = $SerializedToolInput | ConvertFrom-Json -ErrorAction Stop
+        if ($null -ne $ParsedToolInput -and $ParsedToolInput -isnot [string]) {
+            $ToolInput = $ParsedToolInput
+        }
+    }
+    catch {
+        $ToolInput = $SerializedToolInput
+    }
+}
+
 try {
     $Content = if ($ToolInput -is [string]) {
         $ToolInput

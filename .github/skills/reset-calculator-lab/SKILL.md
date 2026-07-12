@@ -1,6 +1,6 @@
 ---
 name: reset-calculator-lab
-description: "Safely reset the calculator lab during Exercise 99.09 after completing Exercise 99.08, preserve the generated solution under src/completed, remove the workspace copy, and verify cleanup. Use when: reset calculator lab, clean up calculator workspace, run Exercise 99.09, preserve completed solution, remove generated .NET solution."
+description: "Safely orchestrate Exercise 99.09 cleanup after Exercise 99.08, including runtime resources, generated workspace preservation, Azure, Docker, Memory MCP lab data, optional Copilot state, and Git changes. Use when: reset calculator lab, clean up calculator workshop, run Exercise 99.09, full workshop cleanup, clean Memory MCP lab data, preserve completed solution, remove generated .NET solution."
 argument-hint: "[reset-depth={runtime|workspace|full}]"
 ---
 
@@ -8,8 +8,8 @@ argument-hint: "[reset-depth={runtime|workspace|full}]"
 
 Use this skill for the final cleanup workflow after Exercise 99.08 is complete.
 It separates reversible runtime cleanup from generated-workspace removal and
-coordinates existing Azure and Docker reset prompts without hiding destructive
-actions.
+coordinates the focused Azure, Docker, and Memory MCP cleanup prompts without
+hiding destructive actions.
 
 ## Prerequisites
 
@@ -40,7 +40,7 @@ actions.
 |-----------|---------|
 | `runtime` | Stop lab-owned processes and containers without deleting source, volumes, cloud resources, or Git changes |
 | `workspace` | Perform runtime cleanup, preserve the generated solution in `src/completed`, and remove its workspace copy |
-| `full` | Perform workspace cleanup, then coordinate separately approved Azure, Docker-data, Copilot-state, and Git reset actions |
+| `full` | Perform workspace cleanup, then coordinate separately approved Azure, Docker-data, Memory MCP, Copilot-state, and Git reset actions |
 
 ## Required Procedure
 
@@ -66,9 +66,14 @@ actions.
 8. For local PostgreSQL cleanup, follow
    `.github/prompts/3.04-reset-local-docker-pg.prompt.md` and preserve its
    named-resource checks.
-9. Treat Git restoration and Copilot learning-state deletion as independent
-   destructive actions. Show the exact scope and ask for confirmation for each.
-10. Verify every approved reset phase before reporting completion.
+9. For Exercise 99.08 Memory MCP cleanup, follow
+   `.github/prompts/99.09-cleanup-memory-mcp.prompt.md`. Preview only its
+   allowlisted entities, relations, and observations, then preserve its
+   separate confirmation and graph-verification boundary.
+10. Treat Git restoration and other Copilot learning-state deletion as
+    independent destructive actions. Show the exact scope and ask for
+    confirmation for each.
+11. Verify every approved reset phase before reporting completion.
 
 ## Script Behavior
 
@@ -94,7 +99,7 @@ Never run these actions without separate, explicit user approval:
 * Docker volume or network deletion
 * Global Docker prune commands
 * `git reset --hard`, `git clean`, or broad `git restore` commands
-* Copilot learning-state or customization deletion
+* Memory MCP graph, Copilot learning-state, or customization deletion
 * Workspace removal before Exercise 99.08 is complete
 
 Do not create `src/completed/` automatically. A missing or populated destination
@@ -113,6 +118,10 @@ git status --short
 
 The expected Boolean results are `True`, `False`, and `False`. Review the Git
 status output to confirm that only intended files changed.
+
+For an approved Memory MCP cleanup, use the focused prompt's final `read_graph`
+check to prove that confirmed Exercise 99.08 targets are absent and unrelated
+knowledge remains unchanged.
 
 ## Troubleshooting
 

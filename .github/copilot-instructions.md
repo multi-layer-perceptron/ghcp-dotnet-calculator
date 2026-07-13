@@ -193,6 +193,10 @@ src/
 - **Prompts** (`.github/prompts/`): Follow the numbered naming scheme (`1.14-...`, `2.03-...`, `3.04-...`) representing staged workflows
 - **Agents** (`.github/agents/`): Keep frontmatter accurate; update existing definitions rather than creating duplicates
 - **Skills** (`.github/skills/`): Self-contained folders with `SKILL.md` and supporting scripts
+- **Session handoffs**: Use the `create-session-handoff` skill to write local
+    context to `artifacts/session-handoffs/`. Create the directory when missing,
+    use minute-level names (`session-handoff-YYYYMMDD-HHmm.md`), and add a numeric
+    suffix when a handoff already exists for that minute rather than overwriting it.
 - **Accuracy**: Verify names and paths against live directory contents; older docs may lag behind
 - **Upgrade history**: Preserve intentional pre-upgrade `.NET 8` references in stage-specific prompts, PRDs, and reports. Normalize only current active workspace guidance to `.NET 10` after the 3.01 upgrade workflow.
 

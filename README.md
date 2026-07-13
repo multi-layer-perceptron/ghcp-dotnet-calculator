@@ -20,6 +20,28 @@ participants a realistic but approachable codebase for practicing GitHub Flow,
 debugging, refactoring, unit testing, documentation, GitHub Actions concepts, and
 custom Copilot prompt and skill authoring.
 
+## Lab Use Notice
+
+This repository is an educational lab and workshop sandbox. It is not designed,
+security-reviewed, performance-tested, or supported for production use. Do not
+deploy it to production or use it to process real, confidential, regulated, or
+business-critical data without first performing your own architecture, security,
+privacy, compliance, operational, and legal review.
+
+The examples may use development-oriented defaults, local containers, sample
+configuration, and training workflows that are not appropriate for a production
+environment. You are responsible for validating any derivative work, managing
+credentials and access, applying security controls, and meeting the requirements
+that apply to your organization and intended use. This notice complements, and
+does not replace, the warranty and liability terms in the [MIT License](LICENSE).
+
+## Acknowledgments
+
+Thanks to the maintainers and contributors of
+[A Day in the Life with GitHub Copilot - Hands-On Lab](https://github.com/ms-mfg-community/day-in-the-life-copilot-lab)
+and the [GitHub Copilot Dev Days](https://copilot-dev-days.github.io/#workshops)
+workshops for their learning materials and community contributions.
+
 ## Prerequisites
 
 ### Must-Have Now

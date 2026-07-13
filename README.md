@@ -20,6 +20,24 @@ participants a realistic but approachable codebase for practicing GitHub Flow,
 debugging, refactoring, unit testing, documentation, GitHub Actions concepts, and
 custom Copilot prompt and skill authoring.
 
+```mermaid
+flowchart TB
+  Learner["Learner in VS Code or Copilot CLI"] --> Guidance["Instructions, prompts,<br/>skills, and agents"]
+  Guidance --> Workspace[".NET calculator workspace"]
+  Workspace --> Console["Console app"]
+  Workspace --> Library["Shared arithmetic library"]
+  Workspace --> Web["Blazor web app"]
+  Workspace --> Tests["xUnit + CSV + Testcontainers"]
+  Guidance --> Automation["Hooks, MCP servers,<br/>GitHub Actions, and gh-aw"]
+  Tests --> Evidence["Build, test, security,<br/>and quality evidence"]
+  Automation --> Evidence
+  Evidence --> Handoff["Validated handoff or<br/>safe lab reset"]
+```
+
+The calculator is the practice surface, while the surrounding Copilot and
+automation assets teach how context, tools, guardrails, and validation compose
+into a complete AI-assisted development workflow.
+
 ## Lab Use Notice
 
 This repository is an educational lab and workshop sandbox. It is not designed,
@@ -78,7 +96,7 @@ building the same solution yourself through the lab exercises.
 
 Use one of the following approaches:
 
-* **.gitignore (any Copilot SKU):** in your fork, delete or move the
+- **.gitignore (any Copilot SKU):** in your fork, delete or move the
   `src/completed/` folder out of the repository and add an entry to
   [.gitignore](.gitignore) so it is never re-committed:
 
@@ -92,7 +110,7 @@ Use one of the following approaches:
   `git rm -r --cached src/completed`, commit, and keep a copy outside the
   repository for later comparison.
 
-* **Content Exclusion (GitHub Copilot Enterprise SKU):** if your organization
+- **Content Exclusion (GitHub Copilot Enterprise SKU):** if your organization
   has Copilot Enterprise, an administrator can configure the
   [Content Exclusion](https://docs.github.com/en/copilot/managing-copilot/configuring-and-auditing-content-exclusion)
   feature for the repository so Copilot never reads the folder, without
@@ -303,6 +321,20 @@ Start with [Exercise 00.01](lab-exercises/00.01.explore-copilot-config-files.md)
 if you want a short tour of the Copilot configuration files that drive the lab
 sequence.
 
+```mermaid
+flowchart LR
+  Orient["00<br/>Orient"] --> Build["01<br/>Build and test"]
+  Build --> Modernize["02<br/>Upgrade, Blazor, Azure"]
+  Modernize --> Assure["03<br/>Security and quality"]
+  Assure --> Customize["99.01-99.04<br/>Context, tools, hooks"]
+  Customize --> Orchestrate["99.05-99.07<br/>Agents and automation"]
+  Orchestrate --> Capstone["99.08<br/>Memory and fleet"]
+  Capstone --> Reset["99.09<br/>Preserve, verify, reset"]
+```
+
+Read the journey from left to right. Each module preserves a usable result for
+the next one; destructive cleanup remains the final exercise.
+
 ### Module 00 - Explore The Copilot Workspace
 
 | Exercise | Title | Associated prompt |
@@ -343,9 +375,9 @@ through `03.03` and confirming the completed project exists under
 `src/workspace/calculator-xunit-testing/`.
 
 Exercise 99.03 uses the `configure-mcp-servers` skill to configure Azure
-DevOps, GitHub, Microsoft Learn, and Playwright. Its Azure DevOps example uses
-`autocloudarc-mcaps`; learners substitute their own organization value in the
-`https://mcp.dev.azure.com/{organization}` endpoint pattern.
+DevOps, GitHub, Microsoft Learn, Playwright, and Memory. Its Azure DevOps
+example uses `autocloudarc-mcaps`; learners substitute their own organization
+value in the `https://mcp.dev.azure.com/{organization}` endpoint pattern.
 
 | Exercise | Title | Associated prompt |
 | -------- | ----- | ----------------- |
@@ -504,18 +536,24 @@ ghcp-dotnet-calculator/
         calculator.slnx                          .NET solution
         calculator/
           Calculator.cs                          Console workflow and input handling
-          CalculatorOperations.cs                Pure arithmetic operations
           calculator.csproj                      .NET 10 console app project
+        calculator.library/
+          CalculatorOperations.cs                Pure arithmetic operations
+          calculator.library.csproj              Shared .NET 10 class library
         calculator.tests/
           CalculatorTest.cs                      xUnit v3 tests with PostgreSQL-backed data loading
           TestCases.csv                          Arithmetic test dataset
           calculator.tests.csproj                .NET 10 xUnit test project
+        calculator.web/
+          Components/                            Blazor pages, layout, and calculator controls
+          Services/                              Calculator state, formatting, history, and theme
+          calculator.web.csproj                  .NET 10 Blazor web project
   .github/
     copilot-instructions.md                      Repository-specific Copilot guidance
     hooks/                                       Copilot lifecycle hook configuration (default.json)
     prompts/                                     Reusable Copilot prompt files
     skills/                                      Reusable Copilot skill packages
-      continuous-learning-v2/                    Instinct-based learning skill with background observer
+      create-session-handoff/                    Recoverable cross-session handoff workflow
       reset-calculator-lab/                      Final lab reset skill and bundled cleanup script
     workflows/                                   GitHub Actions workflow examples
       99.06.workflow-failure-doctor.md           GitHub Agentic Workflow diagnostic example
@@ -570,26 +608,26 @@ flowchart LR
 
 ## Key Documentation
 
-* [Calculator PRD](docs/prd-csharp-basic-calculator-solution.md)
-* [Azure migration assessment](docs/azure-migration-assessment-3.02.md)
-* [Solution setup prompt](.github/prompts/1.12.1-solution-setup.prompt.md)
-* [Calculator setup skill](.github/skills/calculator-setup/SKILL.md)
-* [CSV test dataset skill](.github/skills/create-csv-test-dataset/SKILL.md)
-* [PostgreSQL container skill](.github/skills/convert-csv-test-data-to-postgresql-container/SKILL.md)
-* [Configure MCP servers skill](.github/skills/configure-mcp-servers/SKILL.md)
+- [Calculator PRD](docs/prd-csharp-basic-calculator-solution.md)
+- [Azure migration assessment](docs/azure-migration-assessment-3.02.md)
+- [Solution setup prompt](.github/prompts/1.12.1-solution-setup.prompt.md)
+- [Calculator setup skill](.github/skills/calculator-setup/SKILL.md)
+- [CSV test dataset skill](.github/skills/create-csv-test-dataset/SKILL.md)
+- [PostgreSQL container skill](.github/skills/convert-csv-test-data-to-postgresql-container/SKILL.md)
+- [Configure MCP servers skill](.github/skills/configure-mcp-servers/SKILL.md)
 
 ## Notes For Workshop Facilitators
 
-* The project is intentionally compact and uses calculator behavior rather than
+- The project is intentionally compact and uses calculator behavior rather than
   a domain-heavy business model.
-* The active workspace is a .NET 10 console app plus xUnit test project.
-* Docker must be running before the Testcontainers-backed tests execute.
-* The CSV file remains the human-editable source for arithmetic test cases.
-* The PostgreSQL container is temporary for automated tests and is cleaned up at
+- The active workspace is a .NET 10 console app plus xUnit test project.
+- Docker must be running before the Testcontainers-backed tests execute.
+- The CSV file remains the human-editable source for arithmetic test cases.
+- The PostgreSQL container is temporary for automated tests and is cleaned up at
   process shutdown.
-* The prompt files are staged so participants can practice one workflow at a
+- The prompt files are staged so participants can practice one workflow at a
   time.
-* Prefer small, readable changes over broad rewrites during workshop exercises.
+- Prefer small, readable changes over broad rewrites during workshop exercises.
 
 ## License
 

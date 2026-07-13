@@ -14,6 +14,20 @@ The root [Lab Exercises catalog](../README.md#lab-exercises) lists every
 exercise and its associated prompt. Use this page to understand the groups and
 their recommended sequence.
 
+```mermaid
+flowchart LR
+  Start([Start]) --> M00["Module 00<br/>Orient"]
+  M00 -. optional .-> M01["Module 01<br/>Build"]
+  Start --> M01
+  M01 --> M02["Module 02<br/>Modernize"]
+  M02 --> M03["Module 03<br/>Validate and preserve"]
+  M03 --> M99["Module 99<br/>Customize and automate"]
+  M99 --> Reset["Exercise 99.09<br/>Reset last"]
+```
+
+Read the map from left to right. Solid arrows show the required learning path;
+the dotted arrow marks Module 00 as useful orientation rather than a prerequisite.
+
 ## Module Sequence
 
 | Module | Name | Purpose |
@@ -28,6 +42,19 @@ Module 00 is optional. Complete Modules 01 through 03 in order before starting
 Module 99. Within each module, follow the exercise numbers unless an exercise
 explicitly identifies itself as optional. Exercise 99.09 is the final cleanup
 step and must remain last.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Learning
+  Learning --> KnownGood: build and tests pass
+  KnownGood --> Customizing: preserve evidence
+  Customizing --> ReadyToReset: capstone complete
+  ReadyToReset --> Reset: explicit approval
+  Reset --> [*]
+```
+
+The state model explains why cleanup is last: each transition depends on
+evidence or artifacts produced by the state before it.
 
 ## Navigation Rules
 

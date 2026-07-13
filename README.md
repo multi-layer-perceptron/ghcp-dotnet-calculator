@@ -20,6 +20,8 @@ participants a realistic but approachable codebase for practicing GitHub Flow,
 debugging, refactoring, unit testing, documentation, GitHub Actions concepts, and
 custom Copilot prompt and skill authoring.
 
+![GitHub Copilot .NET Calculator Workshop Infographic](docs/images/ghcp-dotnet-calculator-infographic.png)
+
 ```mermaid
 flowchart TB
   Learner["Learner in VS Code or Copilot CLI"] --> Guidance["Instructions, prompts,<br/>skills, and agents"]

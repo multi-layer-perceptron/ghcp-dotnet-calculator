@@ -233,7 +233,12 @@ Apply the pattern as follows:
 
 Use agent skills for repeatable, on-demand workflows that should load only when relevant. Prefer custom instructions for broad, always-on repository guidance, prompt files for single reusable task prompts, and custom agents when the workflow needs a distinct persona, context isolation, or tool restrictions.
 
-Create project skills under `.github/skills/<skill-name>/` unless there is a clear reason to use `.agents/skills/<skill-name>/` or `.claude/skills/<skill-name>/`. Each skill must include a file named exactly `SKILL.md`; optional supporting files can live beside it in folders such as `scripts/`, `references/`, or `assets/`.
+Create project skills under `.github/skills/<skill-name>/` unless there is a clear reason to use `.agents/skills/<skill-name>/` or `.claude/skills/<skill-name>/`. Each skill must include a file named exactly `SKILL.md`. Supporting folders are optional and use these conventions:
+
+- `scripts/` contains reviewed executable automation.
+- `references/` contains detailed guidance, schemas, and examples that load only when needed.
+- `assets/` contains templates, sample data, images, and starter files used by the skill.
+- Add another supporting folder only when these conventions do not fit the resource type.
 
 Required `SKILL.md` frontmatter:
 

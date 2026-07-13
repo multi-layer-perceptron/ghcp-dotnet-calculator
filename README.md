@@ -37,10 +37,12 @@ does not replace, the warranty and liability terms in the [MIT License](LICENSE)
 
 ## Acknowledgments
 
-Thanks to the maintainers and contributors of
-[A Day in the Life with GitHub Copilot - Hands-On Lab](https://github.com/ms-mfg-community/day-in-the-life-copilot-lab)
-and the [GitHub Copilot Dev Days](https://copilot-dev-days.github.io/#workshops)
-workshops for their learning materials and community contributions.
+This lab was inspired by the following resources:
+
+- [A Day in the Life with GitHub Copilot - Hands-On Lab](https://github.com/ms-mfg-community/day-in-the-life-copilot-lab)
+- [GitHub Copilot Dev Days](https://copilot-dev-days.github.io/#workshops)
+
+Special thanks, appreciation and gratitude to the Microsoft and GitHub teams for their support of these workshops for their learning materials and community contributions, as well as for you the learner for your participation and feedback. We hope you enjoy the lab and find it useful for your own learning and development as we accelerate the adoption of GitHub Copilot and AI-assisted development workflows.
 
 ## Prerequisites
 

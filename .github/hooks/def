@@ -1,0 +1,10 @@
+{
+  "postToolUse": [
+    {
+      "type": "command",
+      "powershell": "./scripts/hooks/post-tool-use-dotnet-build.ps1",
+      "timeoutSec": 30,
+      "comment": "Verify calculator solution build after editing C# files"
+    }
+  ]
+}

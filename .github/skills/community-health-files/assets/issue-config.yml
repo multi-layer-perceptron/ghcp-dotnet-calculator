@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: "{{DISCUSSIONS_URL}}"
+    about: Ask usage questions, propose broad changes, or share learning outcomes in Discussions.
+  - name: Security vulnerability
+    url: "{{SECURITY_URL}}"
+    about: Report suspected vulnerabilities privately. Do not open a public issue.
+  - name: Code of Conduct report
+    url: "{{CONDUCT_URL}}"
+    about: Report conduct concerns privately. Do not open a public issue.

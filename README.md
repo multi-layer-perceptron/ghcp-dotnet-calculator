@@ -55,6 +55,28 @@ credentials and access, applying security controls, and meeting the requirements
 that apply to your organization and intended use. This notice complements, and
 does not replace, the warranty and liability terms in the [MIT License](LICENSE).
 
+## Community And Participation
+
+We welcome learners, facilitators, maintainers, and focused open-source
+contributions. Use the channel that matches your need:
+
+| Need | Start here |
+| --- | --- |
+| Setup, exercise, or usage question | [GitHub Discussions](https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/discussions) |
+| Idea or substantial proposal | [GitHub Discussions](https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/discussions) |
+| Reproducible defect or lab correction | [GitHub Issues](https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/issues) |
+| Focused pull request | [Contributing guide](CONTRIBUTING.md) |
+| Suspected vulnerability | Private process in [Security policy](SECURITY.md) |
+| Conduct concern | Private process in [Code of Conduct](CODE_OF_CONDUCT.md) |
+
+Support is community-based and best effort; see [SUPPORT.md](SUPPORT.md) for
+scope and routing. Maintainers can use [DISCUSSIONS_SETUP.md](DISCUSSIONS_SETUP.md)
+to configure Announcements, Q&A, Ideas, and Show and tell categories.
+
+The [participation terms requirements brief](PARTICIPATION_TERMS_REQUIREMENTS.md)
+records topics for qualified legal review. It is not operative terms and has
+not been adopted as a condition of repository use or participation.
+
 ## Acknowledgments
 
 This lab was inspired by the following resources:

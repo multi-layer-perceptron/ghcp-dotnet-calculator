@@ -1,0 +1,51 @@
+name: Configuration defect
+description: Report a reproducible defect in Copilot, MCP, hooks, Docker, Azure, or local development configuration supplied by the repository.
+title: "[Configuration defect]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use Discussions for configuration questions. Use this form only for a reproducible repository defect. Remove secrets, credentials, connection strings, personal data, confidential information, private endpoints, and vulnerability details from all evidence.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Configuration area
+      options:
+        - GitHub Copilot or customizations
+        - MCP servers
+        - Hooks
+        - .NET or test execution
+        - Docker or Testcontainers
+        - Azure or Azure Developer CLI
+        - GitHub Actions or agentic workflows
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Affected repository configuration
+      description: Which committed configuration or documented setup step appears defective?
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: Steps already attempted
+      description: Include commands and documentation followed, with sensitive values removed.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Result and error
+      description: Provide the exact non-sensitive result and explain the expected outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, client, relevant versions, and exercise number.
+    validations:
+      required: true

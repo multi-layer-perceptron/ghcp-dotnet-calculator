@@ -1,0 +1,41 @@
+name: Feature request
+description: Propose a focused repository or learning-experience improvement.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Broad changes should begin in Discussions before implementation. Do not include secrets, credentials, personal data, confidential information, or vulnerability details.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the learner, maintainer, or contributor problem rather than only the proposed feature.
+    validations:
+      required: true
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use cases
+      description: Provide two or three concrete scenarios.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Explain the smallest useful solution and affected areas.
+    validations:
+      required: true
+  - type: textarea
+    id: success
+    attributes:
+      label: Success criteria
+      description: How should maintainers verify that the improvement works?
+    validations:
+      required: true
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Risks and trade-offs
+      description: Consider maintenance, accessibility, security, cost, prerequisites, and learner complexity.

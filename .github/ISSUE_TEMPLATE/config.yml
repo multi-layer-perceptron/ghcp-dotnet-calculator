@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/discussions
+    about: Ask usage questions, propose broad changes, or share learning outcomes in Discussions.
+  - name: Security vulnerability
+    url: https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/security/policy
+    about: Report suspected vulnerabilities privately. Do not open a public issue.
+  - name: Code of Conduct report
+    url: https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/blob/main/CODE_OF_CONDUCT.md#reporting-an-issue
+    about: Report conduct concerns privately. Do not open a public issue.

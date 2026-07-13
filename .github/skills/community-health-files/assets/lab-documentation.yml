@@ -1,0 +1,38 @@
+name: Documentation or lab issue
+description: Report an unclear, inaccurate, inaccessible, or incomplete learning step.
+title: "[Lab]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve the learning path. Do not include secrets, personal data, confidential information, or vulnerability details.
+  - type: input
+    id: exercise
+    attributes:
+      label: Exercise or document
+      description: Provide the exercise number, heading, file, or URL.
+    validations:
+      required: true
+  - type: textarea
+    id: unclear
+    attributes:
+      label: What is unclear or incorrect?
+    validations:
+      required: true
+  - type: textarea
+    id: expected-learning
+    attributes:
+      label: Expected learning outcome
+      description: What should a learner understand or accomplish at this point?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Propose wording, structure, visual guidance, or validation evidence when possible.
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Accessibility impact
+      description: Describe any keyboard, screen reader, contrast, cognitive-load, or other accessibility concern.

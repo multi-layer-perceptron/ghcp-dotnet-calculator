@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible defect in the repository or lab implementation.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a defect. Do not include secrets, personal data, confidential information, or vulnerability details.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing Issues and Discussions.
+          required: true
+        - label: This is not a security vulnerability or private conduct report.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Actual behavior
+      description: What happened, including the exact error when safe to share?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Start from...
+        2. Run...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, tool versions, exercise, and relevant configuration with sensitive values removed.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Additional evidence
+      description: Add redacted logs, screenshots, links, or minimal reproduction details.

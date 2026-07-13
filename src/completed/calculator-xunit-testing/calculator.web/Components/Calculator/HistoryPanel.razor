@@ -1,0 +1,36 @@
+<section class="history-panel" aria-labelledby="history-heading">
+    <div class="panel-heading">
+        <h2 id="history-heading">History</h2>
+        <button type="button" class="text-button" @onclick="OnClearHistory">Clear</button>
+    </div>
+
+    @if (History.Records.Count == 0)
+    {
+        <p class="empty-state">No calculations yet.</p>
+    }
+    else
+    {
+        <ol class="history-list">
+            @foreach (var record in History.Records)
+            {
+                <li>
+                    <button type="button" class="history-item" @onclick="() => OnReplay.InvokeAsync(record)">
+                        <span class="history-expression">@record.Expression</span>
+                        <span class="history-result">@record.FormattedResult</span>
+                    </button>
+                </li>
+            }
+        </ol>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public HistoryService History { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<CalculationRecord> OnReplay { get; set; }
+
+    [Parameter]
+    public EventCallback OnClearHistory { get; set; }
+}

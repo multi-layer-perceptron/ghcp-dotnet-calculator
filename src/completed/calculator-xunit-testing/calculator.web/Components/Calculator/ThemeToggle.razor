@@ -1,0 +1,23 @@
+<button type="button"
+        class="theme-toggle"
+        aria-pressed="@Theme.IsDarkMode"
+        @onclick="ToggleTheme">
+    <span class="toggle-track" aria-hidden="true">
+        <span class="toggle-thumb"></span>
+    </span>
+    <span>@(Theme.IsDarkMode ? "Dark" : "Light")</span>
+</button>
+
+@code {
+    [Parameter]
+    public ThemeService Theme { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnThemeChanged { get; set; }
+
+    private async Task ToggleTheme()
+    {
+        Theme.Toggle();
+        await OnThemeChanged.InvokeAsync();
+    }
+}

@@ -1,0 +1,41 @@
+<div class="keypad" aria-label="Calculator keypad">
+    @foreach (var key in Keys)
+    {
+        <button type="button"
+                class="key key-@key.Kind"
+                aria-label="@key.AriaLabel"
+                @onclick="() => OnKeyPressed.InvokeAsync(key.Value)">
+            @key.Label
+        </button>
+    }
+</div>
+
+@code {
+    private static readonly IReadOnlyList<KeyDefinition> Keys =
+    [
+        new("C", "clear", "Clear", "control"),
+        new("%", "%", "Modulo", "operator"),
+        new("^", "^", "Power", "operator"),
+        new("/", "/", "Divide", "operator"),
+        new("7", "7", "Seven", "number"),
+        new("8", "8", "Eight", "number"),
+        new("9", "9", "Nine", "number"),
+        new("*", "*", "Multiply", "operator"),
+        new("4", "4", "Four", "number"),
+        new("5", "5", "Five", "number"),
+        new("6", "6", "Six", "number"),
+        new("-", "-", "Subtract", "operator"),
+        new("1", "1", "One", "number"),
+        new("2", "2", "Two", "number"),
+        new("3", "3", "Three", "number"),
+        new("+", "+", "Add", "operator"),
+        new("0", "0", "Zero", "number wide"),
+        new(".", ".", "Decimal point", "number"),
+        new("=", "=", "Equals", "equals")
+    ];
+
+    [Parameter]
+    public EventCallback<string> OnKeyPressed { get; set; }
+
+    private sealed record KeyDefinition(string Label, string Value, string AriaLabel, string Kind);
+}

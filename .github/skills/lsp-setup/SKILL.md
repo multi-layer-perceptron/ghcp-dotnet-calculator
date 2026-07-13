@@ -68,3 +68,7 @@ After setup, tell the user:
 2. Re-launch `copilot` in a project with files of the configured language
 3. Run `/lsp` to check the server status
 4. Try code intelligence features like go-to-definition or hover
+
+## Reference
+
+Original source: [GitHub Copilot CLI LSP Setup](https://raw.githubusercontent.com/github/awesome-copilot/refs/heads/main/skills/lsp-setup/SKILL.md)

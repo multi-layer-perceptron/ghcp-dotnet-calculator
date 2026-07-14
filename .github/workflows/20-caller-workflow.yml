@@ -74,6 +74,9 @@ jobs:
     needs: call-title-translator
     steps:
       - name: show-translated-title
+        env:
+          REPORT_TITLE: ${{ inputs.report_title || 'The quick brown fox jumps over the lazy dog' }}
+          TRANSLATED_TITLE: ${{ needs.call-title-translator.outputs.translated_title }}
         run: |
-          echo "Source title: ${{ inputs.report_title || 'The quick brown fox jumps over the lazy dog' }}"
-          echo "Translated title: ${{ needs.call-title-translator.outputs.translated_title }}"
+          printf 'Source title: %s\n' "$REPORT_TITLE"
+          printf 'Translated title: %s\n' "$TRANSLATED_TITLE"

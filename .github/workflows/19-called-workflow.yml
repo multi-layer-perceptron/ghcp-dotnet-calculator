@@ -50,16 +50,21 @@ jobs:
       translated_title: ${{ steps.translate-report-title.outputs.translated_title }}
     steps:
       - name: print-reusable-report
+        env:
+          REPORT_TITLE: ${{ inputs.report_title }}
+          SOURCE_LANGUAGE: ${{ inputs.source_language }}
+          TARGET_LANGUAGE: ${{ inputs.target_language }}
+          CALLER_WORKFLOW: ${{ inputs.caller_workflow }}
         run: |
           echo "This workflow introduces workflow_call so another workflow can reuse it."
           echo "Called from enterprise: ${{ github.event.enterprise.slug || 'not available' }}"
           echo "Called from organization: ${{ github.repository_owner }}"
           echo "Called from repository: ${{ github.repository }}"
           echo "Called from branch: ${{ github.ref_name }}"
-          echo "Called from workflow: ${{ inputs.caller_workflow }}"
-          echo "Report title: ${{ inputs.report_title }}"
-          echo "Source language: ${{ inputs.source_language }}"
-          echo "Target language: ${{ inputs.target_language }}"
+          printf 'Called from workflow: %s\n' "$CALLER_WORKFLOW"
+          printf 'Report title: %s\n' "$REPORT_TITLE"
+          printf 'Source language: %s\n' "$SOURCE_LANGUAGE"
+          printf 'Target language: %s\n' "$TARGET_LANGUAGE"
       - name: translate-report-title
         id: translate-report-title
         shell: bash

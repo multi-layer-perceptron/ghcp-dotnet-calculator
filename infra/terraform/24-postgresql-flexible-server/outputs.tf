@@ -1,8 +1,3 @@
-output "federated_credential_subject" {
-  description = "GitHub OIDC subject allowed to authenticate as calc-project-app-01"
-  value       = local.github_oidc_subject
-}
-
 output "key_vault_uri" {
   description = "URI of the calculator Key Vault"
   value       = azurerm_key_vault.main.vault_uri

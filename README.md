@@ -415,6 +415,29 @@ value in the `https://mcp.dev.azure.com/{organization}` endpoint pattern.
 | [99.08](lab-exercises/99.08.capstone-exercises.md) | Capstone Exercises | None |
 | [99.09](lab-exercises/99.09.reset-environments.md) | Reset Azure And Local Environments | `reset-calculator-lab` skill, `3.03-reset-azure-environment`, `3.04-reset-local-docker-pg` |
 
+## GitHub Actions Workflow Labs
+
+The [GitHub Actions workflow track](workflow-exercises/README.md) provides a
+second, independent learning path built from the repository's numbered workflow
+examples and their natural-language Copilot prompts. Run this track from your
+own fork so experiments, settings, environments, secrets, and runner usage stay
+under your control.
+
+```mermaid
+flowchart LR
+  Events["Events and jobs<br/>01-03"] --> Values["Values and data<br/>04-08"]
+  Values --> Control["Control and scale<br/>09-17"]
+  Control --> Reuse["Services and reuse<br/>18-23"]
+  Reuse --> Azure["Azure deployment<br/>24"]
+```
+
+The track progresses from basic triggers to cross-repository reusable workflows
+and an advanced, opt-in Azure deployment. Workflows 22 and 23 require external
+caller repositories to demonstrate their trust boundaries authentically.
+Workflow 24 requires pre-provisioned, billable Azure state storage, and apply
+creates additional persistent resources. Review each lesson's permissions,
+cost, state-security, and cleanup guidance before running it.
+
 ## Calculator Tutorial
 
 The console calculator is the workshop's main hands-on surface. It walks
@@ -553,6 +576,10 @@ ghcp-dotnet-calculator/
     99.06.github-agentic-workflows.md            Finished project agentic workflow diagnostics exercise
     99.07.copilot-coding-agent-code-review.md    Finished project Copilot coding agent repair exercise
     99.08.capstone-exercises.md                  Finished project capstone: indexing, memory, and advanced features
+  workflow-exercises/
+    README.md                                    GitHub Actions workflow track catalog and safety guidance
+    01-basic-triggers-workflow.md                Workflow lesson mapped to the matching numbered YAML
+    24-deploy-resources-workflow.md              Advanced OIDC and Terraform deployment lesson
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace

@@ -22,25 +22,12 @@ variable "location" {
 variable "application_name" {
   description = "Display name for the Entra app registration and service principal"
   type        = string
-  default     = "calc-project-app-01"
-}
-
-variable "github_repository" {
-  description = "GitHub repository allowed to exchange OIDC tokens with the Entra app registration"
-  type        = string
-  default     = "multi-layer-perceptron/ghcp-dotnet-calculator"
-}
-
-variable "github_ref" {
-  description = "Git reference allowed to exchange OIDC tokens with the Entra app registration"
-  type        = string
-  default     = "refs/heads/main"
+  default     = "calculator-lab-app"
 }
 
 variable "key_vault_name" {
-  description = "Key Vault name to create if globally available"
+  description = "Globally unique Key Vault name to create"
   type        = string
-  default     = "calc-kvt-01"
 }
 
 variable "key_vault_additional_secrets_officer_object_id" {
@@ -58,7 +45,6 @@ variable "key_vault_additional_secrets_officer_name" {
 variable "postgresql_server_name" {
   description = "Globally unique Azure Database for PostgreSQL Flexible Server name"
   type        = string
-  default     = "calc-pgflex-dev-01"
 }
 
 variable "postgresql_database_name" {

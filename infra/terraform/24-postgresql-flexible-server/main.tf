@@ -4,10 +4,6 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
-locals {
-  github_oidc_subject = "repo:${var.github_repository}:ref:${var.github_ref}"
-}
-
 // =====================================================
 // Key Vault
 // =====================================================

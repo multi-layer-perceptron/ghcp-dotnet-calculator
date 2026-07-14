@@ -12,9 +12,10 @@ or a bug bounty.
 
 ## Report A Vulnerability Privately
 
-Email {{SECURITY_EMAIL}} with a clear subject that identifies the repository.
-Include the affected path or component, impact, reproduction conditions, and
-the minimum evidence needed to investigate safely.
+Use {{SECURITY_URL}} to submit a private report. Include the affected path or
+component, impact, reproduction conditions, and the minimum evidence needed to
+investigate safely. If that route is unavailable, use a private contact method
+published by {{MAINTAINER_NAME}}.
 
 Do not open a public Issue or Discussion for suspected vulnerabilities. Do not
 send real credentials, personal data, confidential data, destructive payloads,

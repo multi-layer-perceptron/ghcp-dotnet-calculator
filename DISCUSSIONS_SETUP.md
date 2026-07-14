@@ -34,8 +34,9 @@ or conduct reports to their private processes.
 - Ask broad pull request proposals to begin in Ideas.
 - Remove secrets, personal data, confidential information, and vulnerability
   details from public view as quickly as platform permissions allow.
-- Route suspected vulnerabilities and conduct reports to
-  [autocloudarc@outlook.com](mailto:autocloudarc@outlook.com), not public threads.
+- Route suspected vulnerabilities through the repository's private
+  vulnerability-reporting form and conduct reports through GitHub's private
+  abuse-reporting process or another private owner-published contact method.
 
 ## Manual Verification
 

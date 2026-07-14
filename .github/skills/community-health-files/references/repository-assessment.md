@@ -14,8 +14,8 @@ Record evidence for each dimension before recommending files:
 | Audience | Are users learners, contributors, customers, employees, or maintainers? |
 | Contribution model | Are focused pull requests welcome, invited, or unsupported? |
 | Support model | Which channel handles questions, defects, and event-specific help? Is support best effort? |
-| Security intake | Which monitored private path receives vulnerability reports? |
-| Conduct enforcement | Which monitored private path receives reports, and who moderates? |
+| Security intake | Which GitHub-hosted or monitored private path receives vulnerability reports? |
+| Conduct enforcement | Which GitHub-hosted or monitored private path receives reports, and who moderates? |
 | Hosted services | Does use create cloud resources, costs, telemetry, or third-party accounts? |
 | Data sensitivity | Could users submit secrets, personal data, confidential data, or regulated data? |
 | Legal context | Is there an existing license, CLA, DCO, participation agreement, or counsel-approved policy? |
@@ -41,8 +41,8 @@ Ask only questions unresolved by repository evidence. At minimum resolve:
 1. Primary audience and repository profile
 2. Approved artifact set
 3. Contribution and large-change policy
-4. Private conduct-reporting contact
-5. Private vulnerability-reporting contact
+4. Private conduct-reporting route
+5. Private vulnerability-reporting route
 6. Support channels and response expectations
 7. Supported-version posture
 8. Discussions categories and formats

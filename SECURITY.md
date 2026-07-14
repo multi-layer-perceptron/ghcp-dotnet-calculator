@@ -12,10 +12,12 @@ or a bug bounty.
 
 ## Report A Vulnerability Privately
 
-Email [autocloudarc@outlook.com](mailto:autocloudarc@outlook.com) with a subject
-that identifies `ghcp-dotnet-calculator`. Include the affected path or
-component, potential impact, reproduction conditions, and the minimum evidence
-needed to investigate safely.
+Use the repository's
+[private vulnerability-reporting form](https://github.com/multi-layer-perceptron/ghcp-dotnet-calculator/security/advisories/new).
+Include the affected path or component, potential impact, reproduction
+conditions, and the minimum evidence needed to investigate safely. If private
+reporting is unavailable, use a private contact method published by the
+[repository owner](https://github.com/multi-layer-perceptron).
 
 Do not open a public Issue or Discussion for suspected vulnerabilities. Do not
 send real credentials, personal data, confidential data, destructive payloads,

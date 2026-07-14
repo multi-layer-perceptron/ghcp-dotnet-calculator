@@ -15,8 +15,8 @@ plan, and writes only approved artifacts.
 
 * A Git repository with a reviewable README and license
 * Maintainer approval for every file to create or update
-* A monitored private conduct-reporting contact before finalizing a code of conduct
-* A monitored private vulnerability-reporting contact before finalizing a security policy
+* A GitHub-hosted or monitored private conduct-reporting route before finalizing a code of conduct
+* A GitHub-hosted or monitored private vulnerability-reporting route before finalizing a security policy
 * Qualified legal review before adopting custom participation or usage terms
 
 ## Quick Start
@@ -105,10 +105,10 @@ general open-source product or private enterprise repository.
 
 ## Troubleshooting
 
-### A private contact is missing
+### A private reporting route is missing
 
-Generate a plan or visibly marked draft only. Validation must fail until a
-monitored private contact replaces the marker.
+Generate a plan or visibly marked draft only. Validation must fail until an
+approved GitHub-hosted or monitored private route replaces the marker.
 
 ### Existing files conflict with the selected profile
 

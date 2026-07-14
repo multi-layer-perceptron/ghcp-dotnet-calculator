@@ -33,8 +33,8 @@ or conduct reports to their private processes.
 * Move actionable defects to a structured Issue when enough evidence exists.
 * Ask broad pull request proposals to begin in Ideas.
 * Remove secrets, personal data, confidential information, and vulnerability details from public view as quickly as platform permissions allow.
-* Route suspected vulnerabilities to {{SECURITY_EMAIL}} and conduct reports to
-  {{CONDUCT_EMAIL}} rather than investigating them publicly.
+* Route suspected vulnerabilities through {{SECURITY_URL}} and conduct reports
+  through {{CONDUCT_URL}} rather than investigating them publicly.
 
 ## Manual Verification
 

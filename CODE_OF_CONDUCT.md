@@ -60,8 +60,10 @@ Tensions can occur even when community members are trying to collaborate in
 good faith. Not every conflict is a Code of Conduct violation, and the
 encouraged behaviors above can help prevent conflict and minimize harm.
 
-Report a possible violation privately to the autocloudarc maintainers at
-[autocloudarc@outlook.com](mailto:autocloudarc@outlook.com). Do not report
+Report a possible violation through
+[GitHub's private abuse-reporting process](https://support.github.com/contact/report-abuse)
+or another private contact method published by the
+[repository owner](https://github.com/multi-layer-perceptron). Do not report
 conduct incidents in public Issues, pull requests, or Discussions. Include the
 relevant context and evidence, but do not expose another person's private data
 more broadly than necessary.

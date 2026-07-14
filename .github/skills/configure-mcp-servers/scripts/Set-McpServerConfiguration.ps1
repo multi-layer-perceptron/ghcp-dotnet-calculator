@@ -162,7 +162,10 @@ function New-VSCodeMcpConfiguration {
         $Servers['playwright'] = [ordered]@{
             type    = 'stdio'
             command = $NpxLauncher.command
-            args    = @($NpxLauncher.argsPrefix) + @('@playwright/mcp@latest')
+            args    = @($NpxLauncher.argsPrefix) + @(
+                '@playwright/mcp@1.52.0-alpha-2025-03-26'
+                '--headless'
+            )
         }
         $Servers['memory'] = [ordered]@{
             type    = 'stdio'
@@ -214,7 +217,10 @@ function New-CopilotGenericMcpConfiguration {
         $Servers['playwright'] = [ordered]@{
             type    = 'local'
             command = $NpxLauncher.command
-            args    = @($NpxLauncher.argsPrefix) + @('@playwright/mcp@latest')
+            args    = @($NpxLauncher.argsPrefix) + @(
+                '@playwright/mcp@1.52.0-alpha-2025-03-26'
+                '--headless'
+            )
             tools   = @('*')
         }
         $Servers['memory'] = [ordered]@{

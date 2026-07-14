@@ -14,6 +14,15 @@ The root [Lab Exercises catalog](../README.md#lab-exercises) lists every
 exercise and its associated prompt. Use this page to understand the groups and
 their recommended sequence.
 
+## Codespaces Preparation
+
+Complete the [Codespaces setup and lifecycle guide](../docs/codespaces-guide.md)
+before Module 00 or 01. Create the Codespace from your fork, wait for the
+post-create validation, verify Docker before Testcontainers tests, and confirm
+Copilot Chat uses your licensed GitHub account. The guide also identifies the
+additional GitHub, MCP, browser, Azure, and cleanup checkpoints introduced in
+later modules.
+
 ```mermaid
 flowchart LR
   Start([Start]) --> M00["Module 00<br/>Orient"]

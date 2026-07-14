@@ -34,6 +34,23 @@ resilience, reusable workflows, and finally an opt-in Azure deployment.
   variables, secrets, reusable-workflow access, or OIDC
 * An Azure subscription only for the opt-in Workflow 24 deployment lesson
 
+## Codespaces Preparation
+
+Complete the [Codespaces setup and lifecycle guide](../docs/codespaces-guide.md)
+before Workflow 01. Create the Codespace from your fork and confirm `origin`
+and `gh repo view` identify that fork. Open its **Actions** tab and accept the
+fork workflow enablement prompt before attempting a manual run.
+
+The Codespace supplies authoring tools and GitHub CLI. GitHub-hosted runners
+execute the workflows after changes are committed and pushed. A new manual
+workflow must contain `workflow_dispatch` on the default branch before GitHub
+shows **Run workflow**. Scheduled workflows also use the default branch.
+
+Workflows 04, 05, and 24 require repository administration that a Codespace
+cannot grant. Workflows 22 and 23 require additional repository or enterprise
+topology. Confirm these permissions before reaching each checkpoint rather than
+placing credentials or policy workarounds in the Codespace.
+
 ## Exercise Catalog
 
 | Index | Lesson | Concept | Setup And Risk |

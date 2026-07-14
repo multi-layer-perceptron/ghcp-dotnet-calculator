@@ -216,8 +216,9 @@ The skill configures these servers:
   repository, issue, and pull request tools
 * `microsoftLearn`: remote `http` server at
   `https://learn.microsoft.com/api/mcp`
-* `playwright`: local server started with `npx -y @playwright/mcp@latest` for
-  browser automation and UI validation
+* `playwright`: local server started with the pinned
+  `npx -y @playwright/mcp@1.52.0-alpha-2025-03-26 --headless` command for
+  browser automation and UI validation in desktop and container environments
 * `memory`: local server started with
   `npx -y @modelcontextprotocol/server-memory` for persistent knowledge-graph
   memory tools. The `MEMORY_FILE_PATH` environment variable points to

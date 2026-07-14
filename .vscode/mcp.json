@@ -17,7 +17,8 @@
       "command": "npx",
       "args": [
         "-y",
-        "@playwright/mcp@latest"
+        "@playwright/mcp@1.52.0-alpha-2025-03-26",
+        "--headless"
       ]
     },
     "memory": {

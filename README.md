@@ -104,7 +104,7 @@ Special thanks, appreciation and gratitude to the Microsoft and GitHub teams for
 
 | Path | Additional tools |
 | ---- | ---------------- |
-| GitHub Codespaces | Browser or VS Code access. Confirm the image includes .NET 10 and Docker support before running Testcontainers tests. |
+| GitHub Codespaces | Browser or VS Code access. The repository dev container supplies the required runtimes, CLIs, caches, and extensions. |
 | Local Windows, macOS, or Linux setup | .NET 10 SDK, Git, VS Code, Docker Desktop, and Node.js LTS for MCP `npx` workflows. |
 | Manual PowerShell validation | PowerShell 7, .NET 10 SDK, Docker Desktop, and repository write access. |
 | GitHub Actions practice | GitHub CLI is optional, but useful for creating issues, branches, and pull requests from the terminal. |
@@ -192,15 +192,19 @@ administrator before the workshop. This repository is licensed under [MIT](LICEN
 
 ### Option A - GitHub Codespaces
 
-1. Open the repository in GitHub.
-2. Select Code > Codespaces > Create codespace on main.
-3. Wait for the environment to finish loading. The first setup can take a few
+1. Fork the repository into your account or an approved organization.
+2. Open your fork and confirm the owner name in the repository URL.
+3. Select Code > Codespaces > Create codespace on main.
+4. Wait for the environment to finish loading. The first setup can take a few
    minutes.
-4. Open a terminal and continue with Validate The Stack.
+5. Confirm the post-create task reports `Codespaces toolchain validation
+  completed`.
+6. Open a terminal and continue with Validate The Stack.
 
-Codespaces is useful when local .NET installation is a barrier. Confirm the
-selected image supports .NET 10 and Docker before running the PostgreSQL-backed
-test suite.
+Use the [Codespaces setup and lifecycle guide](docs/codespaces-guide.md) to
+select account preferences and machine capacity, verify your fork and
+toolchain, enable Actions, authenticate CLIs, manage caches and prebuilds, open
+the Blazor port, preserve work, and stop or delete the Codespace safely.
 
 ### Option B - Local VS Code Setup
 
@@ -278,6 +282,13 @@ git push --tags origin
 
 Run these commands from the repository root. Codespaces and properly configured
 local environments should both support the same solution commands.
+
+In Codespaces, first rerun the repository preflight when the post-create log is
+unavailable or the container was rebuilt:
+
+```bash
+bash .devcontainer/scripts/post-create.sh
+```
 
 ### .NET Calculator Workflow
 
@@ -422,6 +433,11 @@ second, independent learning path built from the repository's numbered workflow
 examples and their natural-language Copilot prompts. Run this track from your
 own fork so experiments, settings, environments, secrets, and runner usage stay
 under your control.
+
+Codespaces learners should complete the
+[Codespaces setup and lifecycle guide](docs/codespaces-guide.md) first. The
+Codespace is the authoring environment; GitHub-hosted runners execute the
+workflows after reviewed changes are committed and pushed to the fork.
 
 ```mermaid
 flowchart LR

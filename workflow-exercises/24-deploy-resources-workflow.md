@@ -37,6 +37,8 @@ and globally unique names for Key Vault and PostgreSQL.
 
 * Fork and enable Actions; configure your own Azure OIDC federation for the
   repository using a federated application client ID.
+* Complete the Azure and Workflow 24 checkpoints in the
+  [Codespaces setup and lifecycle guide](../docs/codespaces-guide.md).
 * Provide your Azure Tenant ID, Subscription ID, existing Resource Group
   name, location, application name, Key Vault name, and PostgreSQL server
   name as workflow inputs. Do not use real IDs or emails in shared content.
@@ -57,9 +59,9 @@ and globally unique names for Key Vault and PostgreSQL.
 The workflow exposes a required `terraform_action` input with choices `plan`
 and `apply`, defaulting to `plan`. It sets `contents: read` and `id-token:
 write` permissions. The workflow runs terraform `fmt` and `validate` first.
-It initializes the pre-provisioned `azurerm` backend using OIDC credentials and then
-runs `terraform plan`. When `terraform_action` is `apply`, the workflow runs
-in a protected `apply` environment that requires reviewer approval before
+It initializes the pre-provisioned `azurerm` backend using OIDC credentials and
+then runs `terraform plan`. When `terraform_action` is `apply`, the workflow
+runs in a protected `apply` environment that requires reviewer approval before
 continuing when the learner has configured required reviewers. The apply job
 recalculates the configuration with `terraform apply`; it does not consume the
 plan file produced by an earlier run. Apply stores PostgreSQL credentials in
@@ -86,11 +88,25 @@ Important constraints and safety notes:
 
 ### Run The Workflow
 
-1. Configure your fork's environment-scoped OIDC federation and add the
+1. Verify the local tools and interactive Azure subscription used for setup:
+
+    ```bash
+    terraform version
+    az bicep version
+    az account show --output table
+    gh repo view --json nameWithOwner,url
+    ```
+
+2. Configure your fork's environment-scoped OIDC federation and add the
    required inputs and `POSTGRES_ADMIN_PASSWORD` secret.
-2. Open Actions → **Workflow 24 - Deploy Resources Guide** → **Run workflow**.
-3. Start with `terraform_action = plan`. Review the plan and backend
+3. Open Actions → **Workflow 24 - Deploy Resources Guide** → **Run workflow**.
+4. Start with `terraform_action = plan`. Review the plan and backend
    initialization details before attempting `apply`.
+
+An interactive `az login` in Codespaces is useful for setup and inspection but
+does not authenticate the GitHub-hosted runner. The runner requires the exact
+environment-specific OIDC subjects and scoped Azure role assignments listed
+above.
 
 ### Inspect The Results
 

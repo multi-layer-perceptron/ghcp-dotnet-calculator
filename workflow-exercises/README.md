@@ -26,6 +26,14 @@ flowchart LR
 The sequence moves from events and jobs through governance, data flow,
 resilience, reusable workflows, and finally an opt-in Azure deployment.
 
+![GitHub Actions workflow track organized into six progressive lesson groups](../docs/images/github-actions-learning-track.png)
+
+The visual track groups the 24 workflow exercises into six learning stages.
+Use it as a quick orientation before starting the catalog: the first five stages
+build GitHub Actions fluency through jobs, data, controls, resilience, and reuse;
+the final Azure deployment lesson is intentionally isolated because it requires
+OIDC, Terraform state, and billable cloud resources.
+
 ## Prerequisites
 
 * A fork of this repository with GitHub Actions enabled

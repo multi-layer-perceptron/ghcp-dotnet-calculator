@@ -169,6 +169,114 @@ src/
 
 ---
 
+## Release And Milestone Conventions
+
+Use GitHub milestones to plan meaningful curriculum or platform goals, annotated
+Git tags to mark exact repository states, and GitHub Releases to communicate
+completed milestones with release notes and validation evidence.
+
+### Release Versioning
+
+Use lightweight Semantic Versioning for repository releases:
+
+```text
+vMAJOR.MINOR.PATCH
+```
+
+- Increment `MAJOR` when exercise order, learner setup assumptions, public APIs,
+  or repository structure changes in a breaking way.
+- Increment `MINOR` when adding a meaningful workshop capability, exercise
+  track, environment baseline, workflow set, or learner-facing module.
+- Increment `PATCH` when fixing documentation, setup scripts, validation issues,
+  workflow defects, or small learner-facing bugs without changing the milestone
+  scope.
+- Use pre-release suffixes such as `v0.2.0-rc.1` or `v0.3.0-beta.1` for preview
+  builds that should not be treated as stable workshop baselines.
+
+### Release Naming
+
+Use this naming pattern for release artifacts:
+
+```text
+Milestone: M# - Short milestone name
+Tag:       vMAJOR.MINOR.PATCH
+Release:   vMAJOR.MINOR.PATCH - Short milestone name
+```
+
+For the Codespaces workshop baseline, use these names unless a later planning
+decision supersedes them:
+
+```text
+Milestone: M1 - Codespaces-ready workshop baseline
+Tag:       v0.2.0
+Release:   v0.2.0 - Codespaces-ready workshop baseline
+```
+
+Reserve `v1.0.0` for the first stable public workshop release where the main lab
+path, GitHub Actions workflow exercises, Codespaces setup, validation guidance,
+and cleanup flow are all ready for broad learner use.
+
+### Release Notes
+
+Every GitHub Release must include these sections:
+
+```markdown
+## Summary
+
+## Added
+
+## Changed
+
+## Fixed
+
+## Validation
+
+## Known Limitations
+
+## Upgrade Notes
+```
+
+Keep release notes specific to learner impact and repository operations. Include
+validation commands, known environment caveats, breaking changes, and any action
+learners or maintainers must take after updating.
+
+Store permanent release notes in a SemVer-named Markdown file under
+`docs/release-notes/`:
+
+```text
+docs/release-notes/vMAJOR.MINOR.PATCH.md
+```
+
+Do not keep overwriting a root `RELEASE_NOTES.md` file for multiple releases.
+Use one permanent release notes file per published version. If the GitHub CLI
+release body should omit repository frontmatter, generate a temporary untracked
+body file from the permanent notes and pass that file to `gh release create
+--notes-file`.
+
+### Release Workflow
+
+Before publishing a release, complete these steps:
+
+1. Confirm the milestone scope is complete and all related issues or PRs are
+    linked to the GitHub milestone.
+2. Run the narrowest relevant validation first, then the repository-level checks
+    required for the changed area.
+3. Review `git status`, `git diff --check`, and the final diff for secrets,
+    generated noise, stale paths, and accidental edits.
+4. Commit the release candidate with a clear conventional commit message, such
+    as `feat: add Codespaces workshop baseline`.
+5. Create an annotated tag:
+
+    ```powershell
+    git tag -a vMAJOR.MINOR.PATCH -m "release title"
+    ```
+
+6. Push the commit and tag, then publish a GitHub Release from that tag.
+7. Close the GitHub milestone only after the release is published and validation
+    evidence is recorded in the release notes.
+
+---
+
 ## Infrastructure as Code
 
 - Follow Azure naming conventions (`rg-${environment}-${project}`)

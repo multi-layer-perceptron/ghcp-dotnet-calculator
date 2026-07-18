@@ -1,0 +1,19 @@
+{
+  "name": "CATES exercise sample repository",
+  "version": 1,
+  "requiredPaths": [
+    ".cates-fixture.json",
+    "sample-repository",
+    "sample-repository/README.md",
+    "sample-repository/.github/copilot-instructions.md",
+    "sample-repository/.github/instructions/dotnet.instructions.md",
+    "sample-repository/.github/prompts/review-change.prompt.md",
+    "sample-repository/.github/agents/config-reviewer.agent.md",
+    "sample-repository/.github/workflows/copilot-setup-steps.yml",
+    "sample-repository/.vscode/mcp.json",
+    "sample-repository/.vscode/settings.json",
+    "sample-repository/.pre-commit-config.yaml",
+    "sample-repository/src/Inventory/InventoryService.cs",
+    "sample-repository/reports/README.md"
+  ]
+}

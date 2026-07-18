@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: sample-container-build
+        name: Build the complete sample container before every commit
+        entry: docker build .
+        language: system
+        pass_filenames: false

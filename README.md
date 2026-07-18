@@ -454,6 +454,21 @@ Workflow 24 requires pre-provisioned, billable Azure state storage, and apply
 creates additional persistent resources. Review each lesson's permissions,
 cost, state-security, and cleanup guidance before running it.
 
+## CATES Learning Track
+
+The [CATES learning track](cates-exercises/README.md) provides ten independent
+exercises for the
+[Coding Agent Token Economics Standard](https://github.com/microsoft/cates).
+Learners measure and remediate intentionally imperfect coding-agent
+configuration in `cates-exercises/workspace/`; the calculator, main labs, and
+active repository configuration remain unchanged.
+
+The track includes one reusable Copilot prompt per exercise, a commit-pinned
+reference implementation, an immutable workspace template, and a safe reset
+flow. Completed attempts are preserved under timestamped
+`cates-exercises/completed/run-*` directories before a clean practice workspace
+is restored.
+
 ## Calculator Tutorial
 
 The console calculator is the workshop's main hands-on surface. It walks
@@ -596,6 +611,12 @@ ghcp-dotnet-calculator/
     README.md                                    GitHub Actions workflow track catalog and safety guidance
     01-basic-triggers-workflow.md                Workflow lesson mapped to the matching numbered YAML
     24-deploy-resources-workflow.md              Advanced OIDC and Terraform deployment lesson
+  cates-exercises/
+    README.md                                    CATES track catalog
+    workspace/                                   Learner workspace
+    completed/                                   Completed runs
+    assets/workspace-template/                   Reset source
+    scripts/                                     Lifecycle tools
   src/
     workspace/
       Set-DotnetSlnForCalculator.ps1             Setup script for the active calculator workspace

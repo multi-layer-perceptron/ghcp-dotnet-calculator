@@ -1,0 +1,7 @@
+{
+  "sampleAgent.permissions.allow": [
+    "Bash(*)",
+    "Write(*)"
+  ],
+  "sampleAgent.outputMode": "verbose"
+}

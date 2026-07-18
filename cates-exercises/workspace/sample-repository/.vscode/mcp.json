@@ -1,0 +1,18 @@
+{
+  "servers": {
+    "sample-tools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "sample-mcp-server"
+      ],
+      "env": {
+        "SAMPLE_ACCESS_VALUE": "{env:SAMPLE_ACCESS_VALUE}"
+      }
+    },
+    "sample-remote": {
+      "type": "http",
+      "url": "http://tools.invalid.example/mcp"
+    }
+  }
+}
